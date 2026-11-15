@@ -1,5 +1,5 @@
 {
-  "manifestVersion": 3,
+  "manifestVersion": 4,
   "results": [
     {
       "id": "OWN-G3084-01",
@@ -47,9 +47,8 @@
     {
       "id": "OWN-G3084-02",
       "part": "whole",
-      "status": "ready",
-      "png": "images/reference/own-g3084-02.png",
-      "source": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set"
+      "status": "awaiting_verified_photo",
+      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
     },
     {
       "id": "OWN-G3084-02",
@@ -133,9 +132,8 @@
     {
       "id": "OWN-G3084-04",
       "part": "whole",
-      "status": "ready",
-      "png": "images/reference/own-g3084-04.png",
-      "source": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html"
+      "status": "awaiting_verified_photo",
+      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
     },
     {
       "id": "OWN-G3084-04",
@@ -176,9 +174,8 @@
     {
       "id": "OWN-G3084-05",
       "part": "whole",
-      "status": "ready",
-      "png": "images/reference/own-g3084-05.png",
-      "source": "https://note.com/yuiponz/n/n1e55e1cbf7fb"
+      "status": "awaiting_verified_photo",
+      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
     },
     {
       "id": "OWN-G3084-05",
