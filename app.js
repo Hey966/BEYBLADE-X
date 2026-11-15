@@ -158,6 +158,7 @@ $('addForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);cons
 window.BBX_COLLECTION_API={
  getBeys:()=>DB.beys.slice(),
  getBey:id=>getBey(id),
+ getPackage:id=>{const b=getBey(id);return b?pack(b):null;},
  getSavedCount:()=>decks.length,
  useSuggestion:(proposals,name)=>{
   if(!Array.isArray(proposals)||!proposals.length)return false;
