@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080d17">
+  <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
+  <title>BEYBLADE X｜收藏指揮中心</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-head">
+    <a class="brand" href="#collection" aria-label="回到圖鑑"><span class="mark">X</span><span><b>BEYBLADE <em>X</em></b><small>COLLECTION / 966</small></span></a>
+    <span class="head-tag">PERSONAL ARMORY <i class="live-dot"></i></span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-copy"><span class="kicker">YOUR COLLECTION DATABASE <span class="tiny-line"></span> 01 / INVENTORY</span>
+        <h1>自己的戰鬥陀螺<br><em>收藏指揮中心</em></h1><p>收藏、管理、組裝。每一顆都有自己的紀錄。</p>
+        <div class="hero-actions"><button class="primary" data-nav="builder">開始組裝 <span>↗</span></button><button class="ghost" data-nav="collection">查看收藏 <span>→</span></button></div>
+      </div>
+      <div class="hero-logo" aria-hidden="true">X</div>
+    </section>
+    <section class="stats" id="stats" aria-label="收藏統計"></section>
+    <nav class="tabs" aria-label="主要功能">
+      <button data-nav="collection" class="active"><span>◈</span> 收藏圖鑑</button>
+      <button data-nav="parts"><span>▥</span> 配件庫存</button>
+      <button data-nav="builder"><span>⚒</span> 組裝模擬</button>
+      <button data-nav="data"><span>⇪</span> 資料管理</button>
+    </nav>
+    <section id="collection" class="view active"><div class="section-header"><div><span class="eyebrow">01 / THE COLLECTION</span><h2>我的陀螺 <span id="countView"></span></h2></div><p class="hint">點選卡片查看原廠零件。</p></div>
+      <div class="filterbar"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="搜尋名稱、代號、配件..." autocomplete="off"></label><div class="filter-chips" id="filters" aria-label="系列篩選"></div><select id="marketFilter" aria-label="市場版本"><option value="ALL">所有版本</option><option value="US">美版</option><option value="JP">日版</option></select></div>
+      <div id="collectionGrid" class="collection-grid"></div></section>
+    <section id="parts" class="view"><div class="section-header"><div><span class="eyebrow">02 / EQUIPMENT STORAGE</span><h2>配件庫存</h2></div><p class="hint">依實際陀螺清點。相同型號仍是不同的實體。</p></div><div class="subtabs" id="partFilters"></div><div id="partsList"></div></section>
+    <section id="builder" class="view"><div class="section-header"><div><span class="eyebrow">03 / CUSTOM DECK</span><h2>組裝模擬器</h2></div><p class="hint">最多配置三顆。系統會檢查配件是否重複使用。</p></div><div class="builder-toolbar"><input id="deckName" placeholder="配置名稱（例如：對戰主力 01）" maxlength="48"><button id="saveDeck" class="primary">保存配置</button><button id="clearDeck" class="ghost">清空</button></div><div id="buildSlots" class="build-slots"></div><div id="validation" class="validation" role="status"></div><div class="saved-box"><div class="section-header compact"><div><span class="eyebrow">SAVED DECKS</span><h3>已保存配置</h3></div></div><div id="savedDecks"></div></div></section>
+    <section id="data" class="view"><div class="section-header"><div><span class="eyebrow">04 / DATABASE CONTROL</span><h2>資料管理</h2></div><p class="hint">先在瀏覽器記錄，之後可匯出交由 GitHub 更新。</p></div>
+      <div class="two-col"><article class="panel"><h3>備份與還原</h3><p>匯出包含收藏、新增項目與組裝配置的 JSON。匯入會覆蓋本機記錄。</p><div class="stack-buttons"><button class="primary" id="export">↓ 匯出完整備份</button><label class="file-button">↑ 匯入 JSON 備份<input id="import" type="file" accept=".json,application/json" hidden></label></div></article><article class="panel"><h3>新增收藏</h3><p>可以先在此新增一顆。要讓所有裝置同步，仍需提交到 GitHub。</p><form id="addForm" class="add-form"><label>名稱<input name="name" required placeholder="例如：Dran Sword"></label><div class="form-grid"><label>系列<select name="system"><option>BX</option><option>UX</option><option>CX</option></select></label><label>版本<select name="market"><option value="JP">日版</option><option value="US">美版</option></select></label></div><div class="form-grid"><label>固鎖<input name="ratchet" required placeholder="3-60"></label><label>軸心<input name="bit" required placeholder="F"></label></div><label>戰刃名稱<input name="blade" required placeholder="完整戰刃名稱"></label><button class="ghost" type="submit">＋ 新增至本機收藏</button></form></article></div>
+      <article class="panel full-note"><h3>資料同步說明</h3><p><strong>GitHub 上的資料</strong>是公開網站的共同版本。本頁新增與保存的配置僅儲存在目前瀏覽器。換手機、無痕瀏覽或清除網站資料後，可能無法保留。請定期匯出備份。若你把新陀螺照片與備份交給我，可以協助核對並更新儲存庫。</p></article>
+    </section>
+    <footer><span>BEYBLADE X / PRIVATE COLLECTION</span><span>19 ORIGINAL TOPS • FIRST EDITION</span><a href="https://github.com/Hey966/BEYBLADE-X" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></footer>
+  </main>
+  <nav class="mobile-nav" aria-label="手機導覽"><button data-nav="collection" class="active"><span>◈</span>圖鑑</button><button data-nav="parts"><span>▥</span>配件</button><button data-nav="builder"><span>⚒</span>組裝</button><button data-nav="data"><span>⇪</span>資料</button></nav>
+  <dialog id="detailDialog"><div id="detailContent"></div><button class="dialog-close" aria-label="關閉詳情" id="closeDetail">×</button></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>
