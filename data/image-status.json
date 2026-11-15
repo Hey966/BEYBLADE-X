@@ -288,6 +288,262 @@
       "id": "OWN-G3393-03",
       "part": "assistBlade",
       "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g2734-01.png",
+      "source": "https://bigbraingames.co.nz/products/beyblade-x-curse-mummy-7-55w"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/cx-08-06.png",
+      "source": "https://beyblade-shop.com/products/cobalt-dragoon-4-55wb"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-70-01.png",
+      "source": "https://news.livedoor.com/article/detail/31789639/"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "blade",
+      "status": "needs_manual_review",
+      "error": "background not reliably pale; manual masking required",
+      "source": "https://beybladehub.app/parts/combos/CX-00-eva"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-57-02.png",
+      "source": "https://www.isahobby.com/products/takara-tomy-beyblade-x-cx-00-evangelion-deck-set"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-57-03.png",
+      "source": "https://www.ruten.com.tw/item/22614392892828/"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/cx-06-01.png",
+      "source": "https://beyblade-shop.com/products/fox-brush"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "blade",
+      "status": "needs_manual_review",
+      "error": "HTTP Error 404: Not Found",
+      "source": "https://ever-wish.com/loose-no-packing-box-with-qr-code-takara-tomy-beyblade-x-ux-08-starter-silver-wolf-3-80fb/"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
     }
   ]
 }
