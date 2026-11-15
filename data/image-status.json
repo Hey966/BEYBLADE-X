@@ -3,6 +3,11 @@
   "results": [
     {
       "id": "OWN-G3084-01",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-01",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-01.png",
@@ -31,6 +36,11 @@
     {
       "id": "OWN-G3084-01",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-02",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -67,6 +77,11 @@
     },
     {
       "id": "OWN-G3084-03",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-03",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-03.png",
@@ -95,6 +110,11 @@
     {
       "id": "OWN-G3084-03",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-04",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -131,6 +151,11 @@
     },
     {
       "id": "OWN-G3084-05",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-05",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-05.png",
@@ -159,6 +184,11 @@
     {
       "id": "OWN-G3084-05",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3084-06",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -195,6 +225,11 @@
     },
     {
       "id": "OWN-G3393-01",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3393-01.png",
@@ -223,6 +258,11 @@
     {
       "id": "OWN-G3393-01",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -259,6 +299,11 @@
     },
     {
       "id": "OWN-G3393-03",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3393-03.png",
@@ -287,6 +332,11 @@
     {
       "id": "OWN-G3393-03",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G2734-01",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -323,6 +373,11 @@
     },
     {
       "id": "OWN-CX-08-06",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-08-06",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/cx-08-06.png",
@@ -351,6 +406,11 @@
     {
       "id": "OWN-CX-08-06",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-70-01",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -387,6 +447,11 @@
     },
     {
       "id": "OWN-BXG-57-01",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-01",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-57-01.png",
@@ -415,6 +480,11 @@
     {
       "id": "OWN-BXG-57-01",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-02",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
@@ -451,6 +521,11 @@
     },
     {
       "id": "OWN-BXG-57-03",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-BXG-57-03",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-57-03.png",
@@ -483,6 +558,11 @@
     },
     {
       "id": "OWN-CX-06-01",
+      "part": "whole",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-CX-06-01",
       "part": "blade",
       "status": "ready",
       "png": "images/reference/cx-06-01.png",
@@ -511,6 +591,11 @@
     {
       "id": "OWN-CX-06-01",
       "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-UX-08-01",
+      "part": "whole",
       "status": "awaiting_verified_photo"
     },
     {
