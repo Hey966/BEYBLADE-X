@@ -20,6 +20,16 @@ def transparent_png(raw: bytes) -> Image.Image:
         raise ValueError("source image is too small")
     picture.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
     rgba = np.array(picture)
+    if (rgba[:, :, 3] < 240).sum() >= (rgba.shape[0] * rgba.shape[1] * 0.08):
+        # Preserve real transparency from an already-clean independent product photo.
+        output=Image.fromarray(rgba,'RGBA')
+        bbox=output.getbbox()
+        if not bbox: raise ValueError('empty transparent source')
+        output=output.crop(bbox)
+        output.thumbnail((720,720), Image.Resampling.LANCZOS)
+        canvas=Image.new('RGBA',(800,800),(0,0,0,0))
+        canvas.alpha_composite(output,((800-output.width)//2,(800-output.height)//2))
+        return canvas
     rgb = rgba[:, :, :3]
     h, w = rgb.shape[:2]
     mx, mn = rgb.max(axis=2), rgb.min(axis=2)
