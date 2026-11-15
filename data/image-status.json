@@ -192,6 +192,102 @@
       "id": "OWN-G3084-06",
       "part": "assistBlade",
       "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/own-g3393-01.png",
+      "source": "https://acgamesonline.com/products/beyblade-x-phoenix-rudder-ux-07-metal-coat-red-top-only"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/own-g3393-02.png",
+      "source": "https://www.toyworld.co.nz/products/beyblade-x-sting-unicorn-5-60gp-booster-pack-set"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-02",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/own-g3393-03.png",
+      "source": "https://beywarehouse.com/products/beyblade-x-yggdrasil-team-3-pack"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "ratchet",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "bit",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3393-03",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
     }
   ]
 }
