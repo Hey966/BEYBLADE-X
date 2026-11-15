@@ -153,5 +153,420 @@
       "length": 597903,
       "matches": []
     }
+  ],
+  "found_records": {
+    "HB-G3063-01": {
+      "path": "/data/BeybladeSeries/HB-G3063-01",
+      "value": {
+        "id": "HB-G3063-01",
+        "base_set_id": "G3063",
+        "set_id": "G3063-01",
+        "blade_id": "HB-G3063-01-BLADE",
+        "ratchet_id": "HB-G3063-01-RATCHET",
+        "bit_id": "HB-G3063-01-BIT",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "name": {
+          "en-SG": "G3063-01 Mister Fantastic 9-65A",
+          "en-US": "G3063-01 Mister Fantastic 9-65A",
+          "ja-JP": "G3063-01 ミスター・ファンタスティック 9-65A",
+          "ko-KR": "G3063-01 미스터 판타스틱 9-65A",
+          "zh-HK": "G3063-01 神奇先生 9-65A",
+          "zh-TW": "G3063-01 驚奇先生 9-65A"
+        },
+        "catalog_title": {
+          "en-SG": "G3063-01 Mister Fantastic 9-65A",
+          "en-US": "G3063-01 Mister Fantastic 9-65A",
+          "ja-JP": "G3063-01 ミスター・ファンタスティック 9-65A",
+          "ko-KR": "G3063-01 미스터 판타스틱 9-65A",
+          "zh-HK": "G3063-01 神奇先生 9-65A",
+          "zh-TW": "G3063-01 驚奇先生 9-65A"
+        },
+        "description": {
+          "ja-JP": "G3063に収録。",
+          "en-US": "Included in G3063.",
+          "en-SG": "Included in G3063.",
+          "ko-KR": "G3063에 포함.",
+          "zh-TW": "G3063 中收錄。",
+          "zh-HK": "包含於 G3063。"
+        },
+        "collection_order": 25350000,
+        "tags": [
+          "bx"
+        ],
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "model_name": "G3063_SphinxCowl9-65A",
+        "main_blade_id": "",
+        "assist_blade_id": "",
+        "lock_chip_id": "",
+        "metal_blade_id": "",
+        "over_blade_id": "",
+        "hasbro_sku": "G3063"
+      }
+    },
+    "HB-G3063-02": {
+      "path": "/data/BeybladeSeries/HB-G3063-02",
+      "value": {
+        "id": "HB-G3063-02",
+        "base_set_id": "G3063",
+        "set_id": "G3063-02",
+        "blade_id": "HB-G3063-02-BLADE",
+        "ratchet_id": "HB-G3063-02-RATCHET",
+        "bit_id": "HB-G3063-02-BIT",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "name": {
+          "en-SG": "G3063-02 Doctor Doom 0-80LO",
+          "en-US": "G3063-02 Doctor Doom 0-80LO",
+          "ja-JP": "G3063-02 ドクター・ドゥーム 0-80LO",
+          "ko-KR": "G3063-02 닥터 둠 0-80LO",
+          "zh-HK": "G3063-02 毀滅博士 0-80LO",
+          "zh-TW": "G3063-02 末日博士 0-80LO"
+        },
+        "catalog_title": {
+          "en-SG": "G3063-02 Doctor Doom 0-80LO",
+          "en-US": "G3063-02 Doctor Doom 0-80LO",
+          "ja-JP": "G3063-02 ドクター・ドゥーム 0-80LO",
+          "ko-KR": "G3063-02 닥터 둠 0-80LO",
+          "zh-HK": "G3063-02 毀滅博士 0-80LO",
+          "zh-TW": "G3063-02 末日博士 0-80LO"
+        },
+        "description": {
+          "ja-JP": "G3063に収録。",
+          "en-US": "Included in G3063.",
+          "en-SG": "Included in G3063.",
+          "ko-KR": "G3063에 포함.",
+          "zh-TW": "G3063 中收錄。",
+          "zh-HK": "包含於 G3063。"
+        },
+        "collection_order": 25350001,
+        "tags": [
+          "bx"
+        ],
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "model_name": "G3063_KnightShield0-80LO",
+        "main_blade_id": "",
+        "assist_blade_id": "",
+        "lock_chip_id": "",
+        "metal_blade_id": "",
+        "over_blade_id": "",
+        "hasbro_sku": "G3063"
+      }
+    },
+    "HB-G3063-01-BLADE": {
+      "path": "/data/BeybladePartsBlade/HB-G3063-01-BLADE",
+      "value": {
+        "base_set_id": "G3063",
+        "catalog_title": {
+          "en-SG": "G3063-01 Mister Fantastic",
+          "en-US": "G3063-01 Mister Fantastic",
+          "ja-JP": "G3063-01 ミスター・ファンタスティック",
+          "ko-KR": "G3063-01 미스터 판타스틱",
+          "zh-HK": "G3063-01 神奇先生",
+          "zh-TW": "G3063-01 驚奇先生"
+        },
+        "collection_order": 25350000,
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "color": "yellow",
+        "defaultStatus": {
+          "attack": 31,
+          "burst": 0,
+          "dash": 0,
+          "defense": 55,
+          "height": 0,
+          "rotation": "right",
+          "stamina": 14,
+          "weight": 0
+        },
+        "description": {
+          "ja-JP": "G3063-01 ミスター・ファンタスティック 9-65Aに収録。",
+          "en-US": "Included in G3063-01 Mister Fantastic 9-65A.",
+          "en-SG": "Included in G3063-01 Mister Fantastic 9-65A.",
+          "ko-KR": "G3063-01 미스터 판타스틱 9-65A에 포함.",
+          "zh-TW": "G3063-01 驚奇先生 9-65A 中收錄。",
+          "zh-HK": "包含於 G3063-01 神奇先生 9-65A。"
+        },
+        "description_rotation_left": {
+          "en-SG": "",
+          "en-US": "",
+          "ja-JP": "",
+          "ko-KR": "",
+          "zh-HK": "",
+          "zh-TW": ""
+        },
+        "en_name": "SPHINXCOWL",
+        "group_id": "SPHINXCOWL",
+        "id": "HB-G3063-01-BLADE",
+        "invalid": false,
+        "mode_change_assist_blade": true,
+        "mode_change_blade": true,
+        "mode_change_lock_chip": true,
+        "mode_change_main_blade": true,
+        "mode_change_metal_blade": true,
+        "mode_change_over_blade": true,
+        "model_name": "G3063_SphinxCowl9-65A",
+        "name": {
+          "en-SG": "G3063-01 Mister Fantastic",
+          "en-US": "G3063-01 Mister Fantastic",
+          "ja-JP": "G3063-01 ミスター・ファンタスティック",
+          "ko-KR": "G3063-01 미스터 판타스틱",
+          "zh-HK": "G3063-01 神奇先生",
+          "zh-TW": "G3063-01 驚奇先生"
+        },
+        "package_id": "",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "ruby": "",
+        "set_id": "G3063-01",
+        "tags": [
+          "bx"
+        ],
+        "type": "defense",
+        "yomi": "スフィンクスカウル"
+      }
+    },
+    "HB-G3063-02-BLADE": {
+      "path": "/data/BeybladePartsBlade/HB-G3063-02-BLADE",
+      "value": {
+        "base_set_id": "G3063",
+        "catalog_title": {
+          "en-SG": "G3063-02 Doctor Doom",
+          "en-US": "G3063-02 Doctor Doom",
+          "ja-JP": "G3063-02 ドクター・ドゥーム",
+          "ko-KR": "G3063-02 닥터 둠",
+          "zh-HK": "G3063-02 毀滅博士",
+          "zh-TW": "G3063-02 末日博士"
+        },
+        "collection_order": 25350001,
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "color": "green",
+        "defaultStatus": {
+          "attack": 19,
+          "burst": 0,
+          "dash": 0,
+          "defense": 55,
+          "height": 0,
+          "rotation": "right",
+          "stamina": 26,
+          "weight": 0
+        },
+        "description": {
+          "ja-JP": "G3063-02 ドクター・ドゥーム 0-80LOに収録。",
+          "en-US": "Included in G3063-02 Doctor Doom 0-80LO.",
+          "en-SG": "Included in G3063-02 Doctor Doom 0-80LO.",
+          "ko-KR": "G3063-02 닥터 둠 0-80LO에 포함.",
+          "zh-TW": "G3063-02 末日博士 0-80LO 中收錄。",
+          "zh-HK": "包含於 G3063-02 毀滅博士 0-80LO。"
+        },
+        "description_rotation_left": {
+          "en-SG": "",
+          "en-US": "",
+          "ja-JP": "",
+          "ko-KR": "",
+          "zh-HK": "",
+          "zh-TW": ""
+        },
+        "en_name": "KNIGHTSHIELD",
+        "group_id": "KNIGHTSHIELD",
+        "id": "HB-G3063-02-BLADE",
+        "invalid": false,
+        "mode_change_assist_blade": true,
+        "mode_change_blade": true,
+        "mode_change_lock_chip": true,
+        "mode_change_main_blade": true,
+        "mode_change_metal_blade": true,
+        "mode_change_over_blade": true,
+        "model_name": "G3063_KnightShield0-80LO",
+        "name": {
+          "en-SG": "G3063-02 Doctor Doom",
+          "en-US": "G3063-02 Doctor Doom",
+          "ja-JP": "G3063-02 ドクター・ドゥーム",
+          "ko-KR": "G3063-02 닥터 둠",
+          "zh-HK": "G3063-02 毀滅博士",
+          "zh-TW": "G3063-02 末日博士"
+        },
+        "package_id": "",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "ruby": "",
+        "set_id": "G3063-02",
+        "tags": [
+          "bx"
+        ],
+        "type": "defense",
+        "yomi": "ナイトシールド"
+      }
+    },
+    "HB-G3063-01-RATCHET": {
+      "path": "/data/BeybladePartsRatchet/HB-G3063-01-RATCHET",
+      "value": {
+        "base_set_id": "G3063",
+        "catalog_title": {
+          "en-SG": "G3063-01 9-65",
+          "en-US": "G3063-01 9-65",
+          "ja-JP": "G3063-01 9-65",
+          "ko-KR": "G3063-01 9-65",
+          "zh-HK": "G3063-01 9-65",
+          "zh-TW": "G3063-01 9-65"
+        },
+        "collection_order": 25350000,
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "defaultStatus": {
+          "attack": 13,
+          "burst": 30,
+          "dash": 0,
+          "defense": 10,
+          "height": 65,
+          "rotation": null,
+          "stamina": 7,
+          "weight": 0
+        },
+        "description": {
+          "ja-JP": "G3063-01 ミスター・ファンタスティック 9-65Aに収録。\\nベイを低めにセットするパーツ。ビットのバースト耐性を一定にする構造によりブレが少ない、シンプルタイプのラチェット。連打に優れた9枚刃を採用。",
+          "en-US": "Included in G3063-01 Mister Fantastic 9-65A.\\nParts that set the BEY low. A simple RATCHET with minimal wobble thanks to a structure that keeps the BIT burst resistance constant. Features 9 BLADES that are great for rapid firing.",
+          "en-SG": "Included in G3063-01 Mister Fantastic 9-65A.\\nParts that set the BEY low. A simple RATCHET with minimal wobble thanks to a structure that keeps the BIT burst resistance constant. Features 9 BLADES that are great for rapid firing.",
+          "ko-KR": "G3063-01 미스터 판타스틱 9-65A에 포함.\\n베이를 낮게 세팅하는 파츠.비트의 버스트 내구성을 일정하게 유지하는 구조로 흔들림이 적은 심플한 래칫으로 연속 공격에 뛰어난 9개의 날을 사용.",
+          "zh-TW": "G3063-01 驚奇先生 9-65A 中收錄。\\n將陀螺降低。使用能讓軸心增加爆裂抗性和保持穩定的結構，並採用了能實現連續攻擊的 9 枚鋼鐵戰刃，打造攻防兼具的戰鬥型態。",
+          "zh-HK": "包含於 G3063-01 神奇先生 9-65A。\\n將陀螺的高度設置為低位的零件。能夠固定軸心的擊爆耐性並減少陀螺傾斜，為簡約型核輪，採用了擅長連續攻擊的 9 片刀刃設計。"
+        },
+        "description_rotation_left": {
+          "en-SG": "",
+          "en-US": "",
+          "ja-JP": "",
+          "ko-KR": "",
+          "zh-HK": "",
+          "zh-TW": ""
+        },
+        "en_name": "9-65",
+        "fixed_burst": true,
+        "group_id": "9-65",
+        "id": "HB-G3063-01-RATCHET",
+        "invalid": false,
+        "model_name": "G3063_ClockMirage9-65A01",
+        "name": {
+          "en-SG": "G3063-01 9-65",
+          "en-US": "G3063-01 9-65",
+          "ja-JP": "G3063-01 9-65",
+          "ko-KR": "G3063-01 9-65",
+          "zh-HK": "G3063-01 9-65",
+          "zh-TW": "G3063-01 9-65"
+        },
+        "package_id": "",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "ruby": "",
+        "set_id": "G3063-01",
+        "tags": [
+          "bx"
+        ],
+        "type": null,
+        "yomi": "ナインシクスティーファイブ"
+      }
+    },
+    "HB-G3063-01-BIT": {
+      "path": "/data/BeybladePartsBit/HB-G3063-01-BIT",
+      "value": {
+        "base_set_id": "G3063",
+        "catalog_title": {
+          "en-SG": "G3063-01 A",
+          "en-US": "G3063-01 A",
+          "ja-JP": "G3063-01 A",
+          "ko-KR": "G3063-01 A",
+          "zh-HK": "G3063-01 A",
+          "zh-TW": "G3063-01 A"
+        },
+        "collection_order": 25350000,
+        "collection_visible": {
+          "ja-JP": false,
+          "en-US": true,
+          "en-SG": false,
+          "ko-KR": false,
+          "zh-TW": false,
+          "zh-HK": false
+        },
+        "defaultStatus": {
+          "attack": 40,
+          "burst": 80,
+          "dash": 40,
+          "defense": 10,
+          "height": 0,
+          "rotation": null,
+          "stamina": 10,
+          "weight": 0
+        },
+        "description": {
+          "ja-JP": "G3063-01 ミスター・ファンタスティック 9-65Aに収録。\\n平らな軸先と大型ギヤを組み合わせた設計で、Xダッシュの性能を高めた。",
+          "en-US": "Included in G3063-01 Mister Fantastic 9-65A.\\nCombination of a flat shaft tip and large gears to enhance X-DASH performance.",
+          "en-SG": "Included in G3063-01 Mister Fantastic 9-65A.\\nCombination of a flat shaft tip and large gears to enhance X-DASH performance.",
+          "ko-KR": "G3063-01 미스터 판타스틱 9-65A에 포함.\\n평평한 축 끝과 대형 기어를 조합한 설계로 X대시의 성능을 높였다.",
+          "zh-TW": "G3063-01 驚奇先生 9-65A 中收錄。\\n平底的軸心擊加大的齒輪設計，提升了極限衝擊的性能。",
+          "zh-HK": "包含於 G3063-01 神奇先生 9-65A。\\n較平面的軸心配上大型齒輪的設計能提昇極限衝擊的性能。"
+        },
+        "description_rotation_left": {
+          "en-SG": "",
+          "en-US": "",
+          "ja-JP": "",
+          "ko-KR": "",
+          "zh-HK": "",
+          "zh-TW": ""
+        },
+        "en_name": "A",
+        "group_id": "A",
+        "id": "HB-G3063-01-BIT",
+        "invalid": false,
+        "mode_change_bit": true,
+        "model_name": "G3063_DranBuster9-65A",
+        "name": {
+          "en-SG": "G3063-01 A",
+          "en-US": "G3063-01 A",
+          "ja-JP": "G3063-01 A",
+          "ko-KR": "G3063-01 A",
+          "zh-HK": "G3063-01 A",
+          "zh-TW": "G3063-01 A"
+        },
+        "package_id": "",
+        "release_at": "2026-09-01T15:00:00.000Z",
+        "ruby": "エー",
+        "set_id": "G3063-01",
+        "tags": [
+          "bx"
+        ],
+        "type": "attack",
+        "yomi": "アクセル"
+      }
+    }
+  },
+  "top_level": [
+    "data"
   ]
 }
