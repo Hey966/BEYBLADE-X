@@ -174,17 +174,24 @@
       "specialEdition": null,
       "currentBuild": null,
       "imagePath": null,
-      "imageStatus": "verified_png",
+      "imageStatus": "blade_only_exact_photo",
       "manufacturerBeyCode": "G3084-02",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/own-g3084-02.png",
+      "displayImagePath": "images/reference/g3084-02-blade.png",
       "referenceImageUrl": "https://www.maziply.com/cdn/shop/files/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set-Gill-Shark-4-700.webp?v=1763738284",
       "partImages": {
         "blade": "images/reference/g3084-02-blade.png",
         "ratchet": "images/reference/g3084-02-ratchet.png",
         "bit": "images/reference/g3084-02-bit.png"
       },
-      "originalPackagingCrop": "images/own-g3084-02.webp"
+      "originalPackagingCrop": "images/own-g3084-02.webp",
+      "imageCorrection": {
+        "reason": "Removed pale/black background artifacts on original hero image",
+        "replacedHero": "images/reference/own-g3084-02.png",
+        "newHero": "images/reference/g3084-02-blade.png",
+        "sourceType": "exact_release_upper_blade",
+        "correctedAt": "2026-11-15"
+      }
     },
     {
       "id": "OWN-G3084-03",
@@ -232,17 +239,24 @@
       "specialEdition": "Hasbro name/version of SilverWolf",
       "currentBuild": null,
       "imagePath": null,
-      "imageStatus": "verified_png",
+      "imageStatus": "blade_only_exact_photo",
       "manufacturerBeyCode": "G3084-04",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/own-g3084-04.png",
+      "displayImagePath": "images/reference/g3084-04-blade.png",
       "referenceImageUrl": "https://mangayo.it/51584-medium_default/sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro.jpg",
       "partImages": {
         "blade": "images/reference/g3084-04-blade.png",
         "ratchet": "images/reference/g3084-04-ratchet.png",
         "bit": "images/reference/g3084-04-bit.png"
       },
-      "originalPackagingCrop": "images/own-g3084-04.webp"
+      "originalPackagingCrop": "images/own-g3084-04.webp",
+      "imageCorrection": {
+        "reason": "Removed pale/black background artifacts on original hero image",
+        "replacedHero": "images/reference/own-g3084-04.png",
+        "newHero": "images/reference/g3084-04-blade.png",
+        "sourceType": "exact_release_upper_blade",
+        "correctedAt": "2026-11-15"
+      }
     },
     {
       "id": "OWN-G3084-05",
@@ -261,10 +275,10 @@
       "specialEdition": null,
       "currentBuild": null,
       "imagePath": null,
-      "imageStatus": "verified_png",
+      "imageStatus": "blade_only_exact_photo",
       "manufacturerBeyCode": "G3084-05",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/own-g3084-05.png",
+      "displayImagePath": "images/reference/g3084-05-blade.png",
       "referenceImageUrl": "https://assets.st-note.com/img/1779450274-T7rU5ZdC6KsaBLgeq9XilxVA.jpg?width=1200",
       "partImages": {
         "blade": "images/reference/g3084-05-blade.png",
@@ -274,7 +288,14 @@
         "mainBlade": "images/reference/g3084-05-main-blade.png",
         "assistBlade": "images/reference/g3084-05-assist-blade.png"
       },
-      "originalPackagingCrop": "images/own-g3084-05.webp"
+      "originalPackagingCrop": "images/own-g3084-05.webp",
+      "imageCorrection": {
+        "reason": "Removed pale/black background artifacts on original hero image",
+        "replacedHero": "images/reference/own-g3084-05.png",
+        "newHero": "images/reference/g3084-05-blade.png",
+        "sourceType": "exact_release_upper_blade",
+        "correctedAt": "2026-11-15"
+      }
     },
     {
       "id": "OWN-G3084-06",
