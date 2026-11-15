@@ -23,7 +23,7 @@ p.parent.mkdir(exist_ok=True)
 p.write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf8")
 print(json.dumps(result,ensure_ascii=False)[:8000])
 
-for q in ("data/main.json","data/main.zh-TW.json","data/hardcoded.json","data/parts.json","data/images.json"):
+for q in ("data/hasbro.json","data/hasbro.zh-TW.json","data/hasbro_products.json","data/hasbro_products.zh-TW.json","data/products_multilang.json"):
     try:
         u=urllib.parse.urljoin(base,q)
         body=get(u)
