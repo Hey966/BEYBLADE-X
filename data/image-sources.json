@@ -257,8 +257,18 @@
             "page": "https://www.ebay.fr/itm/296745272264",
             "output": "images/reference/ux-08-01.png"
           },
-          "ratchet": null,
-          "bit": null
+          "ratchet": {
+            "url": "https://cdn11.bigcommerce.com/s-iodt3qca/images/stencil/1280x1280/products/3756/40760/UX-08-RT-TT_copy__75779.1730231365.jpg?c=2",
+            "page": "https://beysandbricks.com/takara-tomy-beyblade-x-unique-line-ratchet-3-80-ux-08/",
+            "partCode": "3-80",
+            "output": "images/reference/ux-08-01-ratchet.png"
+          },
+          "bit": {
+            "url": "https://down-tw.img.susercontent.com/file/tw-11134207-820lc-ml4a4k4hu8lff5",
+            "page": "https://shopee.tw/UX-08-%E9%9C%9C%E8%BC%9D%E9%8A%80%E7%8B%BC-%E9%9B%B6%E4%BB%B6-%E6%88%B0%E5%88%83-%E5%9B%BA%E9%8E%96-%E8%BB%B8%E5%BF%83-FB-%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-beyblade-x-i.30654475.55556406193",
+            "partCode": "FB",
+            "output": "images/reference/ux-08-01-bit.png"
+          }
         }
       ]
     }
