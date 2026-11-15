@@ -52,14 +52,27 @@ function openDetail(id){const b=getBey(id);if(!b)return;const p=pack(b);const fi
  $('detailContent').insertAdjacentHTML('beforeend','<div class="part-visuals">'+pictures.map(([k,label,value])=>{const src=b.partImages?.[k];return '<div class="part-visual"><span>'+esc(label)+'</span>'+(src?'<img src="'+esc(src)+'" alt="'+esc(label)+'" onerror="this.replaceWith(document.createTextNode(\'尚未取得透明 PNG\'))">':'<div class="pending-image">尚待查核圖片</div>')+'<strong>'+esc(value||'未登記')+'</strong></div>'}).join('')+'</div>');
  dialog.showModal();}
 const partTabs=[['ratchet','固鎖'],['bit','軸心'],['blade','BX / UX 戰刃'],['cxBlade','CX 完整戰刃'],['chip','CX 紋章'],['main','CX 主刃'],['assist','CX 輔助刃']];
-function renderParts(){ $('partFilters').innerHTML=partTabs.map(([k,t])=>`<button class="${k===partFilter?'on':''}" data-kind="${k}">${t}</button>`).join('');$('partFilters').querySelectorAll('button').forEach(n=>n.onclick=()=>{partFilter=n.dataset.kind;renderParts()});
+function renderParts(){
+ $('partFilters').innerHTML=partTabs.map(([k,t])=>'<button class="'+(k===partFilter?'on':'')+'" data-kind="'+k+'">'+t+'</button>').join('');
+ $('partFilters').querySelectorAll('button').forEach(n=>n.onclick=()=>{partFilter=n.dataset.kind;renderParts()});
+ const byType={ratchet:'ratchet',bit:'bit',blade:'blade',cxBlade:'blade',chip:'lockChip',main:'mainBlade',assist:'assistBlade'};
+ const component=byType[partFilter];
  const groups=new Map();stock(partFilter).forEach(x=>{const k=x.value;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(x)});
- const a=Array.from(groups.entries()).sort((x,y)=>x[0].localeCompare(y[0]));$('partsList').innerHTML=`<p style="color:var(--muted);font-size:12px">${a.length} 種型號 · ${a.reduce((v,[,items])=>v+items.length,0)} 個實體配件</p><div class="part-grid">${a.map(([k,items])=>`<div class="part-entry"><b class="quantity">× ${items.length}</b><strong>${esc(k)}</strong><span>${items.map(x=>esc(x.name)).join('、')}</span></div>`).join('')}</div>`;}
+ const items=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+ $('partsList').innerHTML='<p class="parts-total">'+items.length+' 種型號 · '+items.reduce((a,[,v])=>a+v.length,0)+' 個實體配件</p><div class="part-grid">'+items.map(([code,list])=>{
+   const thumbs=list.map(item=>{
+     const bey=getBey(item.id),src=bey?.partImages?.[component]||'';
+     const picture=src?'<img src="'+esc(src)+'" loading="lazy" alt="'+esc(item.name+' '+code)+'" onerror="this.replaceWith(document.createTextNode(\'圖片待確認\'))">':'<div class="part-image-missing">圖片待確認</div>';
+     return '<div class="part-variant">'+picture+'<small>'+esc(item.name)+'</small></div>';
+   }).join('');
+   return '<div class="part-entry"><b class="quantity">× '+list.length+'</b><strong>'+esc(code)+'</strong><div class="part-variants">'+thumbs+'</div></div>'
+ }).join('')+'</div>';
+}
 const SELECTIONS={blade:()=>DB.beys,ratchet:()=>stock('ratchet'),bit:()=>stock('bit'),chip:()=>stock('chip'),main:()=>stock('main'),assist:()=>stock('assist')};
 function slotPicker(kind,v,placeholder){const arr=SELECTIONS[kind]();return `<select data-field="${kind}">${opt('',placeholder,v)}${arr.map(x=>opt(x.id,kind==='blade'?`${x.name} [${x.system}]`:`${x.value} — ${x.name}`,v)).join('')}</select>`}
 function renderSlots(){ $('buildSlots').innerHTML=slots.map((s,i)=>{
  const b=getBey(s.blade);const src=displayImage(b)||(s.mode==='cx'?displayImage(getBey(s.main)):'');
- return `<article class="slot" data-slot="${i}"><div class="slot-top"><span class="slot-number">SLOT 0${i+1}</span><span class="slot-state">${s.blade||s.chip?'已選擇':'空白'}</span></div><div class="slot-preview">${src?`<img src="${esc(src)}" alt="配置預覽">`:'<strong>X</strong>'}</div><label>組裝方式<select data-field="mode">${opt('whole','完整戰刃（BX / UX / CX）',s.mode)}${opt('cx','CX 模組化（紋章＋主刃＋輔助刃）',s.mode)}</select></label>${s.mode==='whole'?`<label>戰刃 ${slotPicker('blade',s.blade,'選擇陀螺戰刃')}</label>`:`<div class="cx-fields"><label>鎖定紋章 ${slotPicker('chip',s.chip,'選擇紋章')}</label><label>主刃 ${slotPicker('main',s.main,'選擇主刃')}</label><label>輔助刃 ${slotPicker('assist',s.assist,'選擇輔助刃')}</label></div>`}<label>固鎖 ${slotPicker('ratchet',s.ratchet,'選擇固鎖')}</label><label>軸心 ${slotPicker('bit',s.bit,'選擇軸心')}</label></article>`}).join('');
+ return `<article class="slot" data-slot="${i}"><div class="slot-top"><span class="slot-number">SLOT 0${i+1}</span><span class="slot-state">${s.blade||s.chip?'已選擇':'空白'}</span></div><div class="slot-preview">${src?`<img src="${esc(src)}" alt="戰刃來源示意">`:'<strong>X</strong>'}</div><label>組裝方式<select data-field="mode">${opt('whole','完整戰刃（BX / UX / CX）',s.mode)}${opt('cx','CX 模組化（紋章＋主刃＋輔助刃）',s.mode)}</select></label>${s.mode==='whole'?`<label>戰刃 ${slotPicker('blade',s.blade,'選擇陀螺戰刃')}</label>`:`<div class="cx-fields"><label>鎖定紋章 ${slotPicker('chip',s.chip,'選擇紋章')}</label><label>主刃 ${slotPicker('main',s.main,'選擇主刃')}</label><label>輔助刃 ${slotPicker('assist',s.assist,'選擇輔助刃')}</label></div>`}<label>固鎖 ${slotPicker('ratchet',s.ratchet,'選擇固鎖')}</label><label>軸心 ${slotPicker('bit',s.bit,'選擇軸心')}</label></article>`}).join('');
  $('buildSlots').querySelectorAll('.slot').forEach(el=>el.querySelectorAll('select').forEach(n=>n.onchange=()=>{
  const i=Number(el.dataset.slot),f=n.dataset.field,v=n.value;
  if(f==='mode'){slots[i]={...blank(),mode:v};}else slots[i][f]=v;
