@@ -31,8 +31,8 @@ function stock(kind){let arr=[]; for(const b of DB.beys){ if(kind==='ratchet'||k
  return arr.filter(x=>x.value)}
 function countStats(){const count=DB.beys.length;const n=k=>DB.beys.filter(b=>b.system===k).length;const regions={US:0,JP:0};DB.beys.forEach(b=>{const m=pack(b).market;if(m in regions)regions[m]++}); $('stats').innerHTML=[['收藏總數',count],['BX 系列',n('BX')],['UX 系列',n('UX')],['CX 系列',n('CX')],['日版 / 美版',`${regions.JP} / ${regions.US}`]].map(([label,val],i)=>`<div class="stat"><span>${label}</span><strong class="${i===0?'tiny':''}">${esc(val)}</strong></div>`).join(''); }
 function renderFilters(){const f=$('filters');f.innerHTML=['ALL','BX','UX','CX'].map(v=>`<button data-filter="${v}" class="${v===filter?'on':''}">${v==='ALL'?'全部':v}</button>`).join('');f.querySelectorAll('button').forEach(n=>n.onclick=()=>{filter=n.dataset.filter;renderFilters();renderCollection()})}
-function displayImage(b){return b?.displayImagePath||b?.imagePath||''}
-function photoTag(b,alt){const src=displayImage(b), fallback=b?.referenceImageUrl||'';return src?'<img src="'+esc(src)+'" data-fallback="'+esc(fallback)+'" alt="'+esc(alt)+'" loading="lazy" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback=\'\';}else{this.style.display=\'none\'}">':''}
+function displayImage(b){return b?.displayImagePath||''}
+function photoTag(b,alt){const src=displayImage(b), fallback=b?.referenceImageUrl||'';return src?'<img src="'+esc(src)+'" alt="'+esc(alt)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片查核中\'))">':'<div class="photo-missing">圖片查核中</div>'}
 function renderCollection(){
  const q=$('search').value.trim().toLocaleLowerCase(),m=$('marketFilter').value;
  const list=DB.beys.filter(b=>{const p=pack(b),hay=[b.name,b.blade,b.ratchet,b.bit,b.lockChip,b.mainBlade,b.assistBlade,p.title,b.manufacturerBeyCode].join(' ').toLowerCase();return (filter==='ALL'||b.system===filter)&&(m==='ALL'||p.market===m)&&hay.includes(q);});
@@ -45,7 +45,7 @@ function renderCollection(){
 }
 const dialog=$('detailDialog');$('closeDetail').onclick=()=>dialog.close();dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 function openDetail(id){const b=getBey(id);if(!b)return;const p=pack(b);const fields=[['原廠戰刃',b.blade],['固鎖 Ratchet',b.ratchet],['軸心 Bit',b.bit],['迴旋方向',b.spinDirection==='L'?'左迴旋':'右迴旋'],['來源套組',p.title],['製造商 / 版本',`${p.manufacturer} / ${loc(p.market)}`],['鎖定紋章 Lock Chip',b.lockChip],['主刃 Main Blade',b.mainBlade],['輔助刃 Assist Blade',b.assistBlade],['目前實體組裝',b.currentBuild?'已記錄':'尚未登記']].filter(([,v])=>v);
- $('detailContent').innerHTML=`<div class="detail-top">${displayImage(b)?photoTag(b,b.name):''}<div><span class="system-badge ${esc(b.system)}">${esc(b.system)}</span><h2>${esc(b.name)}</h2><p>原廠：${esc(b.ratchet)}${esc(b.bit)}</p><p>${esc(loc(p.market))} · ${esc(p.productCode||'')}</p><p>收藏編號：${esc(b.id)}</p></div></div><div class="detail-fields">${fields.map(([k,v])=>`<div class="detail-field"><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('')}</div>`;
+ $('detailContent').innerHTML=`<div class="detail-top">${photoTag(b,b.name)}<div><span class="system-badge ${esc(b.system)}">${esc(b.system)}</span><h2>${esc(b.name)}</h2><p>原廠：${esc(b.ratchet)}${esc(b.bit)}</p><p>${esc(loc(p.market))} · ${esc(p.productCode||'')}</p><p>收藏編號：${esc(b.id)}</p></div></div><div class="detail-fields">${fields.map(([k,v])=>`<div class="detail-field"><small>${esc(k)}</small><strong>${esc(v)}</strong></div>`).join('')}</div>`;
 
  const pictures=[['blade',b.system==='CX'?'完整戰刃':'上層戰刃',b.blade],['ratchet','中層固鎖',b.ratchet],['bit','下層軸心',b.bit]];
  if(b.system==='CX'){pictures.push(['lockChip','鎖定紋章',b.lockChip],['mainBlade','主刃',b.mainBlade],['assistBlade','輔助刃',b.assistBlade]);}
