@@ -97,27 +97,61 @@
   ],
   "json_sources": [
     {
-      "url": "https://beyblade.phstudy.org/data/main.json",
-      "length": 3950097,
+      "url": "https://beyblade.phstudy.org/data/hasbro.json",
+      "length": 1902101,
+      "matches": [
+        {
+          "needle": "G3063-01",
+          "offset": 339024,
+          "snippet": "    \"zh-TW\": false,\n          \"zh-HK\": false\n        },\n        \"model_name\": \"G3061_Snowtrooper7-60O\",\n        \"main_blade_id\": \"\",\n        \"assist_blade_id\": \"\",\n        \"lock_chip_id\": \"\",\n        \"metal_blade_id\": \"\",\n        \"over_blade_id\": \"\",\n        \"hasbro_sku\": \"G3061\"\n      },\n      \"HB-G3063-01\": {\n        \"id\": \"HB-G3063-01\",\n        \"base_set_id\": \"G3063\",\n        \"set_id\": \"G3063-01\",\n        \"blade_id\": \"HB-G3063-01-BLADE\",\n        \"ratchet_id\": \"HB-G3063-01-RATCHET\",\n        \"bit_id\": \"HB-G3063-01-BIT\",\n        \"release_at\": \"2026-09-01T15:00:00.000Z\",\n        \"name\": {\n          \"en-SG\": \"G3063-01 Mister Fantastic 9-65A\",\n          \"en-US\": \"G3063-01 Mister Fantastic 9-65A\",\n          \"ja-JP\": \"G3063-01 ミスター・ファンタスティック 9-65A\",\n          \"ko-KR\": \"G3063-01 미스터 판타스틱 9-65A\",\n          \"zh-HK\": \"G3063-01 神奇先生 9-65A\",\n          \"zh-TW\": \"G3063-01 驚奇先生 9-65A\"\n        },\n        \"catalog_title\": {\n          \"en-SG\": \"G3063-01 Mister Fantastic 9-65A\",\n          \"en-US\": \"G3063-01 Mister Fantastic 9-65A\",\n          \"ja-JP\": \"G3063-01 ミスター・ファンタスティック 9-65A\",\n          \"ko-KR\": \"G3063-01 미스터 판타스틱 9-65A\",\n          \"zh-HK\": \"G3063-01 神奇先生 9-65A\",\n          \"zh-TW\": \"G3063-01 驚奇先生 9-65A\"\n        },\n        \"description\": {\n          \"ja-JP\": \"G3063に収録。\",\n          \"en-US\": \"Included in G3063.\",\n          \"en-SG\": \"Included in G3063.\",\n          \"ko-KR\": \"G3063에 포함.\",\n          \"zh-TW\": \"G3063 中收錄。\",\n          \"zh-HK\": \"包含於 G3063。\"\n        },\n        \"collection_order\": 25"
+        },
+        {
+          "needle": "G3063-02",
+          "offset": 340716,
+          "snippet": "     \"zh-TW\": false,\n          \"zh-HK\": false\n        },\n        \"model_name\": \"G3063_SphinxCowl9-65A\",\n        \"main_blade_id\": \"\",\n        \"assist_blade_id\": \"\",\n        \"lock_chip_id\": \"\",\n        \"metal_blade_id\": \"\",\n        \"over_blade_id\": \"\",\n        \"hasbro_sku\": \"G3063\"\n      },\n      \"HB-G3063-02\": {\n        \"id\": \"HB-G3063-02\",\n        \"base_set_id\": \"G3063\",\n        \"set_id\": \"G3063-02\",\n        \"blade_id\": \"HB-G3063-02-BLADE\",\n        \"ratchet_id\": \"HB-G3063-02-RATCHET\",\n        \"bit_id\": \"HB-G3063-02-BIT\",\n        \"release_at\": \"2026-09-01T15:00:00.000Z\",\n        \"name\": {\n          \"en-SG\": \"G3063-02 Doctor Doom 0-80LO\",\n          \"en-US\": \"G3063-02 Doctor Doom 0-80LO\",\n          \"ja-JP\": \"G3063-02 ドクター・ドゥーム 0-80LO\",\n          \"ko-KR\": \"G3063-02 닥터 둠 0-80LO\",\n          \"zh-HK\": \"G3063-02 毀滅博士 0-80LO\",\n          \"zh-TW\": \"G3063-02 末日博士 0-80LO\"\n        },\n        \"catalog_title\": {\n          \"en-SG\": \"G3063-02 Doctor Doom 0-80LO\",\n          \"en-US\": \"G3063-02 Doctor Doom 0-80LO\",\n          \"ja-JP\": \"G3063-02 ドクター・ドゥーム 0-80LO\",\n          \"ko-KR\": \"G3063-02 닥터 둠 0-80LO\",\n          \"zh-HK\": \"G3063-02 毀滅博士 0-80LO\",\n          \"zh-TW\": \"G3063-02 末日博士 0-80LO\"\n        },\n        \"description\": {\n          \"ja-JP\": \"G3063に収録。\",\n          \"en-US\": \"Included in G3063.\",\n          \"en-SG\": \"Included in G3063.\",\n          \"ko-KR\": \"G3063에 포함.\",\n          \"zh-TW\": \"G3063 中收錄。\",\n          \"zh-HK\": \"包含於 G3063。\"\n        },\n        \"collection_order\": 25350001,\n        \"tags\": [\n"
+        },
+        {
+          "needle": "G3084-01",
+          "offset": 348423,
+          "snippet": " \"HB-G3083-RATCHET\",\n        \"release_at\": \"2026-03-01T15:00:00.000Z\",\n        \"set_id\": \"G3083\",\n        \"tags\": [\n          \"bx\"\n        ],\n        \"hasbro_sku\": \"G3083\",\n        \"tt_blade_id\": \"BL-PRD-953678-00\",\n        \"tt_name\": {\n          \"en-US\": \"Croco Crunch\"\n        }\n      },\n      \"HB-G3084-01\": {\n        \"assist_blade_id\": \"\",\n        \"base_set_id\": \"G3084\",\n        \"bit_id\": \"HB-G3084-01-BIT\",\n        \"blade_id\": \"HB-G3084-01-BLADE\",\n        \"catalog_title\": {\n          \"en-SG\": \"G3084-01 Pearl Tiger 3-60U\",\n          \"en-US\": \"G3084-01 Pearl Tiger 3-60U\",\n          \"ja-JP\": \"G3084-01 ヴァイスタイガー3-60U\",\n          \"ko-KR\": \"G3084-01 펄 타이거 3-60U\",\n          \"zh-HK\": \"G3084-01 純白猛虎 3-60U\",\n          \"zh-TW\": \"G3084-01 皓戰猛虎 3-60U\"\n        },\n        \"collection_order\": 25040100,\n        \"collection_visible\": {\n          \"ja-JP\": false,\n          \"en-US\": true,\n          \"en-SG\": false,\n          \"ko-KR\": false,\n          \"zh-TW\": false,\n          \"zh-HK\": false\n        },\n        \"description\": {\n          \"ja-JP\": \"G3084に収録。\\\\n攻撃・防御・持久の3つの性能を兼ね備えたブレードとビットを組み合わせ、あらゆる相手とのバトルに対応が可能。\",\n          \"en-US\": \"Included in G3084.\\\\nCombining attack, defense, and endurance steel BLADES with the special design of the axis, it can create versatile tactics to deal with various opponents.\",\n          \"en-SG\": \"Included in G3084.\\\\nCombining attack, defense, and endurance steel BLADES with the special design of the axis, it can create versatile tactics to deal with various opponent"
+        }
+      ]
+    },
+    {
+      "url": "https://beyblade.phstudy.org/data/hasbro.zh-TW.json",
+      "length": 553966,
+      "matches": [
+        {
+          "needle": "G3063-01",
+          "offset": 121747,
+          "snippet": "on_order\":23820001,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3061_Snowtrooper7-60O\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\"metal_blade_id\":\"\",\"over_blade_id\":\"\",\"hasbro_sku\":\"G3061\"},\"HB-G3063-01\":{\"id\":\"HB-G3063-01\",\"base_set_id\":\"G3063\",\"set_id\":\"G3063-01\",\"blade_id\":\"HB-G3063-01-BLADE\",\"ratchet_id\":\"HB-G3063-01-RATCHET\",\"bit_id\":\"HB-G3063-01-BIT\",\"release_at\":\"2026-09-01T15:00:00.000Z\",\"name\":{\"en-US\":\"G3063-01 Mister Fantastic 9-65A\",\"ja-JP\":\"G3063-01 ミスター・ファンタスティック 9-65A\",\"zh-TW\":\"G3063-01 驚奇先生 9-65A\"},\"collection_order\":25350000,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3063_SphinxCowl9-65A\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\"metal_blade_id\":\"\",\"over_blade_id\":\"\",\"hasbro_sku\":\"G3063\"},\"HB-G3063-02\":{\"id\":\"HB-G3063-02\",\"base_set_id\":\"G3063\",\"set_id\":\"G3063-02\",\"blade_id\":\"HB-G3063-02-BLADE\",\"ratchet_id\":\"HB-G3063-02-RATCHET\",\"bit_id\":\"HB-G3063-02-BIT\",\"release_at\":\"2026-09-01T15:00:00.000Z\",\"name\":{\"en-US\":\"G3063-02 Doctor Doom 0-80LO\",\"ja-JP\":\"G3063-02 ドクター・ドゥーム 0-80LO\",\"zh-TW\":\"G3063-02 末日博士 0-80LO\"},\"collection_order\":25350001,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3063_KnightShield0-80LO\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\""
+        },
+        {
+          "needle": "G3063-02",
+          "offset": 122381,
+          "snippet": "ion_order\":25350000,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3063_SphinxCowl9-65A\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\"metal_blade_id\":\"\",\"over_blade_id\":\"\",\"hasbro_sku\":\"G3063\"},\"HB-G3063-02\":{\"id\":\"HB-G3063-02\",\"base_set_id\":\"G3063\",\"set_id\":\"G3063-02\",\"blade_id\":\"HB-G3063-02-BLADE\",\"ratchet_id\":\"HB-G3063-02-RATCHET\",\"bit_id\":\"HB-G3063-02-BIT\",\"release_at\":\"2026-09-01T15:00:00.000Z\",\"name\":{\"en-US\":\"G3063-02 Doctor Doom 0-80LO\",\"ja-JP\":\"G3063-02 ドクター・ドゥーム 0-80LO\",\"zh-TW\":\"G3063-02 末日博士 0-80LO\"},\"collection_order\":25350001,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3063_KnightShield0-80LO\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\"metal_blade_id\":\"\",\"over_blade_id\":\"\",\"hasbro_sku\":\"G3063\"},\"HB-G3064-01\":{\"id\":\"HB-G3064-01\",\"base_set_id\":\"G3064\",\"set_id\":\"G3064-01\",\"blade_id\":\"HB-G3064-01-BLADE\",\"ratchet_id\":\"HB-G3064-01-RATCHET\",\"bit_id\":\"HB-G3064-01-BIT\",\"release_at\":\"2026-06-01T15:00:00.000Z\",\"name\":{\"en-US\":\"G3064-01 Spider-Man 6-60R\",\"ja-JP\":\"G3064-01 マーベル スパイダーマン 6-60R\",\"zh-TW\":\"G3064-01 蜘蛛人 6-60R\"},\"collection_order\":24430100,\"tags\":[\"bx\"],\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"model_name\":\"G3064_SpiderMan6-60R\",\"main_blade_id\":\"\",\"assist_blade_id\":\"\",\"lock_chip_id\":\"\",\"metal_blad"
+        },
+        {
+          "needle": "G3084-01",
+          "offset": 125157,
+          "snippet": "roc 2-60Q\",\"ja-JP\":\"G3083 クロコクランチ2-60Q\",\"zh-TW\":\"G3083 鱷魚粉碎 2-60Q\"},\"over_blade_id\":\"\",\"package_id\":\"\",\"ratchet_id\":\"HB-G3083-RATCHET\",\"release_at\":\"2026-03-01T15:00:00.000Z\",\"set_id\":\"G3083\",\"tags\":[\"bx\"],\"hasbro_sku\":\"G3083\",\"tt_blade_id\":\"BL-PRD-953678-00\",\"tt_name\":{\"en-US\":\"Croco Crunch\"}},\"HB-G3084-01\":{\"assist_blade_id\":\"\",\"base_set_id\":\"G3084\",\"bit_id\":\"HB-G3084-01-BIT\",\"blade_id\":\"HB-G3084-01-BLADE\",\"collection_order\":25040100,\"collection_visible\":{\"ja-JP\":false,\"en-US\":true,\"en-SG\":false,\"ko-KR\":false,\"zh-TW\":false,\"zh-HK\":false},\"id\":\"HB-G3084-01\",\"invalid\":false,\"lock_chip_id\":\"\",\"main_blade_id\":\"\",\"metal_blade_id\":\"\",\"mode_change_assist_blade\":true,\"mode_change_bit\":true,\"mode_change_blade\":true,\"mode_change_lock_chip\":true,\"mode_change_main_blade\":true,\"mode_change_metal_blade\":true,\"mode_change_over_blade\":true,\"mode_change_ratchet\":true,\"model_name\":\"G3084_WeissTiger3-60U\",\"name\":{\"en-US\":\"G3084-01 Pearl Tiger 3-60U\",\"ja-JP\":\"G3084-01 ヴァイスタイガー3-60U\",\"zh-TW\":\"G3084-01 皓戰猛虎 3-60U\"},\"over_blade_id\":\"\",\"package_id\":\"\",\"ratchet_id\":\"HB-G3084-01-RATCHET\",\"release_at\":\"2026-08-01T15:00:00.000Z\",\"set_id\":\"G3084-01\",\"tags\":[\"bx\"],\"hasbro_sku\":\"G3084\",\"tt_name\":{\"en-US\":\"Weiss Tiger\"}},\"HB-G3084-02\":{\"id\":\"HB-G3084-02\",\"base_set_id\":\"G3084\",\"set_id\":\"G3084-02\",\"blade_id\":\"HB-G3084-02-BLADE\",\"ratchet_id\":\"HB-G3084-02-RATCHET\",\"bit_id\":\"HB-G3084-02-BIT\",\"release_at\":\"2026-08-01T15:00:00.000Z\",\"name\":{\"en-US\":\"G3084-02 Gill Shark 4-70O\",\"ja-JP\":\"G3084-02 シャークギル 4-70O\",\"zh-"
+        }
+      ]
+    },
+    {
+      "url": "https://beyblade.phstudy.org/data/hasbro_products.json",
+      "length": 443554,
       "matches": []
     },
     {
-      "url": "https://beyblade.phstudy.org/data/main.zh-TW.json",
-      "length": 1083088,
+      "url": "https://beyblade.phstudy.org/data/hasbro_products.zh-TW.json",
+      "length": 154883,
       "matches": []
     },
     {
-      "url": "https://beyblade.phstudy.org/data/hardcoded.json",
-      "length": 353991,
+      "url": "https://beyblade.phstudy.org/data/products_multilang.json",
+      "length": 597903,
       "matches": []
-    },
-    {
-      "url": "data/parts.json",
-      "error": "HTTP Error 404: Not Found"
-    },
-    {
-      "url": "data/images.json",
-      "error": "HTTP Error 404: Not Found"
     }
   ]
 }
