@@ -91,6 +91,7 @@ def main():
    entry["missingSource"]=True
   result["beys"][bid]=entry
  (ROOT/"data/part-abilities.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
+ (ROOT/"data/part-abilities.js").write_text("window.BBX_PART_STATS = "+json.dumps(result,ensure_ascii=False,separators=(",",":"))+";\n",encoding="utf8")
  print(json.dumps(result["summary"],ensure_ascii=False))
  if result["summary"]["numericRecords"]<45:
   raise RuntimeError("Too few numeric records: verify catalog schema before publishing")
