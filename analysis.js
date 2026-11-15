@@ -57,6 +57,53 @@ function showPart(owner,kind){
 $('closeAbility')?.addEventListener('click',()=>$('abilityDialog').close());
 $('abilityDialog')?.addEventListener('click',e=>{if(e.target.id==='abilityDialog')e.target.close()});
 window.BBX_ANALYSIS={showPart};
+function showSource(owner,kind){
+ const bey=getBey(owner);
+ const dlg=$('sourceDialog'),content=$('sourceContent');
+ if(!dlg||!content)return;
+ if(!bey){
+  content.innerHTML='<div class="source-sheet"><h2>找不到原始收藏資料</h2><p>這個零件沒有可識別的來源陀螺。</p></div>';
+  dlg.showModal();return;
+ }
+ const pkg=api.getPackage?.(owner);
+ const market=pkg?.market==='US'?'美版':pkg?.market==='JP'?'日版':'未登記';
+ const photo=bey.displayImagePath||bey.partImages?.blade||'';
+ const part=info(owner,kind);
+ const label=partNames[kind]||kind;
+ const specs=[
+   ['原廠戰刃',bey.blade],
+   ['原廠固鎖',bey.ratchet],
+   ['原廠軸心',bey.bit],
+   ['迴旋方向',bey.spinDirection==='L'?'左迴旋':'右迴旋']
+ ];
+ if(bey.system==='CX')specs.push(
+   ['鎖定紋章',bey.lockChip],
+   ['主刃',bey.mainBlade],
+   ['輔助刃',bey.assistBlade]
+ );
+ content.innerHTML='<div class="source-sheet"><span class="eyebrow">ORIGINAL BEYBLADE</span>'+
+  '<h2>'+html(bey.name)+'</h2>'+
+  '<p class="source-subtitle">'+html(bey.system)+' · '+html(market)+' · '+html(pkg?.manufacturer||'')+'</p>'+
+  (photo?'<div class="source-photo-frame"><img src="'+html(photo)+'" alt="'+html(bey.name)+' 商品圖" loading="lazy"></div>':'')+
+  '<div class="source-identified"><strong>你點選的零件</strong><p>'+html(label)+'：'+html(part?.name||'原廠零件')+'</p></div>'+
+  '<div class="source-original-specs">'+specs.filter(([,value])=>value).map(([name,value])=>'<div><span>'+html(name)+'</span><strong>'+html(value)+'</strong></div>').join('')+'</div>'+
+  '<p class="source-subtitle">來源套組：'+html(pkg?.title||bey.packageId||'未登記')+
+  (pkg?.productCode?'（'+html(pkg.productCode)+'）':'')+'</p>'+
+  '<p class="source-subtitle">收藏編號：'+html(bey.id)+'</p>'+
+  '<p class="source-disclaimer">圖片為原廠來源陀螺參考圖，不代表目前實際組裝狀態。</p></div>';
+ dlg.showModal();
+}
+$('closeSource')?.addEventListener('click',()=>$('sourceDialog').close());
+$('sourceDialog')?.addEventListener('click',event=>{
+ if(event.target.id==='sourceDialog')event.target.close();
+});
+for(const resultId of ['autoResults','counterResults']){
+ $(resultId)?.addEventListener('click',event=>{
+  const target=event.target.closest('[data-source-owner][data-source-kind]');
+  if(target)showSource(target.dataset.sourceOwner,target.dataset.sourceKind);
+ });
+}
+
 if(!db?.beys){
  for(const id of ['autoResults','counterResults'])if($(id))$(id).textContent='能力資料尚未成功載入。請確認 data/part-abilities.js 是否已部署。';
  return;
@@ -199,26 +246,27 @@ function toSlots(c){
 function fmt(n){return Number(n||0).toFixed(1)}
 function buildName(c){return c.blade.name+' '+c.ratchet.code+c.bit.code}
 function recommendationPictures(c){
- const cell=(label,src)=>{
+ const cell=(label,src,owner,kind)=>{
+  const origin=getBey(owner);
   const content=src?'<img src="'+html(src)+'" alt="'+html(label)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少圖片</div>';
-  return '<div class="analysis-part-thumb">'+content+'<span>'+html(label)+'</span></div>';
+  return '<button type="button" class="analysis-part-thumb source-photo" data-source-owner="'+html(owner)+'" data-source-kind="'+html(kind)+'" aria-label="查看'+html(label)+'的來源陀螺 '+html(origin?.name||'')+'">'+content+'<span>'+html(label)+'</span><small>查看來源</small></button>';
  };
- const ratchet=cell('固鎖 '+c.ratchet.code,partPicture(c.ratchet.owner,'ratchet'));
- const bit=cell('軸心 '+c.bit.code,partPicture(c.bit.owner,'bit'));
+ const ratchet=cell('固鎖 '+c.ratchet.code,partPicture(c.ratchet.owner,'ratchet'),c.ratchet.owner,'ratchet');
+ const bit=cell('軸心 '+c.bit.code,partPicture(c.bit.owner,'bit'),c.bit.owner,'bit');
  if(c.blade.mode==='cx'&&c.blade.mixed){
   const parts=[
-   cell('鎖定紋章',partPicture(c.blade.chip,'lockChip')),
-   cell('主刃',partPicture(c.blade.main,'mainBlade')),
-   cell('輔助刃',partPicture(c.blade.assist,'assistBlade')),
+   cell('鎖定紋章',partPicture(c.blade.chip,'lockChip'),c.blade.chip,'lockChip'),
+   cell('主刃',partPicture(c.blade.main,'mainBlade'),c.blade.main,'mainBlade'),
+   cell('輔助刃',partPicture(c.blade.assist,'assistBlade'),c.blade.assist,'assistBlade'),
    ratchet,bit
   ].join('');
-  return '<div class="analysis-component-gallery analysis-mixed-gallery">'+parts+'</div><div class="analysis-visual-caption">混搭零件分別展示；不是組裝後的實際外觀。</div>';
+  return '<div class="analysis-component-gallery analysis-mixed-gallery">'+parts+'</div><div class="analysis-visual-caption">點擊零件可查看其來源陀螺。混搭圖片不是完成品照片。</div>';
  }
  const ref=c.blade.preview||partPicture(c.blade.source,'blade');
- const main=ref?'<img class="analysis-result-image" src="'+html(ref)+'" alt="'+html(c.blade.name)+' 戰刃來源圖" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少戰刃圖片</div>';
- return '<div class="analysis-reference-hero">'+main+'</div>'+
+ const main=ref?'<img class="analysis-result-image" src="'+html(ref)+'" alt="'+html(c.blade.name)+' 原廠戰刃來源圖" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少戰刃圖片</div>';
+ return '<button type="button" class="analysis-reference-hero source-photo" data-source-owner="'+html(c.blade.source)+'" data-source-kind="blade" aria-label="查看戰刃來源陀螺 '+html(getBey(c.blade.source)?.name||'')+'">'+main+'<span class="analysis-hero-source">點擊查看來源陀螺</span></button>'+
   '<div class="analysis-component-gallery analysis-secondary-gallery">'+ratchet+bit+'</div>'+
-  '<div class="analysis-visual-caption">展示原廠戰刃及選用零件，非混搭完成品照片。</div>';
+  '<div class="analysis-visual-caption">點擊圖片可查看原廠來源。此處不是混搭完成品照片。</div>';
 }
 
 function resultMarkup(team,title,mode,enemy){
