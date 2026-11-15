@@ -5,7 +5,7 @@ def read(url):
     req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
     with urllib.request.urlopen(req,timeout=35) as r:return json.load(r)
 sources={"TT":read("https://beyblade.phstudy.org/data/main.json"),"Hasbro":read("https://beyblade.phstudy.org/data/hasbro.json")}
-wanted=["CX-08-06","BXG-70","BXG-57-01","BXG-57-02","BXG-57-03","CX-06-01","UX-08","G2734","G3063-01","G3063-02"]
+wanted=["CX-08-06","BXG-70","BXG-57-01","BXG-57-02","BXG-57-03","CX-06-01","UX-08","G3084","G3393","G2734","G3063-01","G3063-02"]
 out={"sources":{},"targets":wanted}
 for market,d in sources.items():
     out["sources"][market]={"topKeys":list(d.keys()),"types":{k:list(v.keys())[:8] if isinstance(v,dict) else type(v).__name__ for k,v in d.items()}}
