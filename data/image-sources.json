@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "note": "First verified group, six independent complete-top photographs. Parts must be sourced separately with exact variant/colors; no substitutions.",
+  "packages": [
+    {
+      "id": "G3084",
+      "name": "Rival Rumble Pack",
+      "market": "US",
+      "items": [
+        {
+          "id": "OWN-G3084-01",
+          "name": "Pearl Tiger",
+          "code": "3-60U",
+          "blade": {
+            "url": "https://bbx.co.kr/uploaded/product/46/l_dab49b9ec00748bbdf1e1815566c20b92.jpg",
+            "page": "https://bbx.co.kr/bbs/product_detail.php?idx=46",
+            "output": "images/reference/own-g3084-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3084-02",
+          "name": "Gill Shark",
+          "code": "4-70O",
+          "blade": {
+            "url": "https://www.maziply.com/cdn/shop/files/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set-Gill-Shark-4-700.webp?v=1763738284",
+            "page": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set",
+            "output": "images/reference/own-g3084-02.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3084-03",
+          "name": "Crest Leon",
+          "code": "7-60GN",
+          "blade": {
+            "url": "https://cdn.shopify.com/s/files/1/0257/5410/7976/files/Blade-Leon-Crest_1dc4c0f2-f0a7-473f-ba4c-96c7db76be10.webp",
+            "page": "https://beycommunity.com/en/x/combos/leon-crest-7-60gn/",
+            "output": "images/reference/own-g3084-03.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3084-04",
+          "name": "Sterling Wolf",
+          "code": "3-80FB",
+          "blade": {
+            "url": "https://mangayo.it/51584-medium_default/sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro.jpg",
+            "page": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html",
+            "output": "images/reference/own-g3084-04.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3084-05",
+          "name": "Fort Hornet R",
+          "code": "7-60T",
+          "blade": {
+            "url": "https://assets.st-note.com/img/1779450274-T7rU5ZdC6KsaBLgeq9XilxVA.jpg?width=1200",
+            "page": "https://note.com/yuiponz/n/n1e55e1cbf7fb",
+            "output": "images/reference/own-g3084-05.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3084-06",
+          "name": "Wriggle Kraken S",
+          "code": "3-85O",
+          "blade": {
+            "url": "https://yoyoshopsg.com/cdn/shop/files/beybladexWriggleKrakenS3-85O.jpg?v=1762916127",
+            "page": "https://yoyoshopsg.com/collections/beyblade-x",
+            "output": "images/reference/own-g3084-06.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    }
+  ]
+}
