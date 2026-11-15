@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "note": "First verified group, six independent complete-top photographs. Parts must be sourced separately with exact variant/colors; no substitutions.",
+  "version": 3,
+  "note": "Exact release component photos; whole assembled top is separate from Blade. Source credit to site and original photographer. Verify rights before public redistribution.",
   "packages": [
     {
       "id": "G3084",
@@ -12,72 +12,276 @@
           "name": "Pearl Tiger",
           "code": "3-60U",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-01-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-01-BLADE.html",
+            "partID": "HB-G3084-01-BLADE",
+            "output": "images/reference/g3084-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-01-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-01-RATCHET.html",
+            "partID": "HB-G3084-01-RATCHET",
+            "output": "images/reference/g3084-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-01-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-01-BIT.html",
+            "partID": "HB-G3084-01-BIT",
+            "output": "images/reference/g3084-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://bbx.co.kr/uploaded/product/46/l_dab49b9ec00748bbdf1e1815566c20b92.jpg",
             "page": "https://bbx.co.kr/bbs/product_detail.php?idx=46",
-            "output": "images/reference/own-g3084-01.png"
+            "output": "images/reference/own-g3084-01.png",
+            "partCode": "3-60U",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3084-02",
           "name": "Gill Shark",
           "code": "4-70O",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-02-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-02-BLADE.html",
+            "partID": "HB-G3084-02-BLADE",
+            "output": "images/reference/g3084-02-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-02-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-02-RATCHET.html",
+            "partID": "HB-G3084-02-RATCHET",
+            "output": "images/reference/g3084-02-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-02-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-02-BIT.html",
+            "partID": "HB-G3084-02-BIT",
+            "output": "images/reference/g3084-02-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://www.maziply.com/cdn/shop/files/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set-Gill-Shark-4-700.webp?v=1763738284",
             "page": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set",
-            "output": "images/reference/own-g3084-02.png"
+            "output": "images/reference/own-g3084-02.png",
+            "partCode": "4-70O",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3084-03",
           "name": "Crest Leon",
           "code": "7-60GN",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-03-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-03-BLADE.html",
+            "partID": "HB-G3084-03-BLADE",
+            "output": "images/reference/g3084-03-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-03-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-03-RATCHET.html",
+            "partID": "HB-G3084-03-RATCHET",
+            "output": "images/reference/g3084-03-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-03-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-03-BIT.html",
+            "partID": "HB-G3084-03-BIT",
+            "output": "images/reference/g3084-03-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://malloftoys.com/cdn/shop/files/UX-06BoosterLeonCrest7-60GN1.webp?v=1720718675&width=1445",
             "page": "https://malloftoys.com/en-ca/products/takara-tomy-beyblade-x-ux-06-booster-leon-crest-7-60gn-canada",
-            "output": "images/reference/own-g3084-03.png"
+            "output": "images/reference/own-g3084-03.png",
+            "partCode": "7-60GN",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3084-04",
           "name": "Sterling Wolf",
           "code": "3-80FB",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-04-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-04-BLADE.html",
+            "partID": "HB-G3084-04-BLADE",
+            "output": "images/reference/g3084-04-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-04-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-04-RATCHET.html",
+            "partID": "HB-G3084-04-RATCHET",
+            "output": "images/reference/g3084-04-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-04-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-04-BIT.html",
+            "partID": "HB-G3084-04-BIT",
+            "output": "images/reference/g3084-04-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://mangayo.it/51584-medium_default/sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro.jpg",
             "page": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html",
-            "output": "images/reference/own-g3084-04.png"
+            "output": "images/reference/own-g3084-04.png",
+            "partCode": "3-80FB",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3084-05",
           "name": "Fort Hornet R",
           "code": "7-60T",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-05-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-05-BLADE.html",
+            "partID": "HB-G3084-05-BLADE",
+            "output": "images/reference/g3084-05-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-05-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-05-RATCHET.html",
+            "partID": "HB-G3084-05-RATCHET",
+            "output": "images/reference/g3084-05-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-05-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-05-BIT.html",
+            "partID": "HB-G3084-05-BIT",
+            "output": "images/reference/g3084-05-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://assets.st-note.com/img/1779450274-T7rU5ZdC6KsaBLgeq9XilxVA.jpg?width=1200",
             "page": "https://note.com/yuiponz/n/n1e55e1cbf7fb",
-            "output": "images/reference/own-g3084-05.png"
+            "output": "images/reference/own-g3084-05.png",
+            "partCode": "7-60T",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/HB-G3084-05-LOCKCHIP.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-05-LOCKCHIP.html",
+            "partID": "HB-G3084-05-LOCKCHIP",
+            "output": "images/reference/g3084-05-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/HB-G3084-05-MAINBLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-05-MAINBLADE.html",
+            "partID": "HB-G3084-05-MAINBLADE",
+            "output": "images/reference/g3084-05-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/HB-G3084-05-ASSISTBLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-05-ASSISTBLADE.html",
+            "partID": "HB-G3084-05-ASSISTBLADE",
+            "output": "images/reference/g3084-05-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         },
         {
           "id": "OWN-G3084-06",
           "name": "Wriggle Kraken S",
           "code": "3-85O",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3084-06-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-06-BLADE.html",
+            "partID": "HB-G3084-06-BLADE",
+            "output": "images/reference/g3084-06-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3084-06-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-06-RATCHET.html",
+            "partID": "HB-G3084-06-RATCHET",
+            "output": "images/reference/g3084-06-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3084-06-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-06-BIT.html",
+            "partID": "HB-G3084-06-BIT",
+            "output": "images/reference/g3084-06-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://yoyoshopsg.com/cdn/shop/files/beybladexWriggleKrakenS3-85O.jpg?v=1762916127",
             "page": "https://yoyoshopsg.com/collections/beyblade-x",
-            "output": "images/reference/own-g3084-06.png"
+            "output": "images/reference/own-g3084-06.png",
+            "partCode": "3-85O",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/HB-G3084-06-LOCKCHIP.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-06-LOCKCHIP.html",
+            "partID": "HB-G3084-06-LOCKCHIP",
+            "output": "images/reference/g3084-06-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/HB-G3084-06-MAINBLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-06-MAINBLADE.html",
+            "partID": "HB-G3084-06-MAINBLADE",
+            "output": "images/reference/g3084-06-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/HB-G3084-06-ASSISTBLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-06-ASSISTBLADE.html",
+            "partID": "HB-G3084-06-ASSISTBLADE",
+            "output": "images/reference/g3084-06-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         }
       ]
     },
@@ -91,36 +295,117 @@
           "name": "Rudder Phoenix",
           "code": "9-70G",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3393-01-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-01-BLADE.html",
+            "partID": "HB-G3393-01-BLADE",
+            "output": "images/reference/g3393-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3393-01-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-01-RATCHET.html",
+            "partID": "HB-G3393-01-RATCHET",
+            "output": "images/reference/g3393-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3393-01-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-01-BIT.html",
+            "partID": "HB-G3393-01-BIT",
+            "output": "images/reference/g3393-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://acgamesonline.com/cdn/shop/files/Screenshot-2025-01-03-164117_grande.png?v=1735941234",
             "page": "https://acgamesonline.com/products/beyblade-x-phoenix-rudder-ux-07-metal-coat-red-top-only",
-            "output": "images/reference/own-g3393-01.png"
+            "output": "images/reference/own-g3393-01.png",
+            "partCode": "9-70G",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3393-02",
           "name": "Sting Unicorn",
           "code": "5-60GP",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3393-02-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-02-BLADE.html",
+            "partID": "HB-G3393-02-BLADE",
+            "output": "images/reference/g3393-02-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3393-02-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-02-RATCHET.html",
+            "partID": "HB-G3393-02-RATCHET",
+            "output": "images/reference/g3393-02-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3393-02-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-02-BIT.html",
+            "partID": "HB-G3393-02-BIT",
+            "output": "images/reference/g3393-02-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://www.toyworld.co.nz/cdn/shop/files/195166265377_20F9590_203_resizedforweb.jpg?v=1775536162&width=2048",
             "page": "https://www.toyworld.co.nz/products/beyblade-x-sting-unicorn-5-60gp-booster-pack-set",
-            "output": "images/reference/own-g3393-02.png"
+            "output": "images/reference/own-g3393-02.png",
+            "partCode": "5-60GP",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         },
         {
           "id": "OWN-G3393-03",
           "name": "Cowl Sphinx",
           "code": "9-80GN",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3393-03-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-03-BLADE.html",
+            "partID": "HB-G3393-03-BLADE",
+            "output": "images/reference/g3393-03-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3393-03-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-03-RATCHET.html",
+            "partID": "HB-G3393-03-RATCHET",
+            "output": "images/reference/g3393-03-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3393-03-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-03-BIT.html",
+            "partID": "HB-G3393-03-BIT",
+            "output": "images/reference/g3393-03-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://beywarehouse.com/cdn/shop/files/imgi_76_latest.webp?v=1770664796&width=594",
             "page": "https://beywarehouse.com/products/beyblade-x-yggdrasil-team-3-pack",
-            "output": "images/reference/own-g3393-03.png"
+            "output": "images/reference/own-g3393-03.png",
+            "partCode": "9-80GN",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         }
       ]
     },
@@ -134,12 +419,39 @@
           "name": "Curse Mummy",
           "code": "7-55W",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G2734-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G2734-BLADE.html",
+            "partID": "HB-G2734-BLADE",
+            "output": "images/reference/g2734-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G2734-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G2734-RATCHET.html",
+            "partID": "HB-G2734-RATCHET",
+            "output": "images/reference/g2734-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G2734-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G2734-BIT.html",
+            "partID": "HB-G2734-BIT",
+            "output": "images/reference/g2734-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://bigbraingames.co.nz/cdn/shop/files/mummy_curse.webp?v=1781229143&width=3840",
             "page": "https://bigbraingames.co.nz/products/beyblade-x-curse-mummy-7-55w",
-            "output": "images/reference/g2734-01.png"
+            "output": "images/reference/g2734-01.png",
+            "partCode": "7-55W",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         }
       ]
     },
@@ -153,12 +465,39 @@
           "name": "Cobalt Dragoon",
           "code": "4-55WB",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-956983-06.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956983-06.html",
+            "partID": "BL-PRD-956983-06",
+            "output": "images/reference/cx-08-06-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-956983-06.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956983-06.html",
+            "partID": "RC-PRD-956983-06",
+            "output": "images/reference/cx-08-06-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-956983-06.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956983-06.html",
+            "partID": "BT-PRD-956983-06",
+            "output": "images/reference/cx-08-06-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://beyblade-shop.com/cdn/shop/files/Cobalt-Dragoon-4-55WB-Beyblade-Shop_1200x1200.png?v=1749804450",
             "page": "https://beyblade-shop.com/products/cobalt-dragoon-4-55wb",
-            "output": "images/reference/cx-08-06.png"
+            "output": "images/reference/cx-08-06.png",
+            "partCode": "4-55WB",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         }
       ]
     },
@@ -172,12 +511,60 @@
           "name": "TigaRage",
           "code": "FT3-60T",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-080640-00.html",
+            "partID": "BL-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-080640-00.html",
+            "partID": "RC-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-080640-00.html",
+            "partID": "BT-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://image.news.livedoor.com/newsimage/stf/4/7/47dd5_1839_364d78b2f35067d71aafecf900f10f73.jpg",
             "page": "https://news.livedoor.com/article/detail/31789639/",
-            "output": "images/reference/bxg-70-01.png"
+            "output": "images/reference/bxg-70-01.png",
+            "partCode": "FT3-60T",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/LC-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-080640-00.html",
+            "partID": "LC-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/MB-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-080640-00.html",
+            "partID": "MB-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/AB-PRD-080640-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-080640-00.html",
+            "partID": "AB-PRD-080640-00",
+            "output": "images/reference/bxg-70-01-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         }
       ]
     },
@@ -191,36 +578,180 @@
           "name": "EvaArc",
           "code": "B0-70E",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-01.html",
+            "partID": "BL-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-01.html",
+            "partID": "RC-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-01.html",
+            "partID": "BT-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://beybladehub.app/combos/CX00-eva-unit00.webp",
             "page": "https://beybladehub.app/parts/combos/CX-00-eva",
-            "output": "images/reference/bxg-57-01.png"
+            "output": "images/reference/bxg-57-01.png",
+            "partCode": "B0-70E",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/LC-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-01.html",
+            "partID": "LC-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/MB-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-01.html",
+            "partID": "MB-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/AB-PRD-085683-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-01.html",
+            "partID": "AB-PRD-085683-01",
+            "output": "images/reference/bxg-57-01-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         },
         {
           "id": "OWN-BXG-57-02",
           "name": "EvaBrave",
           "code": "A1-70V",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-02.html",
+            "partID": "BL-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-02.html",
+            "partID": "RC-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-02.html",
+            "partID": "BT-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://www.isahobby.com/cdn/shop/files/177424476381_1200_1024x.jpg?v=1774513975",
             "page": "https://www.isahobby.com/products/takara-tomy-beyblade-x-cx-00-evangelion-deck-set",
-            "output": "images/reference/bxg-57-02.png"
+            "output": "images/reference/bxg-57-02.png",
+            "partCode": "A1-70V",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/LC-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-02.html",
+            "partID": "LC-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/MB-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-02.html",
+            "partID": "MB-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/AB-PRD-085683-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-02.html",
+            "partID": "AB-PRD-085683-02",
+            "output": "images/reference/bxg-57-02-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         },
         {
           "id": "OWN-BXG-57-03",
           "name": "EvaBrush",
           "code": "T2-70A",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-03.html",
+            "partID": "BL-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-03.html",
+            "partID": "RC-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-03.html",
+            "partID": "BT-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://gcs.rimg.com.tw/g2/6/39/9c/22614392892828_721.jpg",
             "page": "https://www.ruten.com.tw/item/22614392892828/",
-            "output": "images/reference/bxg-57-03.png"
+            "output": "images/reference/bxg-57-03.png",
+            "partCode": "T2-70A",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/LC-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-03.html",
+            "partID": "LC-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/MB-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-03.html",
+            "partID": "MB-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/AB-PRD-085683-03.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-03.html",
+            "partID": "AB-PRD-085683-03",
+            "output": "images/reference/bxg-57-03-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         }
       ]
     },
@@ -234,12 +765,60 @@
           "name": "FoxBrush",
           "code": "J9-70GR",
           "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956969-01.html",
+            "partID": "BL-PRD-956969-01",
+            "output": "images/reference/cx-06-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956969-01.html",
+            "partID": "RC-PRD-956969-01",
+            "output": "images/reference/cx-06-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956969-01.html",
+            "partID": "BT-PRD-956969-01",
+            "output": "images/reference/cx-06-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
             "url": "https://beyblade-shop.com/cdn/shop/files/FoxBrush-J9-70GR-Beyblade-Shop-removebg-preview_1024x1024.png?v=1746197395",
             "page": "https://beyblade-shop.com/products/fox-brush",
-            "output": "images/reference/cx-06-01.png"
+            "output": "images/reference/cx-06-01.png",
+            "partCode": "J9-70GR",
+            "sourceType": "independent_product_photo"
           },
-          "ratchet": null,
-          "bit": null
+          "lockChip": {
+            "url": "https://beyblade.phstudy.org/images/site/LockChip/LC-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-956969-01.html",
+            "partID": "LC-PRD-956969-01",
+            "output": "images/reference/cx-06-01-lock-chip.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "mainBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/MainBlade/MB-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-956969-01.html",
+            "partID": "MB-PRD-956969-01",
+            "output": "images/reference/cx-06-01-main-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "assistBlade": {
+            "url": "https://beyblade.phstudy.org/images/site/AssistBlade/AB-PRD-956969-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-956969-01.html",
+            "partID": "AB-PRD-956969-01",
+            "output": "images/reference/cx-06-01-assist-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          }
         }
       ]
     },
@@ -253,24 +832,42 @@
           "name": "SilverWolf",
           "code": "3-80FB",
           "blade": {
-            "url": "https://i.ebayimg.com/images/g/n~4AAOSwT-NnCV~z/s-l1200.jpg",
-            "page": "https://www.ebay.fr/itm/296745272264",
-            "output": "images/reference/ux-08-01.png"
+            "url": "https://beyblade.phstudy.org/images/site/Blade/BL-PRD-939498-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-939498-00.html",
+            "partID": "BL-PRD-939498-00",
+            "output": "images/reference/ux-08-01-blade.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
           },
           "ratchet": {
-            "url": "https://cdn11.bigcommerce.com/s-iodt3qca/images/stencil/1280x1280/products/3756/40760/UX-08-RT-TT_copy__75779.1730231365.jpg?c=2",
-            "page": "https://beysandbricks.com/takara-tomy-beyblade-x-unique-line-ratchet-3-80-ux-08/",
-            "partCode": "3-80",
-            "output": "images/reference/ux-08-01-ratchet.png"
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/RC-PRD-939498-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-939498-00.html",
+            "partID": "RC-PRD-939498-00",
+            "output": "images/reference/ux-08-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
           },
           "bit": {
-            "url": "https://down-tw.img.susercontent.com/file/tw-11134207-820lc-ml4a4k4hu8lff5",
-            "page": "https://shopee.tw/UX-08-%E9%9C%9C%E8%BC%9D%E9%8A%80%E7%8B%BC-%E9%9B%B6%E4%BB%B6-%E6%88%B0%E5%88%83-%E5%9B%BA%E9%8E%96-%E8%BB%B8%E5%BF%83-FB-%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-beyblade-x-i.30654475.55556406193",
-            "partCode": "FB",
-            "output": "images/reference/ux-08-01-bit.png"
-          }
+            "url": "https://beyblade.phstudy.org/images/site/Bit/BT-PRD-939498-00.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-939498-00.html",
+            "partID": "BT-PRD-939498-00",
+            "output": "images/reference/ux-08-01-bit.png",
+            "sourceType": "exact_release_catalog_photo",
+            "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
+          },
+          "whole": {
+            "url": "https://i.ebayimg.com/images/g/n~4AAOSwT-NnCV~z/s-l1200.jpg",
+            "page": "https://www.ebay.fr/itm/296745272264",
+            "output": "images/reference/ux-08-01.png",
+            "partCode": "3-80FB",
+            "sourceType": "independent_product_photo"
+          },
+          "lockChip": null,
+          "mainBlade": null,
+          "assistBlade": null
         }
       ]
     }
-  ]
+  ],
+  "verifiedAt": "2026-11-15"
 }
