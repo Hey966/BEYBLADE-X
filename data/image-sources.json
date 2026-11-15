@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "note": "Exact release component photos; whole assembled top is separate from Blade. Source credit to site and original photographer. Verify rights before public redistribution.",
   "packages": [
     {
@@ -74,16 +74,16 @@
             "sourceType": "exact_release_catalog_photo",
             "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
           },
-          "whole": {
-            "url": "https://www.maziply.com/cdn/shop/files/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set-Gill-Shark-4-700.webp?v=1763738284",
-            "page": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set",
-            "output": "images/reference/own-g3084-02.png",
-            "partCode": "4-70O",
-            "sourceType": "independent_product_photo"
-          },
+          "whole": null,
           "lockChip": null,
           "mainBlade": null,
-          "assistBlade": null
+          "assistBlade": null,
+          "rejectedWholeImage": {
+            "source": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set",
+            "reason": "Source image caused background artifacts after automated masking; do not use as main card."
+          },
+          "heroFallback": "blade",
+          "heroFallbackNote": "Exact original release upper Blade transparent PNG; not an assembled photo"
         },
         {
           "id": "OWN-G3084-03",
@@ -152,16 +152,16 @@
             "sourceType": "exact_release_catalog_photo",
             "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
           },
-          "whole": {
-            "url": "https://mangayo.it/51584-medium_default/sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro.jpg",
-            "page": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html",
-            "output": "images/reference/own-g3084-04.png",
-            "partCode": "3-80FB",
-            "sourceType": "independent_product_photo"
-          },
+          "whole": null,
           "lockChip": null,
           "mainBlade": null,
-          "assistBlade": null
+          "assistBlade": null,
+          "rejectedWholeImage": {
+            "source": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html",
+            "reason": "Source image caused background artifacts after automated masking; do not use as main card."
+          },
+          "heroFallback": "blade",
+          "heroFallbackNote": "Exact original release upper Blade transparent PNG; not an assembled photo"
         },
         {
           "id": "OWN-G3084-05",
@@ -191,13 +191,7 @@
             "sourceType": "exact_release_catalog_photo",
             "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
           },
-          "whole": {
-            "url": "https://assets.st-note.com/img/1779450274-T7rU5ZdC6KsaBLgeq9XilxVA.jpg?width=1200",
-            "page": "https://note.com/yuiponz/n/n1e55e1cbf7fb",
-            "output": "images/reference/own-g3084-05.png",
-            "partCode": "7-60T",
-            "sourceType": "independent_product_photo"
-          },
+          "whole": null,
           "lockChip": {
             "url": "https://beyblade.phstudy.org/images/site/LockChip/HB-G3084-05-LOCKCHIP.png",
             "page": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-05-LOCKCHIP.html",
@@ -221,7 +215,13 @@
             "output": "images/reference/g3084-05-assist-blade.png",
             "sourceType": "exact_release_catalog_photo",
             "licenseNote": "Rights belong to original photographer/publisher; do not assume public domain"
-          }
+          },
+          "rejectedWholeImage": {
+            "source": "https://note.com/yuiponz/n/n1e55e1cbf7fb",
+            "reason": "Source image caused background artifacts after automated masking; do not use as main card."
+          },
+          "heroFallback": "blade",
+          "heroFallbackNote": "Exact original release upper Blade transparent PNG; not an assembled photo"
         },
         {
           "id": "OWN-G3084-06",
