@@ -6,6 +6,7 @@ Requires: pillow, numpy, opencv-python-headless.
 """
 from __future__ import annotations
 import io, json, pathlib, urllib.request
+from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import cv2
 from PIL import Image, ImageOps, UnidentifiedImageError
@@ -72,33 +73,34 @@ def download(url: str) -> bytes:
         raise ValueError("source exceeds 8MB limit")
     return data
 
+def process_task(task):
+    bey, layer, spec = task
+    if not spec:
+        return {"id":bey["id"],"part":layer,"status":"awaiting_verified_photo"}
+    relative_path=pathlib.PurePosixPath(spec["output"])
+    if relative_path.is_absolute() or ".." in relative_path.parts or not str(relative_path).startswith("images/reference/") or relative_path.suffix.lower()!=".png":
+        return {"id":bey["id"],"part":layer,"status":"needs_manual_review","error":"Invalid destination"}
+    destination=ROOT/relative_path
+    try:
+        raw=download(spec["url"])
+        png=transparent_png(raw)
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        png.save(destination,format="PNG",optimize=True)
+        print("OK",bey["id"],layer,destination.name,flush=True)
+        return {"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"]}
+    except Exception as exc:
+        if destination.exists():
+            print("REUSE",bey["id"],layer,str(exc)[:110],flush=True)
+            return {"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"],"note":"Previously verified PNG retained; new download unavailable"}
+        print("NEEDS_REVIEW",bey["id"],layer,str(exc)[:110],flush=True)
+        return {"id":bey["id"],"part":layer,"status":"needs_manual_review","source":spec["page"],"error":str(exc)[:250]}
+
 def run():
-    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    outcomes=[]
-    for pkg in data["packages"]:
-        for bey in pkg["items"]:
-            for layer in ("whole","blade","ratchet","bit","lockChip","mainBlade","assistBlade"):
-                spec = bey.get(layer)
-                if not spec:
-                    outcomes.append({"id":bey["id"],"part":layer,"status":"awaiting_verified_photo"})
-                    continue
-                relative_path = pathlib.PurePosixPath(spec["output"])
-                if relative_path.is_absolute() or ".." in relative_path.parts or not str(relative_path).startswith("images/reference/") or relative_path.suffix.lower() != ".png":
-                    raise ValueError(f"invalid destination {relative_path}")
-                destination=ROOT/relative_path
-                try:
-                    raw=download(spec["url"])
-                    png=transparent_png(raw)
-                    destination.parent.mkdir(parents=True,exist_ok=True)
-                    png.save(destination,format="PNG",optimize=True)
-                    outcomes.append({"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"]})
-                    print("OK",bey["id"],layer,destination.name)
-                except (Exception) as exc:
-                    if destination.exists():
-                        outcomes.append({"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"],"note":"Previously reviewed PNG retained; current download unavailable"})
-                    else:
-                        outcomes.append({"id":bey["id"],"part":layer,"status":"needs_manual_review","error":str(exc)[:250],"source":spec["page"]})
-                    print("SKIP",bey["id"],layer,str(exc)[:150])
+    data=json.loads(MANIFEST.read_text(encoding="utf-8"))
+    layers=("whole","blade","ratchet","bit","lockChip","mainBlade","assistBlade")
+    tasks=[(bey,layer,bey.get(layer)) for pkg in data["packages"] for bey in pkg["items"] for layer in layers]
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        outcomes=list(pool.map(process_task,tasks))
     # The collection card image represents the ASSEMBLED top ("whole").
     # In the detail dialog, "blade" is a genuinely separate top blade.
     dbpath=ROOT/"data"/"collection.json"
