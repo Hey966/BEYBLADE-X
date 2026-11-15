@@ -77,7 +77,7 @@ def run():
     outcomes=[]
     for pkg in data["packages"]:
         for bey in pkg["items"]:
-            for layer in ("blade","ratchet","bit","lockChip","mainBlade","assistBlade"):
+            for layer in ("whole","blade","ratchet","bit","lockChip","mainBlade","assistBlade"):
                 spec = bey.get(layer)
                 if not spec:
                     outcomes.append({"id":bey["id"],"part":layer,"status":"awaiting_verified_photo"})
@@ -94,8 +94,29 @@ def run():
                     outcomes.append({"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"]})
                     print("OK",bey["id"],layer,destination.name)
                 except (Exception) as exc:
-                    outcomes.append({"id":bey["id"],"part":layer,"status":"needs_manual_review","error":str(exc)[:250],"source":spec["page"]})
+                    if destination.exists():
+                        outcomes.append({"id":bey["id"],"part":layer,"status":"ready","png":str(relative_path),"source":spec["page"],"note":"Previously reviewed PNG retained; current download unavailable"})
+                    else:
+                        outcomes.append({"id":bey["id"],"part":layer,"status":"needs_manual_review","error":str(exc)[:250],"source":spec["page"]})
                     print("SKIP",bey["id"],layer,str(exc)[:150])
+    # The collection card image represents the ASSEMBLED top ("whole").
+    # In the detail dialog, "blade" is a genuinely separate top blade.
+    dbpath=ROOT/"data"/"collection.json"
+    if dbpath.exists():
+        collection=json.loads(dbpath.read_text(encoding="utf8"))
+        successful={(x["id"],x["part"]):x["png"] for x in outcomes if x["status"]=="ready" and "png" in x}
+        for owned in collection.get("beys",[]):
+            own=owned.get("id")
+            whole=successful.get((own,"whole"))
+            if whole:
+                owned["displayImagePath"]=whole
+                owned["imageStatus"]="verified_png"
+            elif not owned.get("displayImagePath") or not (ROOT/owned["displayImagePath"]).exists():
+                owned["displayImagePath"]=None
+                owned["imageStatus"]="awaiting_verified_png"
+            owned["partImages"]={layer:successful[(own,layer)] for layer in ("blade","ratchet","bit","lockChip","mainBlade","assistBlade") if (own,layer) in successful}
+        dbpath.write_text(json.dumps(collection,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
+        (ROOT/"data.js").write_text("window.BBX_SEED = "+json.dumps(collection,ensure_ascii=False,separators=(",",":"))+";\n",encoding="utf8")
     STATUS.write_text(json.dumps({"manifestVersion":data["version"],"results":outcomes},indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     print("Finished:",sum(x["status"]=="ready" for x in outcomes),"PNG files generated")
 
