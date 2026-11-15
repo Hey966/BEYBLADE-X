@@ -123,6 +123,144 @@
           "bit": null
         }
       ]
+    },
+    {
+      "id": "G2734",
+      "name": "Curse Mummy Booster",
+      "market": "US",
+      "items": [
+        {
+          "id": "OWN-G2734-01",
+          "name": "Curse Mummy",
+          "code": "7-55W",
+          "blade": {
+            "url": "https://bigbraingames.co.nz/cdn/shop/files/mummy_curse.webp?v=1781229143&width=3840",
+            "page": "https://bigbraingames.co.nz/products/beyblade-x-curse-mummy-7-55w",
+            "output": "images/reference/g2734-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    },
+    {
+      "id": "CX-08-06",
+      "name": "Random Booster Vol.7 — Cobalt Dragoon 06",
+      "market": "JP",
+      "items": [
+        {
+          "id": "OWN-CX-08-06",
+          "name": "Cobalt Dragoon",
+          "code": "4-55WB",
+          "blade": {
+            "url": "https://beyblade-shop.com/cdn/shop/files/Cobalt-Dragoon-4-55WB-Beyblade-Shop_1200x1200.png?v=1749804450",
+            "page": "https://beyblade-shop.com/products/cobalt-dragoon-4-55wb",
+            "output": "images/reference/cx-08-06.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    },
+    {
+      "id": "CX-00-TIGA",
+      "name": "Ultraman Tiga Collaboration",
+      "market": "JP",
+      "items": [
+        {
+          "id": "OWN-BXG-70-01",
+          "name": "TigaRage",
+          "code": "FT3-60T",
+          "blade": {
+            "url": "https://image.news.livedoor.com/newsimage/stf/4/7/47dd5_1839_364d78b2f35067d71aafecf900f10f73.jpg",
+            "page": "https://news.livedoor.com/article/detail/31789639/",
+            "output": "images/reference/bxg-70-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    },
+    {
+      "id": "CX-00-EVA",
+      "name": "Evangelion Deck Set",
+      "market": "JP",
+      "items": [
+        {
+          "id": "OWN-BXG-57-01",
+          "name": "EvaArc",
+          "code": "B0-70E",
+          "blade": {
+            "url": "https://beybladehub.app/combos/CX00-eva-unit00.webp",
+            "page": "https://beybladehub.app/parts/combos/CX-00-eva",
+            "output": "images/reference/bxg-57-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-BXG-57-02",
+          "name": "EvaBrave",
+          "code": "A1-70V",
+          "blade": {
+            "url": "https://www.isahobby.com/cdn/shop/files/177424476381_1200_1024x.jpg?v=1774513975",
+            "page": "https://www.isahobby.com/products/takara-tomy-beyblade-x-cx-00-evangelion-deck-set",
+            "output": "images/reference/bxg-57-02.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-BXG-57-03",
+          "name": "EvaBrush",
+          "code": "T2-70A",
+          "blade": {
+            "url": "https://gcs.rimg.com.tw/g2/6/39/9c/22614392892828_721.jpg",
+            "page": "https://www.ruten.com.tw/item/22614392892828/",
+            "output": "images/reference/bxg-57-03.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    },
+    {
+      "id": "CX-06-01",
+      "name": "FoxBrush Select — No.01",
+      "market": "JP",
+      "items": [
+        {
+          "id": "OWN-CX-06-01",
+          "name": "FoxBrush",
+          "code": "J9-70GR",
+          "blade": {
+            "url": "https://beyblade-shop.com/cdn/shop/files/FoxBrush-J9-70GR-Beyblade-Shop-removebg-preview_1024x1024.png?v=1746197395",
+            "page": "https://beyblade-shop.com/products/fox-brush",
+            "output": "images/reference/cx-06-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
+    },
+    {
+      "id": "UX-08",
+      "name": "SilverWolf Starter",
+      "market": "JP",
+      "items": [
+        {
+          "id": "OWN-UX-08-01",
+          "name": "SilverWolf",
+          "code": "3-80FB",
+          "blade": {
+            "url": "https://cdn11.bigcommerce.com/s-lsouzjo20i/images/stencil/1280x1280/products/2624/5664/Beyblade_UX-008_03__83761.1726555903.jpg?c=2",
+            "page": "https://ever-wish.com/loose-no-packing-box-with-qr-code-takara-tomy-beyblade-x-ux-08-starter-silver-wolf-3-80fb/",
+            "output": "images/reference/ux-08-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
     }
   ]
 }
