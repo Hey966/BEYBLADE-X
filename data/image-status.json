@@ -1,27 +1,33 @@
 {
-  "manifestVersion": 1,
+  "manifestVersion": 3,
   "results": [
     {
       "id": "OWN-G3084-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-01.png",
       "source": "https://bbx.co.kr/bbs/product_detail.php?idx=46"
     },
     {
       "id": "OWN-G3084-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-01-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-01-RATCHET.html"
     },
     {
       "id": "OWN-G3084-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-01-BIT.html"
     },
     {
       "id": "OWN-G3084-01",
@@ -41,24 +47,30 @@
     {
       "id": "OWN-G3084-02",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-02",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-02.png",
       "source": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set"
     },
     {
       "id": "OWN-G3084-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-02-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-02-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-02",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-02-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-02-RATCHET.html"
     },
     {
       "id": "OWN-G3084-02",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-02-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-02-BIT.html"
     },
     {
       "id": "OWN-G3084-02",
@@ -78,24 +90,30 @@
     {
       "id": "OWN-G3084-03",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-03",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-03.png",
       "source": "https://malloftoys.com/en-ca/products/takara-tomy-beyblade-x-ux-06-booster-leon-crest-7-60gn-canada"
     },
     {
       "id": "OWN-G3084-03",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-03-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-03-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-03",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-03-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-03-RATCHET.html"
     },
     {
       "id": "OWN-G3084-03",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-03-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-03-BIT.html"
     },
     {
       "id": "OWN-G3084-03",
@@ -115,24 +133,30 @@
     {
       "id": "OWN-G3084-04",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-04",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-04.png",
       "source": "https://mangayo.it/figure/17916-sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro-5010996309563.html"
     },
     {
       "id": "OWN-G3084-04",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-04-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-04-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-04",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-04-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-04-RATCHET.html"
     },
     {
       "id": "OWN-G3084-04",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-04-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-04-BIT.html"
     },
     {
       "id": "OWN-G3084-04",
@@ -152,98 +176,128 @@
     {
       "id": "OWN-G3084-05",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-05",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-05.png",
       "source": "https://note.com/yuiponz/n/n1e55e1cbf7fb"
     },
     {
       "id": "OWN-G3084-05",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-05-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-05-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-05",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-05-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-05-RATCHET.html"
     },
     {
       "id": "OWN-G3084-05",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-05-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-05-BIT.html"
     },
     {
       "id": "OWN-G3084-05",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-05-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-05-LOCKCHIP.html"
     },
     {
       "id": "OWN-G3084-05",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-05-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-05-MAINBLADE.html"
     },
     {
       "id": "OWN-G3084-05",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-05-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-05-ASSISTBLADE.html"
     },
     {
       "id": "OWN-G3084-06",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3084-06",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3084-06.png",
       "source": "https://yoyoshopsg.com/collections/beyblade-x"
     },
     {
       "id": "OWN-G3084-06",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3084-06-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-06-BLADE.html"
+    },
+    {
+      "id": "OWN-G3084-06",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-06-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-06-RATCHET.html"
     },
     {
       "id": "OWN-G3084-06",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-06-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-06-BIT.html"
     },
     {
       "id": "OWN-G3084-06",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-06-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-06-LOCKCHIP.html"
     },
     {
       "id": "OWN-G3084-06",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-06-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-06-MAINBLADE.html"
     },
     {
       "id": "OWN-G3084-06",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3084-06-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-06-ASSISTBLADE.html"
     },
     {
       "id": "OWN-G3393-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3393-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3393-01.png",
       "source": "https://acgamesonline.com/products/beyblade-x-phoenix-rudder-ux-07-metal-coat-red-top-only"
     },
     {
       "id": "OWN-G3393-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3393-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-01-BLADE.html"
+    },
+    {
+      "id": "OWN-G3393-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-01-RATCHET.html"
     },
     {
       "id": "OWN-G3393-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-01-BIT.html"
     },
     {
       "id": "OWN-G3393-01",
@@ -263,24 +317,30 @@
     {
       "id": "OWN-G3393-02",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3393-02",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3393-02.png",
       "source": "https://www.toyworld.co.nz/products/beyblade-x-sting-unicorn-5-60gp-booster-pack-set"
     },
     {
       "id": "OWN-G3393-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3393-02-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-02-BLADE.html"
+    },
+    {
+      "id": "OWN-G3393-02",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-02-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-02-RATCHET.html"
     },
     {
       "id": "OWN-G3393-02",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-02-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-02-BIT.html"
     },
     {
       "id": "OWN-G3393-02",
@@ -300,24 +360,30 @@
     {
       "id": "OWN-G3393-03",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-G3393-03",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/own-g3393-03.png",
       "source": "https://beywarehouse.com/products/beyblade-x-yggdrasil-team-3-pack"
     },
     {
       "id": "OWN-G3393-03",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3393-03-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-03-BLADE.html"
+    },
+    {
+      "id": "OWN-G3393-03",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-03-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-03-RATCHET.html"
     },
     {
       "id": "OWN-G3393-03",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g3393-03-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-03-BIT.html"
     },
     {
       "id": "OWN-G3393-03",
@@ -335,26 +401,118 @@
       "status": "awaiting_verified_photo"
     },
     {
-      "id": "OWN-G2734-01",
+      "id": "OWN-G3063-01",
       "part": "whole",
+      "status": "needs_manual_review",
+      "error": "HTTP Error 404: Not Found",
+      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-01.html"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3063-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-01-BLADE.html"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "ratchet",
+      "status": "ready",
+      "png": "images/reference/g3063-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-01-RATCHET.html"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "bit",
+      "status": "ready",
+      "png": "images/reference/g3063-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-01-BIT.html"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3063-01",
+      "part": "assistBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "whole",
+      "status": "needs_manual_review",
+      "error": "HTTP Error 404: Not Found",
+      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-02.html"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g3063-02-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-02-BLADE.html"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "ratchet",
+      "status": "ready",
+      "png": "images/reference/g3063-02-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-02-RATCHET.html"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "bit",
+      "status": "ready",
+      "png": "images/reference/g3063-02-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-02-BIT.html"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "lockChip",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "mainBlade",
+      "status": "awaiting_verified_photo"
+    },
+    {
+      "id": "OWN-G3063-02",
+      "part": "assistBlade",
       "status": "awaiting_verified_photo"
     },
     {
       "id": "OWN-G2734-01",
-      "part": "blade",
+      "part": "whole",
       "status": "ready",
       "png": "images/reference/g2734-01.png",
       "source": "https://bigbraingames.co.nz/products/beyblade-x-curse-mummy-7-55w"
     },
     {
       "id": "OWN-G2734-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/g2734-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G2734-BLADE.html"
+    },
+    {
+      "id": "OWN-G2734-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g2734-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G2734-RATCHET.html"
     },
     {
       "id": "OWN-G2734-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/g2734-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G2734-BIT.html"
     },
     {
       "id": "OWN-G2734-01",
@@ -374,24 +532,30 @@
     {
       "id": "OWN-CX-08-06",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-CX-08-06",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/cx-08-06.png",
       "source": "https://beyblade-shop.com/products/cobalt-dragoon-4-55wb"
     },
     {
       "id": "OWN-CX-08-06",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/cx-08-06-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956983-06.html"
+    },
+    {
+      "id": "OWN-CX-08-06",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-08-06-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956983-06.html"
     },
     {
       "id": "OWN-CX-08-06",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-08-06-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956983-06.html"
     },
     {
       "id": "OWN-CX-08-06",
@@ -411,213 +575,275 @@
     {
       "id": "OWN-BXG-70-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-BXG-70-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-70-01.png",
       "source": "https://news.livedoor.com/article/detail/31789639/"
     },
     {
       "id": "OWN-BXG-70-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-080640-00.html"
+    },
+    {
+      "id": "OWN-BXG-70-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-080640-00.html"
     },
     {
       "id": "OWN-BXG-70-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-080640-00.html"
     },
     {
       "id": "OWN-BXG-70-01",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-080640-00.html"
     },
     {
       "id": "OWN-BXG-70-01",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-080640-00.html"
     },
     {
       "id": "OWN-BXG-70-01",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-70-01-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-080640-00.html"
     },
     {
       "id": "OWN-BXG-57-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-BXG-57-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-57-01.png",
       "source": "https://beybladehub.app/parts/combos/CX-00-eva"
     },
     {
       "id": "OWN-BXG-57-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-01.html"
+    },
+    {
+      "id": "OWN-BXG-57-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-01.html"
     },
     {
       "id": "OWN-BXG-57-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-01.html"
     },
     {
       "id": "OWN-BXG-57-01",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-01.html"
     },
     {
       "id": "OWN-BXG-57-01",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-01.html"
     },
     {
       "id": "OWN-BXG-57-01",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-01-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-01.html"
     },
     {
       "id": "OWN-BXG-57-02",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-BXG-57-02",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-57-02.png",
       "source": "https://www.isahobby.com/products/takara-tomy-beyblade-x-cx-00-evangelion-deck-set"
     },
     {
       "id": "OWN-BXG-57-02",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-02.html"
+    },
+    {
+      "id": "OWN-BXG-57-02",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-02.html"
     },
     {
       "id": "OWN-BXG-57-02",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-02.html"
     },
     {
       "id": "OWN-BXG-57-02",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-02.html"
     },
     {
       "id": "OWN-BXG-57-02",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-02.html"
     },
     {
       "id": "OWN-BXG-57-02",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-02-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-02.html"
     },
     {
       "id": "OWN-BXG-57-03",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-BXG-57-03",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/bxg-57-03.png",
       "source": "https://www.ruten.com.tw/item/22614392892828/"
     },
     {
       "id": "OWN-BXG-57-03",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-03.html"
+    },
+    {
+      "id": "OWN-BXG-57-03",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-03.html"
     },
     {
       "id": "OWN-BXG-57-03",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-03.html"
     },
     {
       "id": "OWN-BXG-57-03",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-03.html"
     },
     {
       "id": "OWN-BXG-57-03",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-03.html"
     },
     {
       "id": "OWN-BXG-57-03",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/bxg-57-03-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-03.html"
     },
     {
       "id": "OWN-CX-06-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-CX-06-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/cx-06-01.png",
       "source": "https://beyblade-shop.com/products/fox-brush"
     },
     {
       "id": "OWN-CX-06-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/cx-06-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956969-01.html"
+    },
+    {
+      "id": "OWN-CX-06-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-06-01-ratchet.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956969-01.html"
     },
     {
       "id": "OWN-CX-06-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-06-01-bit.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956969-01.html"
     },
     {
       "id": "OWN-CX-06-01",
       "part": "lockChip",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-06-01-lock-chip.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-956969-01.html"
     },
     {
       "id": "OWN-CX-06-01",
       "part": "mainBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-06-01-main-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-956969-01.html"
     },
     {
       "id": "OWN-CX-06-01",
       "part": "assistBlade",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/cx-06-01-assist-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-956969-01.html"
     },
     {
       "id": "OWN-UX-08-01",
       "part": "whole",
-      "status": "awaiting_verified_photo"
-    },
-    {
-      "id": "OWN-UX-08-01",
-      "part": "blade",
       "status": "ready",
       "png": "images/reference/ux-08-01.png",
       "source": "https://www.ebay.fr/itm/296745272264"
     },
     {
       "id": "OWN-UX-08-01",
+      "part": "blade",
+      "status": "ready",
+      "png": "images/reference/ux-08-01-blade.png",
+      "source": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-939498-00.html"
+    },
+    {
+      "id": "OWN-UX-08-01",
       "part": "ratchet",
       "status": "ready",
       "png": "images/reference/ux-08-01-ratchet.png",
-      "source": "https://beysandbricks.com/takara-tomy-beyblade-x-unique-line-ratchet-3-80-ux-08/"
+      "source": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-939498-00.html"
     },
     {
       "id": "OWN-UX-08-01",
       "part": "bit",
       "status": "ready",
       "png": "images/reference/ux-08-01-bit.png",
-      "source": "https://shopee.tw/UX-08-%E9%9C%9C%E8%BC%9D%E9%8A%80%E7%8B%BC-%E9%9B%B6%E4%BB%B6-%E6%88%B0%E5%88%83-%E5%9B%BA%E9%8E%96-%E8%BB%B8%E5%BF%83-FB-%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-beyblade-x-i.30654475.55556406193"
+      "source": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-939498-00.html"
     },
     {
       "id": "OWN-UX-08-01",
