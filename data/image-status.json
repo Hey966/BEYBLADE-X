@@ -404,8 +404,8 @@
       "id": "OWN-G3063-01",
       "part": "whole",
       "status": "needs_manual_review",
-      "error": "HTTP Error 404: Not Found",
-      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-01.html"
+      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-01.html",
+      "error": "HTTP Error 404: Not Found"
     },
     {
       "id": "OWN-G3063-01",
@@ -447,8 +447,8 @@
       "id": "OWN-G3063-02",
       "part": "whole",
       "status": "needs_manual_review",
-      "error": "HTTP Error 404: Not Found",
-      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-02.html"
+      "source": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-02.html",
+      "error": "HTTP Error 404: Not Found"
     },
     {
       "id": "OWN-G3063-02",
