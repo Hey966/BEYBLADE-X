@@ -412,7 +412,7 @@
       "specialEdition": "Marvel Avengers: Doomsday",
       "currentBuild": null,
       "imagePath": null,
-      "imageStatus": "awaiting_verified_png",
+      "imageStatus": "blade_only_exact_photo",
       "manufacturerBeyCode": "G3063-01",
       "imageSourcePhoto": "1000111097.avif",
       "originalPackagingCrop": "images/own-g3063-01.webp",
@@ -421,7 +421,7 @@
         "ratchet": "images/reference/g3063-01-ratchet.png",
         "bit": "images/reference/g3063-01-bit.png"
       },
-      "displayImagePath": null,
+      "displayImagePath": "images/reference/g3063-01-blade.png",
       "referenceImageUrl": null
     },
     {
@@ -441,7 +441,7 @@
       "specialEdition": "Marvel Avengers: Doomsday",
       "currentBuild": null,
       "imagePath": null,
-      "imageStatus": "awaiting_verified_png",
+      "imageStatus": "blade_only_exact_photo",
       "manufacturerBeyCode": "G3063-02",
       "imageSourcePhoto": "1000111097.avif",
       "originalPackagingCrop": "images/own-g3063-02.webp",
@@ -450,7 +450,7 @@
         "ratchet": "images/reference/g3063-02-ratchet.png",
         "bit": "images/reference/g3063-02-bit.png"
       },
-      "displayImagePath": null,
+      "displayImagePath": "images/reference/g3063-02-blade.png",
       "referenceImageUrl": null
     },
     {
