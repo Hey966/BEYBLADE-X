@@ -20,7 +20,7 @@ try { const x=JSON.parse(localStorage.getItem(KEY)||'null'); if(x&&x.version===V
 function save(){try {localStorage.setItem(KEY,JSON.stringify({version:VERSION,additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots}));return true}catch(e){notify('本機儲存失敗，請匯出備份');return false}}
 let toastTimer;
 function notify(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
-function nav(v){if(!['collection','parts','builder','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();window.scrollTo({top:0,behavior:'smooth'});}
+function nav(v){if(!['collection','parts','builder','counter','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',()=>nav(el.dataset.nav)));
 function getBey(id){return DB.beys.find(b=>b.id===id)}
 function pack(b){return pmap().get(b.packageId)||{market:b.ownMarket||'OTHER',title:'自行新增',manufacturer:b.ownMarket==='US'?'Hasbro':b.ownMarket==='JP'?'Takara Tomy':'手動登記'};}
@@ -102,7 +102,7 @@ function openDetail(id){const b=getBey(id);if(!b)return;const p=pack(b);const fi
 
  const pictures=[['blade',b.system==='CX'?'完整戰刃':'上層戰刃',b.blade],['ratchet','中層固鎖',b.ratchet],['bit','下層軸心',b.bit]];
  if(b.system==='CX'){pictures.push(['lockChip','鎖定紋章',b.lockChip],['mainBlade','主刃',b.mainBlade],['assistBlade','輔助刃',b.assistBlade]);}
- $('detailContent').insertAdjacentHTML('beforeend','<div class="part-visuals">'+pictures.map(([k,label,value])=>{const src=b.partImages?.[k];return '<div class="part-visual"><span>'+esc(label)+'</span>'+(src?'<img src="'+esc(src)+'" alt="'+esc(label)+'" onerror="this.replaceWith(document.createTextNode(\'尚未取得透明 PNG\'))">':'<div class="pending-image">尚待查核圖片</div>')+'<strong>'+esc(value||'未登記')+'</strong></div>'}).join('')+'</div>');
+ $('detailContent').insertAdjacentHTML('beforeend','<div class="part-visuals">'+pictures.map(([k,label,value])=>{const src=b.partImages?.[k];return '<button type="button" class="part-visual part-click" data-part-owner="'+esc(b.id)+'" data-part-kind="'+esc(k)+'" aria-label="查看 '+esc(label)+'能力"><span>'+esc(label)+'</span>'+(src?'<img src="'+esc(src)+'" alt="'+esc(label)+'" onerror="this.replaceWith(document.createTextNode(\'尚未取得透明 PNG\'))">':'<div class="pending-image">尚待查核圖片</div>')+'<strong>'+esc(value||'未登記')+'</strong><small class="click-hint">查看能力</small></button>'}).join('')+'</div>');
  dialog.showModal();}
 const partTabs=[['ratchet','固鎖'],['bit','軸心'],['blade','BX / UX 戰刃'],['cxBlade','CX 完整戰刃'],['chip','CX 紋章'],['main','CX 主刃'],['assist','CX 輔助刃']];
 function renderParts(){
@@ -116,7 +116,7 @@ function renderParts(){
    const thumbs=list.map(item=>{
      const bey=getBey(item.id),src=bey?.partImages?.[component]||'';
      const picture=src?'<img src="'+esc(src)+'" loading="lazy" alt="'+esc(item.name+' '+code)+'" onerror="this.replaceWith(document.createTextNode(\'圖片待確認\'))">':'<div class="part-image-missing">圖片待確認</div>';
-     return '<div class="part-variant">'+picture+'<small>'+esc(item.name)+'</small></div>';
+     return '<button class="part-variant part-click" type="button" data-part-owner="'+esc(item.id)+'" data-part-kind="'+esc(component)+'" aria-label="查看 '+esc(item.name+' '+code)+' 能力">'+picture+'<small>'+esc(item.name)+'</small></button>';
    }).join('');
    return '<div class="part-entry"><b class="quantity">× '+list.length+'</b><strong>'+esc(code)+'</strong><div class="part-variants">'+thumbs+'</div></div>'
  }).join('')+'</div>';
@@ -154,6 +154,41 @@ $('import').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{cons
 $('addForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const name=String(f.get('name')||'').trim(),blade=String(f.get('blade')||'').trim();if(!name||!blade)return;const sys=f.get('system'),market=f.get('market'),id=`LOCAL-${Date.now()}`;const pkgId=`PKG-${id}`;DB.packages.push({id:pkgId,title:'手動新增',manufacturer:market==='US'?'Hasbro':'Takara Tomy',market,count:1,productCode:'手動新增'});
  DB.beys.push({id,name,packageId:pkgId,ownMarket:market,system:sys,spinDirection:'R',type:null,blade,lockChip:sys==='CX'?'未登記':null,mainBlade:sys==='CX'?blade:null,assistBlade:sys==='CX'?'未登記':null,ratchet:String(f.get('ratchet')||'').trim(),bit:String(f.get('bit')||'').trim(),currentBuild:null,imagePath:null,imageStatus:'pending_user_photo',manufacturerBeyCode:null});
  save();all();e.target.reset();notify('已新增至本機。請匯出備份以保存。')};
+/* Controlled access to live inventory and deck slots for the dedicated analysis module. */
+window.BBX_COLLECTION_API={
+ getBeys:()=>DB.beys.slice(),
+ getBey:id=>getBey(id),
+ getSavedCount:()=>decks.length,
+ useSuggestion:(proposals,name)=>{
+  if(!Array.isArray(proposals)||!proposals.length)return false;
+  const result=[blank(),blank(),blank()];
+  proposals.slice(0,3).forEach((p,i)=>{
+   const s=blank();
+   s.mode=p.mode==='cx'?'cx':'whole';
+   if(s.mode==='cx'){
+    s.chip=p.chip||'';s.main=p.main||'';s.assist=p.assist||'';
+   }else s.blade=p.blade||'';
+   s.ratchet=p.ratchet||'';s.bit=p.bit||'';
+   result[i]=s;
+  });
+  const previous=slots;
+  slots=result;
+  const checked=validate();
+  if(checked.errs.length){slots=previous;notify('推薦配置重複或不完整，未套用');return false;}
+  $('deckName').value=(name||'自動分析配置').slice(0,48);
+  save();renderSlots();nav('builder');
+  notify('已載入自動配裝，可自行調整或保存');
+  return true;
+ }
+};
+function handleAbilityClick(event){
+ const target=event.target.closest('[data-part-owner][data-part-kind]');
+ if(!target)return;
+ window.BBX_ANALYSIS?.showPart(target.dataset.partOwner,target.dataset.partKind);
+}
+$('partsList').addEventListener('click',handleAbilityClick);
+$('detailContent').addEventListener('click',handleAbilityClick);
+
 function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();}
 $('search').oninput=renderCollection;$('marketFilter').onchange=renderCollection;
 all();
