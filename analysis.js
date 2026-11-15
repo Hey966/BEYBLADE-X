@@ -164,11 +164,11 @@ function candidateList(style,enemy=null){
   c.score=evaluated.value;c.vec=evaluated.vec;c.type=evaluated.bitType;
   result.push(c);
  }
- return result.sort((a,b)=>b.score-a.score).slice(0,3200);
+ return result.sort((a,b)=>b.score-a.score);
 }
 function pickDeck(pool,count){
  if(count===1)return pool.length?[pool[0]]:[];
- const bests=pool.slice(0,3200);
+ const bests=pool;
  let best=null,bestValue=-Infinity;
  // Evaluate multiple first and second choices. Select the earliest valid third
  // from a score-ordered pool while respecting every physical part ID.
