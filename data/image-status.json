@@ -68,9 +68,9 @@
     {
       "id": "OWN-G3084-03",
       "part": "blade",
-      "status": "needs_manual_review",
-      "error": "HTTP Error 403: Forbidden",
-      "source": "https://www.suruga-ya.jp/kaitori/kaitori_detail/607202900"
+      "status": "ready",
+      "png": "images/reference/own-g3084-03.png",
+      "source": "https://malloftoys.com/en-ca/products/takara-tomy-beyblade-x-ux-06-booster-leon-crest-7-60gn-canada"
     },
     {
       "id": "OWN-G3084-03",
@@ -388,8 +388,8 @@
     {
       "id": "OWN-BXG-57-01",
       "part": "blade",
-      "status": "needs_manual_review",
-      "error": "background not reliably pale; manual masking required",
+      "status": "ready",
+      "png": "images/reference/bxg-57-01.png",
       "source": "https://beybladehub.app/parts/combos/CX-00-eva"
     },
     {
@@ -516,9 +516,9 @@
     {
       "id": "OWN-UX-08-01",
       "part": "blade",
-      "status": "needs_manual_review",
-      "error": "HTTP Error 404: Not Found",
-      "source": "https://ever-wish.com/loose-no-packing-box-with-qr-code-takara-tomy-beyblade-x-ux-08-starter-silver-wolf-3-80fb/"
+      "status": "ready",
+      "png": "images/reference/ux-08-01.png",
+      "source": "https://www.ebay.fr/itm/296745272264"
     },
     {
       "id": "OWN-UX-08-01",
