@@ -523,12 +523,16 @@
     {
       "id": "OWN-UX-08-01",
       "part": "ratchet",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/ux-08-01-ratchet.png",
+      "source": "https://beysandbricks.com/takara-tomy-beyblade-x-unique-line-ratchet-3-80-ux-08/"
     },
     {
       "id": "OWN-UX-08-01",
       "part": "bit",
-      "status": "awaiting_verified_photo"
+      "status": "ready",
+      "png": "images/reference/ux-08-01-bit.png",
+      "source": "https://shopee.tw/UX-08-%E9%9C%9C%E8%BC%9D%E9%8A%80%E7%8B%BC-%E9%9B%B6%E4%BB%B6-%E6%88%B0%E5%88%83-%E5%9B%BA%E9%8E%96-%E8%BB%B8%E5%BF%83-FB-%E6%88%B0%E9%AC%A5%E9%99%80%E8%9E%BA-beyblade-x-i.30654475.55556406193"
     },
     {
       "id": "OWN-UX-08-01",
