@@ -80,6 +80,49 @@
           "bit": null
         }
       ]
+    },
+    {
+      "id": "G3393",
+      "name": "Yggdrasil Team Pack",
+      "market": "US",
+      "items": [
+        {
+          "id": "OWN-G3393-01",
+          "name": "Rudder Phoenix",
+          "code": "9-70G",
+          "blade": {
+            "url": "https://acgamesonline.com/cdn/shop/files/Screenshot-2025-01-03-164117_grande.png?v=1735941234",
+            "page": "https://acgamesonline.com/products/beyblade-x-phoenix-rudder-ux-07-metal-coat-red-top-only",
+            "output": "images/reference/own-g3393-01.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3393-02",
+          "name": "Sting Unicorn",
+          "code": "5-60GP",
+          "blade": {
+            "url": "https://www.toyworld.co.nz/cdn/shop/files/195166265377_20F9590_203_resizedforweb.jpg?v=1775536162&width=2048",
+            "page": "https://www.toyworld.co.nz/products/beyblade-x-sting-unicorn-5-60gp-booster-pack-set",
+            "output": "images/reference/own-g3393-02.png"
+          },
+          "ratchet": null,
+          "bit": null
+        },
+        {
+          "id": "OWN-G3393-03",
+          "name": "Cowl Sphinx",
+          "code": "9-80GN",
+          "blade": {
+            "url": "https://beywarehouse.com/cdn/shop/files/imgi_76_latest.webp?v=1770664796&width=594",
+            "page": "https://beywarehouse.com/products/beyblade-x-yggdrasil-team-3-pack",
+            "output": "images/reference/own-g3393-03.png"
+          },
+          "ratchet": null,
+          "bit": null
+        }
+      ]
     }
   ]
 }
