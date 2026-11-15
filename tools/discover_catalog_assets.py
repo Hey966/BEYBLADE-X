@@ -35,3 +35,23 @@ for q in ("data/hasbro.json","data/hasbro.zh-TW.json","data/hasbro_products.json
     except Exception as e:
         result.setdefault("json_sources",[]).append({"url":q,"error":str(e)[:150]})
 pathlib.Path("data/catalog-research.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf8")
+
+try:
+    import json
+    data=json.loads(get(base+"data/hasbro.json"))
+    target_ids=("HB-G3063-01","HB-G3063-02","HB-G3063-01-BLADE","HB-G3063-02-BLADE","HB-G3063-01-RATCHET","HB-G3063-01-BIT")
+    found={}
+    def walk(node,path="",depth=0):
+        if depth>12:return
+        if isinstance(node,dict):
+            for k,v in node.items():
+                if k in target_ids: found[k]={"path":path+"/"+k,"value":v}
+                if isinstance(v,(dict,list)): walk(v,path+"/"+k,depth+1)
+        elif isinstance(node,list):
+            for i,v in enumerate(node):
+                if isinstance(v,(dict,list)): walk(v,path+f"/{i}",depth+1)
+    walk(data)
+    result["found_records"]=found
+    result["top_level"]=list(data)[:20] if isinstance(data,dict) else None
+except Exception as e:result["record_parse_error"]=str(e)
+pathlib.Path("data/catalog-research.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf8")
