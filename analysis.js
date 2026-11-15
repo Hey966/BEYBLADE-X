@@ -198,6 +198,29 @@ function toSlots(c){
 }
 function fmt(n){return Number(n||0).toFixed(1)}
 function buildName(c){return c.blade.name+' '+c.ratchet.code+c.bit.code}
+function recommendationPictures(c){
+ const cell=(label,src)=>{
+  const content=src?'<img src="'+html(src)+'" alt="'+html(label)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少圖片</div>';
+  return '<div class="analysis-part-thumb">'+content+'<span>'+html(label)+'</span></div>';
+ };
+ const ratchet=cell('固鎖 '+c.ratchet.code,partPicture(c.ratchet.owner,'ratchet'));
+ const bit=cell('軸心 '+c.bit.code,partPicture(c.bit.owner,'bit'));
+ if(c.blade.mode==='cx'&&c.blade.mixed){
+  const parts=[
+   cell('鎖定紋章',partPicture(c.blade.chip,'lockChip')),
+   cell('主刃',partPicture(c.blade.main,'mainBlade')),
+   cell('輔助刃',partPicture(c.blade.assist,'assistBlade')),
+   ratchet,bit
+  ].join('');
+  return '<div class="analysis-component-gallery analysis-mixed-gallery">'+parts+'</div><div class="analysis-visual-caption">混搭零件分別展示；不是組裝後的實際外觀。</div>';
+ }
+ const ref=c.blade.preview||partPicture(c.blade.source,'blade');
+ const main=ref?'<img class="analysis-result-image" src="'+html(ref)+'" alt="'+html(c.blade.name)+' 戰刃來源圖" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少戰刃圖片</div>';
+ return '<div class="analysis-reference-hero">'+main+'</div>'+
+  '<div class="analysis-component-gallery analysis-secondary-gallery">'+ratchet+bit+'</div>'+
+  '<div class="analysis-visual-caption">展示原廠戰刃及選用零件，非混搭完成品照片。</div>';
+}
+
 function resultMarkup(team,title,mode,enemy){
  if(!team.length)return '<div class="analysis-fail">目前沒有足夠已核對能力的相容零件，無法產生符合限制的配置。</div>';
  const best=team[0].score, total=team.reduce((n,c)=>n+c.score,0);
@@ -210,7 +233,7 @@ function resultMarkup(team,title,mode,enemy){
    '優先考慮攻、防、持久的均衡。';
   return '<article class="analysis-result-card">'+
    '<div class="analysis-result-heading"><span>配置 '+(i+1)+'</span><strong>'+html(fmt(c.score))+' <small>模型分</small></strong></div>'+
-   (c.blade.preview?'<img class="analysis-result-image" src="'+html(c.blade.preview)+'" alt="'+html(c.blade.name)+'">':'')+
+   recommendationPictures(c)+
    '<h4>'+html(buildName(c))+'</h4>'+
    (c.blade.mode==='cx'?'<p class="analysis-cx">CX：紋章 '+html(getBey(c.blade.chip)?.lockChip)+' / 主刃 '+html(getBey(c.blade.main)?.mainBlade)+' / 輔助刃 '+html(getBey(c.blade.assist)?.assistBlade)+'</p>':'')+
    '<p class="analysis-origin">固鎖：'+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心：'+html(c.bit.code)+'（'+html(c.bit.name)+'）</p>'+
