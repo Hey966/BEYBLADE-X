@@ -4,17 +4,20 @@
     {
       "path": "https://plausible.phstudy.org/js/pa-RpXZkpbN1xM3xTwCwbZQX.js",
       "length": 6206,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/shared_theme_boot.js?v=1794657193",
       "length": 784,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/shared_theme.js?v=1794657193",
       "length": 1226,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/shared_ui.js?v=1794657193",
@@ -27,22 +30,26 @@
         "a/ui_i18n.json\";v=await(await fetch(M(t))).json()}catch(t){console.warn(\"Failed to load data/ui_i18n.json:\",t),v={}}}function g(t,e=null){const n=(s,d)=>d.reduce((u,l)=>u&&u[l]!=null?u[l]:null,s),o=t.split(\".\"),i=window.currentLang||x,a=v[i]||{},r=v[x]||{};let c=n(a,o);return c==null&&(c=n(r,o)),c==null&",
         "==\"__DEPLOY_TS__\"||D)return;const t=Date.now();if(!(t-j<15e3)){j=t;try{const e=await fetch(\"/version.json?cb=\"+t,{cache:\"no-store\"});if(!e.ok)return;const n=await e.json(),o=String(n&&n.v||\"\");o&&o!==String(E)&&mt()}catch{}}}function ft(){document.addEventListener(\"visibilitychange\",()=>{document.visibil",
         "=t;try{const e=await fetch(\"/version.json?cb=\"+t,{cache:\"no-store\"});if(!e.ok)return;const n=await e.json(),o=String(n&&n.v||\"\");o&&o!==String(E)&&mt()}catch{}}}function ft(){document.addEventListener(\"visibilitychange\",()=>{document.visibilityState===\"visible\"&&P()}),setInterval(P,1800*1e3),setTimeout(P"
-      ]
+      ],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/scripts/supabase-client.js?v=1794657193",
       "length": 10704,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/scripts/cloud-sync.js?v=1794657193",
       "length": 6446,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/shared_header.js?v=1794657193",
       "length": 18266,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     },
     {
       "path": "https://beyblade.phstudy.org/scripts/viewer.js?v=1794657193",
@@ -60,12 +67,14 @@
         "taJson[e]){const n=DATA_LANG?fetchJson(`data/${e}.${DATA_LANG}.json`).catch(()=>fetchJson(`data/${e}.json`)):fetchJson(`data/${e}.json`);_dataJson[e]=n.catch(a=>{throw delete _dataJson[e],a})}return _dataJson[e]}function dataLacksLang(e){return DATA_LANG!==null&&!splitDataLocales(DATA_LANG).has(e)}const ",
         "ATA_LANG?fetchJson(`data/${e}.${DATA_LANG}.json`).catch(()=>fetchJson(`data/${e}.json`)):fetchJson(`data/${e}.json`);_dataJson[e]=n.catch(a=>{throw delete _dataJson[e],a})}return _dataJson[e]}function dataLacksLang(e){return DATA_LANG!==null&&!splitDataLocales(DATA_LANG).has(e)}const DATA_FILES=[\"main\",\"",
         "fetchJson(`data/${e}.${DATA_LANG}.json`).catch(()=>fetchJson(`data/${e}.json`)):fetchJson(`data/${e}.json`);_dataJson[e]=n.catch(a=>{throw delete _dataJson[e],a})}return _dataJson[e]}function dataLacksLang(e){return DATA_LANG!==null&&!splitDataLocales(DATA_LANG).has(e)}const DATA_FILES=[\"main\",\"hardcoded"
-      ]
+      ],
+      "dataFilesSnippet": "const DATA_FILES=[\"main\",\"hardcoded\",\"hasbro\",\"products_multilang\",\"hasbro_products\"];function prefetchDataFiles(){DATA_FILES.forEach(e=>{loadDataJson(e).catch(()=>{})})}let DESCRIPTIONS_READY=!SPLIT_DATA_DEPLOYED,_descriptionsPromise=null;const _descriptionRefills={};function whenDescriptionsLoad(e,n){DESCRIPTIONS_READY?delete _descriptionRefills[e]:_descriptionRefills[e]=n}function loadDescriptions(){if(DESCRIPTIONS_READY)return Promise.resolve();if(!_descriptionsPromise){const e=a=>!a||typeof a==\"object\"&&!Object.keys(a).length,n=a=>fetchJson(`data/${a}.${DATA_LANG}.desc.json`).catch(s=>(console.warn(\"descriptions not available:\",a,s),null));_descriptionsPromise=Promise.all(DATA_FILES.map"
     },
     {
       "path": "https://beyblade.phstudy.org/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js",
       "length": 1239,
-      "context": []
+      "context": [],
+      "dataFilesSnippet": null
     }
   ],
   "found": [
@@ -85,5 +94,30 @@
     "shared_header.js?v=1794657193",
     "scripts/viewer.js?v=1794657193",
     "/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+  ],
+  "json_sources": [
+    {
+      "url": "https://beyblade.phstudy.org/data/main.json",
+      "length": 3950097,
+      "matches": []
+    },
+    {
+      "url": "https://beyblade.phstudy.org/data/main.zh-TW.json",
+      "length": 1083088,
+      "matches": []
+    },
+    {
+      "url": "https://beyblade.phstudy.org/data/hardcoded.json",
+      "length": 353991,
+      "matches": []
+    },
+    {
+      "url": "data/parts.json",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "url": "data/images.json",
+      "error": "HTTP Error 404: Not Found"
+    }
   ]
 }
