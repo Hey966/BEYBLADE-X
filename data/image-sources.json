@@ -410,6 +410,77 @@
       ]
     },
     {
+      "id": "G3063",
+      "name": "Mister Fantastic and Doctor Doom Multipack",
+      "market": "US",
+      "items": [
+        {
+          "id": "OWN-G3063-01",
+          "name": "Mister Fantastic",
+          "code": "9-65A",
+          "whole": {
+            "url": "https://beyblade.phstudy.org/images/site/Series/HB-G3063-01.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-01.html",
+            "output": "images/reference/g3063-01.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3063-01-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-01-BLADE.html",
+            "partID": "HB-G3063-01-BLADE",
+            "output": "images/reference/g3063-01-blade.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3063-01-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-01-RATCHET.html",
+            "partID": "HB-G3063-01-RATCHET",
+            "output": "images/reference/g3063-01-ratchet.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3063-01-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-01-BIT.html",
+            "partID": "HB-G3063-01-BIT",
+            "output": "images/reference/g3063-01-bit.png",
+            "sourceType": "exact_release_catalog_photo"
+          }
+        },
+        {
+          "id": "OWN-G3063-02",
+          "name": "Doctor Doom",
+          "code": "0-80LO",
+          "whole": {
+            "url": "https://beyblade.phstudy.org/images/site/Series/HB-G3063-02.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Series/HB-G3063-02.html",
+            "output": "images/reference/g3063-02.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "blade": {
+            "url": "https://beyblade.phstudy.org/images/site/Blade/HB-G3063-02-BLADE.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-02-BLADE.html",
+            "partID": "HB-G3063-02-BLADE",
+            "output": "images/reference/g3063-02-blade.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "ratchet": {
+            "url": "https://beyblade.phstudy.org/images/site/Ratchet/HB-G3063-02-RATCHET.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-02-RATCHET.html",
+            "partID": "HB-G3063-02-RATCHET",
+            "output": "images/reference/g3063-02-ratchet.png",
+            "sourceType": "exact_release_catalog_photo"
+          },
+          "bit": {
+            "url": "https://beyblade.phstudy.org/images/site/Bit/HB-G3063-02-BIT.png",
+            "page": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-02-BIT.html",
+            "partID": "HB-G3063-02-BIT",
+            "output": "images/reference/g3063-02-bit.png",
+            "sourceType": "exact_release_catalog_photo"
+          }
+        }
+      ]
+    },
+    {
       "id": "G2734",
       "name": "Curse Mummy Booster",
       "market": "US",
