@@ -19,3 +19,5 @@
 .pending-image{min-height:100px;display:grid;place-items:center;border:1px dashed #344658;border-radius:6px;color:#8799ab;font-size:11px;padding:8px}
 @media(max-width:1000px){.package-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:720px){.package-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.part-visuals{gap:6px;padding:0 14px 19px}.pending-image{min-height:74px}.package-heading h3{font-size:15px}}
+
+.photo-missing{min-height:150px;display:flex;align-items:center;justify-content:center;color:#9aa9ba;font-size:12px;text-align:center;padding:18px}
