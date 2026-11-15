@@ -164,25 +164,29 @@ function candidateList(style,enemy=null){
   c.score=evaluated.value;c.vec=evaluated.vec;c.type=evaluated.bitType;
   result.push(c);
  }
- return result.sort((a,b)=>b.score-a.score).slice(0,270);
+ return result.sort((a,b)=>b.score-a.score).slice(0,3200);
 }
 function pickDeck(pool,count){
  if(count===1)return pool.length?[pool[0]]:[];
- const bests=pool.slice(0,210);
+ const bests=pool.slice(0,3200);
  let best=null,bestValue=-Infinity;
- // Search multiple first/second choices, rather than naively taking first three.
- for(let i=0;i<Math.min(35,bests.length);i++){
+ // Evaluate multiple first and second choices. Select the earliest valid third
+ // from a score-ordered pool while respecting every physical part ID.
+ for(let i=0;i<Math.min(28,bests.length);i++){
   const first=bests[i];
-  for(let j=i+1;j<Math.min(125,bests.length);j++){
+  let validSeconds=0;
+  for(let j=0;j<bests.length;j++){
+   if(i===j)continue;
    const second=bests[j];
    if(!usable([first,second]))continue;
    const third=bests.find((c,k)=>k!==i&&k!==j&&usable([first,second,c]));
-   if(!third)continue;
-   const team=[first,second,third];
-   // Discourage three copies of the same main-blade source where feasible.
-   const differentMain=new Set(team.map(x=>x.blade.source)).size;
-   const total=team.reduce((x,c)=>x+c.score,0)+(differentMain-1)*2;
-   if(total>bestValue){bestValue=total;best=team;}
+   if(third){
+    const team=[first,second,third];
+    const diversity=new Set(team.map(c=>c.blade.source)).size;
+    const score=team.reduce((sum,c)=>sum+c.score,0)+(diversity-1)*2;
+    if(score>bestValue){bestValue=score;best=team;}
+   }
+   if(++validSeconds>=8)break;
   }
  }
  return best||[];
