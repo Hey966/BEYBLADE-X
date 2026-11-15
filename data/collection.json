@@ -144,14 +144,14 @@
       "bit": "U",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3084-01.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-01",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-01.png",
+      "displayImagePath": "images/reference/own-g3084-01.png",
       "referenceImageUrl": "https://bbx.co.kr/uploaded/product/46/l_dab49b9ec00748bbdf1e1815566c20b92.jpg",
       "partImages": {
-        "blade": "images/reference/g3084-01.png"
+        "blade": "images/reference/own-g3084-01.png"
       },
       "originalPackagingCrop": "images/own-g3084-01.webp"
     },
@@ -171,14 +171,14 @@
       "bit": "O",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3084-02.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-02",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-02.png",
+      "displayImagePath": "images/reference/own-g3084-02.png",
       "referenceImageUrl": "https://www.maziply.com/cdn/shop/files/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set-Gill-Shark-4-700.webp?v=1763738284",
       "partImages": {
-        "blade": "images/reference/g3084-02.png"
+        "blade": "images/reference/own-g3084-02.png"
       },
       "originalPackagingCrop": "images/own-g3084-02.webp"
     },
@@ -198,14 +198,14 @@
       "bit": "GN",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3084-03.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-03",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-03.png",
-      "referenceImageUrl": "https://www.suruga-ya.jp/database/pics/game/607202900.jpg",
+      "displayImagePath": "images/reference/own-g3084-03.png",
+      "referenceImageUrl": "https://malloftoys.com/cdn/shop/files/UX-06BoosterLeonCrest7-60GN1.webp?v=1720718675&width=1445",
       "partImages": {
-        "blade": "images/reference/g3084-03.png"
+        "blade": "images/reference/own-g3084-03.png"
       },
       "originalPackagingCrop": "images/own-g3084-03.webp"
     },
@@ -225,14 +225,14 @@
       "bit": "FB",
       "specialEdition": "Hasbro name/version of SilverWolf",
       "currentBuild": null,
-      "imagePath": "images/own-g3084-04.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-04",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-04.png",
+      "displayImagePath": "images/reference/own-g3084-04.png",
       "referenceImageUrl": "https://mangayo.it/51584-medium_default/sterling-wolf-3-80fb-starter-pack-set-beyblade-x-hasbro.jpg",
       "partImages": {
-        "blade": "images/reference/g3084-04.png"
+        "blade": "images/reference/own-g3084-04.png"
       },
       "originalPackagingCrop": "images/own-g3084-04.webp"
     },
@@ -252,14 +252,14 @@
       "bit": "T",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3084-05.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-05",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-05.png",
+      "displayImagePath": "images/reference/own-g3084-05.png",
       "referenceImageUrl": "https://assets.st-note.com/img/1779450274-T7rU5ZdC6KsaBLgeq9XilxVA.jpg?width=1200",
       "partImages": {
-        "blade": "images/reference/g3084-05.png"
+        "blade": "images/reference/own-g3084-05.png"
       },
       "originalPackagingCrop": "images/own-g3084-05.webp"
     },
@@ -279,14 +279,14 @@
       "bit": "O",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3084-06.webp",
-      "imageStatus": "third_party_online_photo_png_workflow",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3084-06",
       "imageSourcePhoto": "1000111095.avif",
-      "displayImagePath": "images/reference/g3084-06.png",
+      "displayImagePath": "images/reference/own-g3084-06.png",
       "referenceImageUrl": "https://yoyoshopsg.com/cdn/shop/files/beybladexWriggleKrakenS3-85O.jpg?v=1762916127",
       "partImages": {
-        "blade": "images/reference/g3084-06.png"
+        "blade": "images/reference/own-g3084-06.png"
       },
       "originalPackagingCrop": "images/own-g3084-06.webp"
     },
@@ -306,10 +306,16 @@
       "bit": "G",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3393-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3393-01",
-      "imageSourcePhoto": "1000111096.avif"
+      "imageSourcePhoto": "1000111096.avif",
+      "originalPackagingCrop": "images/own-g3393-01.webp",
+      "partImages": {
+        "blade": "images/reference/own-g3393-01.png"
+      },
+      "displayImagePath": "images/reference/own-g3393-01.png",
+      "referenceImageUrl": "https://acgamesonline.com/cdn/shop/files/Screenshot-2025-01-03-164117_grande.png?v=1735941234"
     },
     {
       "id": "OWN-G3393-02",
@@ -327,10 +333,16 @@
       "bit": "GP",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3393-02.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3393-02",
-      "imageSourcePhoto": "1000111096.avif"
+      "imageSourcePhoto": "1000111096.avif",
+      "originalPackagingCrop": "images/own-g3393-02.webp",
+      "partImages": {
+        "blade": "images/reference/own-g3393-02.png"
+      },
+      "displayImagePath": "images/reference/own-g3393-02.png",
+      "referenceImageUrl": "https://www.toyworld.co.nz/cdn/shop/files/195166265377_20F9590_203_resizedforweb.jpg?v=1775536162&width=2048"
     },
     {
       "id": "OWN-G3393-03",
@@ -348,10 +360,16 @@
       "bit": "GN",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-g3393-03.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G3393-03",
-      "imageSourcePhoto": "1000111096.avif"
+      "imageSourcePhoto": "1000111096.avif",
+      "originalPackagingCrop": "images/own-g3393-03.webp",
+      "partImages": {
+        "blade": "images/reference/own-g3393-03.png"
+      },
+      "displayImagePath": "images/reference/own-g3393-03.png",
+      "referenceImageUrl": "https://beywarehouse.com/cdn/shop/files/imgi_76_latest.webp?v=1770664796&width=594"
     },
     {
       "id": "OWN-G3063-01",
@@ -369,10 +387,14 @@
       "bit": "A",
       "specialEdition": "Marvel Avengers: Doomsday",
       "currentBuild": null,
-      "imagePath": "images/own-g3063-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "awaiting_verified_png",
       "manufacturerBeyCode": "G3063-01",
-      "imageSourcePhoto": "1000111097.avif"
+      "imageSourcePhoto": "1000111097.avif",
+      "originalPackagingCrop": "images/own-g3063-01.webp",
+      "partImages": {},
+      "displayImagePath": null,
+      "referenceImageUrl": null
     },
     {
       "id": "OWN-G3063-02",
@@ -390,10 +412,14 @@
       "bit": "LO",
       "specialEdition": "Marvel Avengers: Doomsday",
       "currentBuild": null,
-      "imagePath": "images/own-g3063-02.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "awaiting_verified_png",
       "manufacturerBeyCode": "G3063-02",
-      "imageSourcePhoto": "1000111097.avif"
+      "imageSourcePhoto": "1000111097.avif",
+      "originalPackagingCrop": "images/own-g3063-02.webp",
+      "partImages": {},
+      "displayImagePath": null,
+      "referenceImageUrl": null
     },
     {
       "id": "OWN-G2734-01",
@@ -411,10 +437,16 @@
       "bit": "W",
       "specialEdition": "Hasbro edition",
       "currentBuild": null,
-      "imagePath": "images/own-g2734-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "G2734",
-      "imageSourcePhoto": "1000111100.jpg"
+      "imageSourcePhoto": "1000111100.jpg",
+      "originalPackagingCrop": "images/own-g2734-01.webp",
+      "partImages": {
+        "blade": "images/reference/g2734-01.png"
+      },
+      "displayImagePath": "images/reference/g2734-01.png",
+      "referenceImageUrl": "https://bigbraingames.co.nz/cdn/shop/files/mummy_curse.webp?v=1781229143&width=3840"
     },
     {
       "id": "OWN-CX-08-06",
@@ -432,10 +464,16 @@
       "bit": "WB",
       "specialEdition": "CX-08 box contains BX-system blade",
       "currentBuild": null,
-      "imagePath": "images/own-cx-08-06.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "CX-08-06",
-      "imageSourcePhoto": "1000111101.jpg"
+      "imageSourcePhoto": "1000111101.jpg",
+      "originalPackagingCrop": "images/own-cx-08-06.webp",
+      "partImages": {
+        "blade": "images/reference/cx-08-06.png"
+      },
+      "displayImagePath": "images/reference/cx-08-06.png",
+      "referenceImageUrl": "https://beyblade-shop.com/cdn/shop/files/Cobalt-Dragoon-4-55WB-Beyblade-Shop_1200x1200.png?v=1749804450"
     },
     {
       "id": "OWN-BXG-70-01",
@@ -457,10 +495,16 @@
       "bit": "T",
       "specialEdition": "Ultraman Tiga",
       "currentBuild": null,
-      "imagePath": "images/own-bxg-70-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "BXG-70-01",
-      "imageSourcePhoto": "1000111098.avif"
+      "imageSourcePhoto": "1000111098.avif",
+      "originalPackagingCrop": "images/own-bxg-70-01.webp",
+      "partImages": {
+        "blade": "images/reference/bxg-70-01.png"
+      },
+      "displayImagePath": "images/reference/bxg-70-01.png",
+      "referenceImageUrl": "https://image.news.livedoor.com/newsimage/stf/4/7/47dd5_1839_364d78b2f35067d71aafecf900f10f73.jpg"
     },
     {
       "id": "OWN-BXG-57-01",
@@ -478,10 +522,16 @@
       "bit": "E",
       "specialEdition": "EVA-00 Orange",
       "currentBuild": null,
-      "imagePath": "images/own-bxg-57-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "BXG-57-01",
-      "imageSourcePhoto": "1000111102.jpg"
+      "imageSourcePhoto": "1000111102.jpg",
+      "originalPackagingCrop": "images/own-bxg-57-01.webp",
+      "partImages": {
+        "blade": "images/reference/bxg-57-01.png"
+      },
+      "displayImagePath": "images/reference/bxg-57-01.png",
+      "referenceImageUrl": "https://beybladehub.app/combos/CX00-eva-unit00.webp"
     },
     {
       "id": "OWN-BXG-57-02",
@@ -499,10 +549,16 @@
       "bit": "V",
       "specialEdition": "EVA-01 Violet",
       "currentBuild": null,
-      "imagePath": "images/own-bxg-57-02.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "BXG-57-02",
-      "imageSourcePhoto": "1000111102.jpg"
+      "imageSourcePhoto": "1000111102.jpg",
+      "originalPackagingCrop": "images/own-bxg-57-02.webp",
+      "partImages": {
+        "blade": "images/reference/bxg-57-02.png"
+      },
+      "displayImagePath": "images/reference/bxg-57-02.png",
+      "referenceImageUrl": "https://www.isahobby.com/cdn/shop/files/177424476381_1200_1024x.jpg?v=1774513975"
     },
     {
       "id": "OWN-BXG-57-03",
@@ -520,10 +576,16 @@
       "bit": "A",
       "specialEdition": "EVA-02 Red",
       "currentBuild": null,
-      "imagePath": "images/own-bxg-57-03.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "BXG-57-03",
-      "imageSourcePhoto": "1000111102.jpg"
+      "imageSourcePhoto": "1000111102.jpg",
+      "originalPackagingCrop": "images/own-bxg-57-03.webp",
+      "partImages": {
+        "blade": "images/reference/bxg-57-03.png"
+      },
+      "displayImagePath": "images/reference/bxg-57-03.png",
+      "referenceImageUrl": "https://gcs.rimg.com.tw/g2/6/39/9c/22614392892828_721.jpg"
     },
     {
       "id": "OWN-CX-06-01",
@@ -541,10 +603,16 @@
       "bit": "GR",
       "specialEdition": null,
       "currentBuild": null,
-      "imagePath": "images/own-cx-06-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "CX-06-01",
-      "imageSourcePhoto": "1000111103.jpg"
+      "imageSourcePhoto": "1000111103.jpg",
+      "originalPackagingCrop": "images/own-cx-06-01.webp",
+      "partImages": {
+        "blade": "images/reference/cx-06-01.png"
+      },
+      "displayImagePath": "images/reference/cx-06-01.png",
+      "referenceImageUrl": "https://beyblade-shop.com/cdn/shop/files/FoxBrush-J9-70GR-Beyblade-Shop-removebg-preview_1024x1024.png?v=1746197395"
     },
     {
       "id": "OWN-UX-08-01",
@@ -562,10 +630,16 @@
       "bit": "FB",
       "specialEdition": "Takara Tomy version of Sterling Wolf",
       "currentBuild": null,
-      "imagePath": "images/own-ux-08-01.webp",
-      "imageStatus": "cropped_from_user_uploaded_package_photo",
+      "imagePath": null,
+      "imageStatus": "verified_png",
       "manufacturerBeyCode": "UX-08",
-      "imageSourcePhoto": "1000111104.jpg"
+      "imageSourcePhoto": "1000111104.jpg",
+      "originalPackagingCrop": "images/own-ux-08-01.webp",
+      "partImages": {
+        "blade": "images/reference/ux-08-01.png"
+      },
+      "displayImagePath": "images/reference/ux-08-01.png",
+      "referenceImageUrl": "https://i.ebayimg.com/images/g/n~4AAOSwT-NnCV~z/s-l1200.jpg"
     }
   ]
 }
