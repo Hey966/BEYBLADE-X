@@ -33,15 +33,68 @@ function countStats(){const count=DB.beys.length;const n=k=>DB.beys.filter(b=>b.
 function renderFilters(){const f=$('filters');f.innerHTML=['ALL','BX','UX','CX'].map(v=>`<button data-filter="${v}" class="${v===filter?'on':''}">${v==='ALL'?'全部':v}</button>`).join('');f.querySelectorAll('button').forEach(n=>n.onclick=()=>{filter=n.dataset.filter;renderFilters();renderCollection()})}
 function displayImage(b){return b?.displayImagePath||''}
 function photoTag(b,alt){const src=displayImage(b), fallback=b?.referenceImageUrl||'';return src?'<img src="'+esc(src)+'" alt="'+esc(alt)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片查核中\'))">':'<div class="photo-missing">圖片查核中</div>'}
+
+/* Unified image framing for all collection covers. */
+function coverLabel(b){
+ if(!displayImage(b))return '圖片查核中';
+ return b.imageStatus==='blade_only_exact_photo'?'上層戰刃照片':'完整陀螺照片';
+}
+const coverImageTransformCache=new Map();
+function normalizeCoverImages(root){
+ const images=root.querySelectorAll('.cover-stage img');
+ for(const img of images){
+  const apply=()=>{
+   if(!img.naturalWidth||!img.naturalHeight)return;
+   const key=img.getAttribute('src')||'';
+   const cached=coverImageTransformCache.get(key);
+   if(cached){img.style.transform=cached;return;}
+   try{
+    const canvas=document.createElement('canvas');
+    const limit=480, ratio=Math.min(1,limit/Math.max(img.naturalWidth,img.naturalHeight));
+    const w=Math.max(1,Math.round(img.naturalWidth*ratio));
+    const h=Math.max(1,Math.round(img.naturalHeight*ratio));
+    canvas.width=w;canvas.height=h;
+    const context=canvas.getContext('2d',{willReadFrequently:true});
+    if(!context)return;
+    context.drawImage(img,0,0,w,h);
+    const pixels=context.getImageData(0,0,w,h).data;
+    let left=w,right=-1,top=h,bottom=-1;
+    for(let y=0;y<h;y+=2){
+     for(let x=0;x<w;x+=2){
+      if(pixels[(y*w+x)*4+3]>45){
+       if(x<left)left=x;if(x>right)right=x;
+       if(y<top)top=y;if(y>bottom)bottom=y;
+      }
+     }
+    }
+    if(right<left||bottom<top)return;
+    const fraction=Math.max((right-left+1)/w,(bottom-top+1)/h);
+    if(fraction<0.08)return;
+    const scale=Math.min(2.8,Math.max(0.70,0.83/fraction));
+    const dx=(w/2-(left+right)/2)/w*100*scale;
+    const dy=(h/2-(top+bottom)/2)/h*100*scale;
+    const transform='translate('+dx.toFixed(2)+'%, '+dy.toFixed(2)+'%) scale('+scale.toFixed(3)+')';
+    img.style.transform=transform;
+    coverImageTransformCache.set(key,transform);
+   }catch(error){
+    // Preserve object-fit layout if an image cannot be measured.
+   }
+  };
+  if(img.complete&&img.naturalWidth)apply();
+  else img.addEventListener('load',apply,{once:true});
+ }
+}
+
 function renderCollection(){
  const q=$('search').value.trim().toLocaleLowerCase(),m=$('marketFilter').value;
  const list=DB.beys.filter(b=>{const p=pack(b),hay=[b.name,b.blade,b.ratchet,b.bit,b.lockChip,b.mainBlade,b.assistBlade,p.title,b.manufacturerBeyCode].join(' ').toLowerCase();return (filter==='ALL'||b.system===filter)&&(m==='ALL'||p.market===m)&&hay.includes(q);});
  $('countView').textContent=list.length+' / '+DB.beys.length;
  const grouped=new Map();list.forEach(b=>{if(!grouped.has(b.packageId))grouped.set(b.packageId,[]);grouped.get(b.packageId).push(b)});
  $('collectionGrid').innerHTML=[...grouped].map(([pid,items])=>{
- const p=pack(items[0]);return '<section class="package-group"><div class="package-heading"><div><small>'+esc(p.productCode||pid)+'</small><h3>'+esc(p.title)+'</h3></div><span>'+esc(loc(p.market))+' · '+items.length+' 顆</span></div><div class="package-cards">'+items.map(b=>'<button class="bey-card" data-id="'+esc(b.id)+'"><div class="bey-photo">'+photoTag(b,b.name+' 商品圖')+(b.imageStatus==='blade_only_exact_photo'?'<span class="source-note">上層戰刃照片</span>':'')+'<span class="system-badge '+esc(b.system)+'">'+esc(b.system)+'</span></div><div class="bey-info"><div class="mini-row"><span>'+esc(loc(p.market))+' / '+esc(p.manufacturer)+'</span><span>'+(b.spinDirection==='L'?'↶ 左旋':'↷ 右旋')+'</span></div><div class="bey-name">'+esc(b.name)+'</div><div class="bey-spec">'+esc(b.ratchet)+esc(b.bit)+'</div><div class="component-row"><span>原廠配置</span><b class="more">查看零件 →</b></div></div></button>').join('')+'</div></section>'
+ const p=pack(items[0]);return '<section class="package-group"><div class="package-heading"><div><small>'+esc(p.productCode||pid)+'</small><h3>'+esc(p.title)+'</h3></div><span>'+esc(loc(p.market))+' · '+items.length+' 顆</span></div><div class="package-cards">'+items.map(b=>'<button class="bey-card" data-id="'+esc(b.id)+'"><div class="bey-photo"><div class="cover-stage">'+photoTag(b,b.name+' 商品圖')+'</div><span class="cover-note">'+esc(coverLabel(b))+'</span><span class="system-badge '+esc(b.system)+'">'+esc(b.system)+'</span></div><div class="bey-info"><div class="mini-row"><span>'+esc(loc(p.market))+' / '+esc(p.manufacturer)+'</span><span>'+(b.spinDirection==='L'?'↶ 左旋':'↷ 右旋')+'</span></div><div class="bey-name">'+esc(b.name)+'</div><div class="bey-spec">'+esc(b.ratchet)+esc(b.bit)+'</div><div class="component-row"><span>原廠配置</span><b class="more">查看零件 →</b></div></div></button>').join('')+'</div></section>'
  }).join('')||'<div class="empty">沒有符合條件的陀螺。</div>';
  $('collectionGrid').querySelectorAll('.bey-card').forEach(n=>n.addEventListener('click',()=>openDetail(n.dataset.id)));
+ normalizeCoverImages($('collectionGrid'));
 }
 const dialog=$('detailDialog');$('closeDetail').onclick=()=>dialog.close();dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 function openDetail(id){const b=getBey(id);if(!b)return;const p=pack(b);const fields=[['原廠戰刃',b.blade],['固鎖 Ratchet',b.ratchet],['軸心 Bit',b.bit],['迴旋方向',b.spinDirection==='L'?'左迴旋':'右迴旋'],['來源套組',p.title],['製造商 / 版本',`${p.manufacturer} / ${loc(p.market)}`],['鎖定紋章 Lock Chip',b.lockChip],['主刃 Main Blade',b.mainBlade],['輔助刃 Assist Blade',b.assistBlade],['目前實體組裝',b.currentBuild?'已記錄':'尚未登記']].filter(([,v])=>v);
