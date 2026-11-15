@@ -636,7 +636,9 @@
       "imageSourcePhoto": "1000111104.jpg",
       "originalPackagingCrop": "images/own-ux-08-01.webp",
       "partImages": {
-        "blade": "images/reference/ux-08-01.png"
+        "blade": "images/reference/ux-08-01.png",
+        "ratchet": "images/reference/ux-08-01-ratchet.png",
+        "bit": "images/reference/ux-08-01-bit.png"
       },
       "displayImagePath": "images/reference/ux-08-01.png",
       "referenceImageUrl": "https://i.ebayimg.com/images/g/n~4AAOSwT-NnCV~z/s-l1200.jpg"
