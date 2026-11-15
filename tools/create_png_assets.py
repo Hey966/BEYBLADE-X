@@ -113,6 +113,11 @@ def run():
             if whole:
                 owned["displayImagePath"]=whole
                 owned["imageStatus"]="verified_png"
+            elif successful.get((own,"blade")):
+                # An authentic release-specific BLADE top view is an honest visual
+                # fallback. Never label it as a complete assembled Bey.
+                owned["displayImagePath"]=successful[(own,"blade")]
+                owned["imageStatus"]="blade_only_exact_photo"
             elif not owned.get("displayImagePath") or not (ROOT/owned["displayImagePath"]).exists():
                 owned["displayImagePath"]=None
                 owned["imageStatus"]="awaiting_verified_png"
