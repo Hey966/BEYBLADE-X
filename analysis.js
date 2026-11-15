@@ -221,7 +221,7 @@ function resultMarkup(team,title,mode,enemy){
  const note=enemy?'<p>對方類型為'+html(roles[enemy.type]||'未知')+'，模型優先考慮'+html(roles[mode])+'的相剋方向。</p>':'';
  return '<div class="analysis-result-summary"><h3>'+html(title)+'</h3><p>計算 '+team.length+' 顆陀螺。'+(team.length>1?'所有實體零件均未重複使用。':'')+'</p>'+note+
   '<p>模型總分 '+fmt(total)+'。分數只用於這次候選排序，不是勝率。數值越高不代表一定獲勝。</p>'+
-  '<button type="button" class="analysis-load" data-analysis-load="1">載入手動組裝器並保存</button></div><div class="analysis-result-grid">'+cards+'</div>';
+  '<button type="button" class="analysis-load" data-analysis-load="1">套用至組裝器（可另行保存）</button></div><div class="analysis-result-grid">'+cards+'</div>';
 }
 let lastAuto=[],lastCounter=[];
 function runAuto(){
