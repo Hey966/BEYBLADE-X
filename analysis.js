@@ -238,6 +238,132 @@ function pickDeck(pool,count){
  }
  return best||[];
 }
+
+/* Full-combination suppression model.
+ * Opponent classification by Bit is NOT used for match selection.
+ * Each dimension compares different strengths against its defensive counter.
+ * All coefficients are heuristic, not experimentally fitted winning rates.
+ */
+function counterCompareVectors(ours,theirs){
+ const attackEdge=ours.attack+0.30*ours.dash-(theirs.defense+0.15*theirs.burst);
+ const guardEdge=ours.defense+0.24*ours.burst-(theirs.attack+0.25*theirs.dash);
+ const staminaEdge=ours.stamina+0.12*ours.defense-(theirs.stamina+0.12*theirs.defense);
+ const burstEdge=ours.burst-theirs.burst;
+ const dashEdge=ours.dash-theirs.dash;
+ const raw={
+  attack:0.30+0.15*(theirs.stamina/100)+0.07*(1-theirs.defense/100),
+  guard:0.30+0.25*((theirs.attack+0.20*theirs.dash)/120),
+  stamina:0.30+0.18*(theirs.defense/100)+0.10*(theirs.stamina/100)
+ };
+ const denom=raw.attack+raw.guard+raw.stamina;
+ const weighted=(attackEdge*raw.attack+guardEdge*raw.guard+staminaEdge*raw.stamina)/denom;
+ const margin=weighted+0.045*burstEdge+0.04*dashEdge;
+ const score=Math.max(0,Math.min(100,50+0.65*margin));
+ return {score,margin,attackEdge,guardEdge,staminaEdge,burstEdge,dashEdge};
+}
+function counterReason(result,enemy,index){
+ const entries=[
+  {key:'attackEdge',name:'攻擊壓力對抗對手防禦'},
+  {key:'guardEdge',name:'防守承受對手攻勢'},
+  {key:'staminaEdge',name:'持久能力對抗對手耐久'}
+ ];
+ entries.sort((a,b)=>result[b.key]-result[a.key]);
+ const best=entries.slice(0,2).map(x=>x.name+' '+(result[x.key]>=0?'+':'')+fmt(result[x.key]));
+ const deficit=entries[2];
+ return '對手 '+(index+1)+'：'+best.join('；')+
+  (result[deficit.key]<-7?'。注意：'+deficit.name+' '+fmt(result[deficit.key]):'')+'。';
+}
+function scoreCounterCandidate(ours,enemies){
+ const matchups=enemies.map(enemy=>counterCompareVectors(ours,enemy.vector));
+ const scores=matchups.map(x=>x.score);
+ const average=scores.reduce((a,b)=>a+b,0)/scores.length;
+ const minimum=Math.min(...scores);
+ // Robust across 3 opponents. A single extraordinary matchup cannot hide a poor one.
+ const total=0.60*average+0.40*minimum;
+ return {score:total,matchups};
+}
+function counterBladeCandidates(enemies){
+ const bs=bladePool();
+ // Prune only by combined-ability potential. Do not prune by any label/type.
+ const rated=bs.map(blade=>{
+  const scores=enemies.map(e=>counterCompareVectors(
+   {attack:blade.stats.attack,defense:blade.stats.defense,stamina:blade.stats.stamina,dash:0,burst:0},
+   e.vector
+  ).score);
+  return {blade,potential:Math.max(...scores)+0.6*Math.min(...scores)};
+ }).sort((a,b)=>b.potential-a.potential);
+ const selected=rated.slice(0,125).map(x=>x.blade);
+ // Always retain complete non-CX blades and each original CX configuration.
+ for(const b of bs.filter(b=>b.mode==='whole'||(b.mode==='cx'&&!b.mixed)))if(!selected.includes(b))selected.push(b);
+ return selected;
+}
+function counterCandidates(enemies){
+ const rs=ratchets(),ts=bits(),blades=counterBladeCandidates(enemies),out=[];
+ for(const blade of blades)for(const ratchet of rs)for(const bit of ts){
+  const c={blade,ratchet,bit,keys:[...blade.keys,'ratchet:'+ratchet.owner,'bit:'+bit.owner]};
+  c.vec=combatVector(blade,ratchet,bit);
+  const result=scoreCounterCandidate(c.vec,enemies);
+  c.score=result.score;c.matchups=result.matchups;c.type=roleOf(bit.data);
+  out.push(c);
+ }
+ return out.sort((a,b)=>b.score-a.score);
+}
+function counterTeamScore(team,enemies){
+ if(!team.length)return -Infinity;
+ const n=enemies.length;
+ const coverage=enemies.map((_,i)=>Math.max(...team.map(c=>c.matchups[i].score)));
+ const coveredAvg=coverage.reduce((a,b)=>a+b,0)/n;
+ const coveredMin=Math.min(...coverage);
+ const teamAvg=team.reduce((a,c)=>a+c.score,0)/team.length;
+ let assignment=coveredAvg;
+ if(n===3&&team.length===3){
+  // All 3! possible assignments; each of our 3 tops addresses one enemy top.
+  let best=-Infinity;
+  for(const p of [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]]){
+   const value=(team[0].matchups[p[0]].score+team[1].matchups[p[1]].score+team[2].matchups[p[2]].score)/3;
+   if(value>best)best=value;
+  }
+  assignment=best;
+ }
+ const differentBlades=new Set(team.map(c=>c.blade.source)).size;
+ return 0.42*assignment+0.28*coveredAvg+0.20*coveredMin+0.10*teamAvg+(differentBlades-1)*0.5;
+}
+function pickCounterDeck(pool,count,enemies){
+ if(count===1)return pool.length?[pool[0]]:[];
+ if(pool.length<3)return [];
+ const shortlist=pool.slice(0,Math.min(3000,pool.length));
+ const seeds=pool.slice(0,22);
+ for(let i=0;i<enemies.length;i++){
+  const top=[...shortlist].sort((a,b)=>b.matchups[i].score-a.matchups[i].score).slice(0,9);
+  seeds.push(...top);
+ }
+ const seen=new Set(),heads=seeds.filter(c=>{
+  if(seen.has(c))return false;
+  seen.add(c);return true;
+ });
+ let best=null,bestScore=-Infinity;
+ // Search diverse leading pair choices, then maximize the team's ability
+ // coverage of the selected opponents without reusing a physical component.
+ for(const first of heads.slice(0,35)){
+  let secondCount=0;
+  for(const second of shortlist){
+   if(first===second||!usable([first,second]))continue;
+   let localThird=null,localScore=-Infinity;
+   // Consider both high-ranked global candidates and specialists for a specific enemy.
+   for(const third of heads.concat(shortlist.slice(0,95))){
+    if(third===first||third===second||!usable([first,second,third]))continue;
+    const value=counterTeamScore([first,second,third],enemies);
+    if(value>localScore){localThird=third;localScore=value;}
+   }
+   if(localThird&&localScore>bestScore){
+    bestScore=localScore;best=[first,second,localThird];
+   }
+   if(++secondCount>=12)break;
+  }
+ }
+ return best||[];
+}
+
 function toSlots(c){
  return c.blade.mode==='cx'?
   {mode:'cx',chip:c.blade.chip,main:c.blade.main,assist:c.blade.assist,ratchet:c.ratchet.owner,bit:c.bit.owner}:
