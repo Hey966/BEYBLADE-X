@@ -96,7 +96,7 @@ function createBattle(left,right,settings={}){
  const launcher=settings.launch||[{power:75,angle:0},{power:75,angle:0}];
  const env={rail:settings.rail!==false,arena:settings.arena||"xtreme"};
  const state={version:VERSION,seed,elapsed:0,done:false,winner:null,finish:null,points:0,
-  tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,collisionCount:0,railCount:0};
+  tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,collisionCount:0,railCount:0,lastContactAt:-5};
  function record(type,who,message){if(settings.record!==false&&state.events.length<120)state.events.push({t:+state.elapsed.toFixed(2),type,who,message})}
  function decide(winner,finish){
   if(state.done)return;
@@ -116,7 +116,7 @@ function createBattle(left,right,settings={}){
    // Stadium slope pulls inward; Xtreme-style rails drive tangent movement.
    const radius=Math.hypot(t.x,t.y);
    if(radius>0.01){
-    const slope=0.13+0.14*Math.min(1,radius/R);
+    const slope=0.15+0.11*Math.min(1,radius/R)-0.29*(v.dash/100);
     t.vx-=dt*slope*t.x/radius;
     t.vy-=dt*slope*t.y/radius;
     // Bit mobility is modelled as an additional tangential tendency.
@@ -161,21 +161,23 @@ function createBattle(left,right,settings={}){
    a.x-=nx*penetration*.5;a.y-=ny*penetration*.5;
    b.x+=nx*penetration*.5;b.y+=ny*penetration*.5;
    const approach=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
-   if(approach<0){
+   if(approach<0&&state.elapsed-state.lastContactAt>0.24){
+    state.lastContactAt=state.elapsed;
     state.collisionCount++;
     const impulse=-(1+0.49)*approach/(1/a.model.massProxy+1/b.model.massProxy);
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
-    const hitStrength=impulse*(1+.55*(attackA+attackB))*(.92+.16*rng());
+    const hitStrength=(0.28+impulse)*(0.7+.42*(attackA+attackB))*(.90+.2*rng());
     const ia=impulse/a.model.massProxy,ib=impulse/b.model.massProxy;
-    a.vx-=nx*ia;a.vy-=ny*ia;b.vx+=nx*ib;b.vy+=ny*ib;
+    a.vx-=nx*(ia+0.11+hitStrength*.22);a.vy-=ny*(ia+0.11+hitStrength*.22);
+    b.vx+=nx*(ib+0.11+hitStrength*.22);b.vy+=ny*(ib+0.11+hitStrength*.22);
     for(const [t,attacker] of [[a,b],[b,a]]){
      const defense=t.model.vector.defense/100;
      const attackerAttack=attacker.model.vector.attack/100;
      t.spin=Math.max(0,t.spin-hitStrength*(1.6+2*attackerAttack)/(0.7+defense));
      t.wobble+=hitStrength*(.16+.15*attackerAttack)/(0.7+defense);
-     t.burstLoad+=hitStrength*(0.12+0.13*attackerAttack)/(0.65+t.model.vector.burst/100);
+     t.burstLoad+=hitStrength*(0.055+0.09*attackerAttack)/(0.65+t.model.vector.burst/100);
     }
-    if(hitStrength>0.11&&state.collisionCount%3===1)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）");
+    if(hitStrength>0.11&&state.collisionCount%2===1)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）");
     // Latched components do not have a measured mechanical burst threshold.
     const excess=[a,b].map(t=>t.burstLoad-t.model.burstThreshold);
     if(Math.max(...excess)>0){
