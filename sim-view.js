@@ -225,6 +225,9 @@ function create(container,status,api){
      const plane=new THREE.Mesh(new THREE.PlaneGeometry(dimensions[p.kind],dimensions[p.kind]),material);
      plane.rotation.x=-Math.PI/2;plane.position.y=centers[p.kind];
      body.add(plane);
+     // The user may be inspecting a stationary setup before the battle starts.
+     // Re-render once the selected part texture actually finishes loading.
+     renderState(lastState,{finalAge:lastFinishAge});
     }catch(error){console.warn('Image cannot be mapped to 3D:',p.src,error)}
    };
    img.onerror=()=>console.warn('Missing reference image',p.src);
