@@ -1,0 +1,123 @@
+{
+  "file": "images/reference/own-g3393-01.png",
+  "size": [
+    800,
+    800
+  ],
+  "candidateRows": [
+    {
+      "y": 677,
+      "count": 423,
+      "minX": 125,
+      "maxX": 669,
+      "alpha": 255,
+      "span": 545
+    },
+    {
+      "y": 676,
+      "count": 258,
+      "minX": 205,
+      "maxX": 612,
+      "alpha": 255,
+      "span": 408
+    },
+    {
+      "y": 675,
+      "count": 165,
+      "minX": 233,
+      "maxX": 556,
+      "alpha": 255,
+      "span": 324
+    },
+    {
+      "y": 678,
+      "count": 57,
+      "minX": 324,
+      "maxX": 445,
+      "alpha": 255,
+      "span": 122
+    },
+    {
+      "y": 550,
+      "count": 39,
+      "minX": 157,
+      "maxX": 643,
+      "alpha": 255,
+      "span": 487
+    },
+    {
+      "y": 551,
+      "count": 38,
+      "minX": 158,
+      "maxX": 494,
+      "alpha": 255,
+      "span": 337
+    },
+    {
+      "y": 552,
+      "count": 37,
+      "minX": 160,
+      "maxX": 642,
+      "alpha": 255,
+      "span": 483
+    },
+    {
+      "y": 553,
+      "count": 36,
+      "minX": 162,
+      "maxX": 641,
+      "alpha": 255,
+      "span": 480
+    },
+    {
+      "y": 554,
+      "count": 35,
+      "minX": 166,
+      "maxX": 640,
+      "alpha": 255,
+      "span": 475
+    },
+    {
+      "y": 549,
+      "count": 34,
+      "minX": 458,
+      "maxX": 491,
+      "alpha": 255,
+      "span": 34
+    },
+    {
+      "y": 548,
+      "count": 32,
+      "minX": 458,
+      "maxX": 644,
+      "alpha": 255,
+      "span": 187
+    }
+  ],
+  "longestComponents": [
+    {
+      "x": 429,
+      "y": 666,
+      "width": 241,
+      "height": 13,
+      "area": 508,
+      "aspect": 18.5
+    },
+    {
+      "x": 125,
+      "y": 671,
+      "width": 197,
+      "height": 7,
+      "area": 409,
+      "aspect": 28.1
+    },
+    {
+      "x": 498,
+      "y": 604,
+      "width": 84,
+      "height": 44,
+      "area": 251,
+      "aspect": 1.9
+    }
+  ]
+}
