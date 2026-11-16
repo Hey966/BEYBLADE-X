@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜收藏指揮中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-sim-v1">
+  <link rel="stylesheet" href="style.css?v=20261116-v11-finish-parts">
 </head>
 <body>
   <header class="site-head">
@@ -61,10 +61,10 @@
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
   <p class="hint">以實際收藏配件能力推算動態碰撞。支援即時 3D 與大量模擬。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>目前計算使用攻擊、防禦、持久、衝刺、抗爆等相對數值。重量、摩擦、旋轉慣量、碰撞係數與爆裂閾值尚未實測校正。3D 是通用模型，不是商品外形重建。以下結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>目前計算使用攻擊、防禦、持久、衝刺、抗爆等相對數值。重量、摩擦、旋轉慣量、碰撞係數與爆裂閾值尚未實測校正。3D 以所選零件 PNG 貼圖組合近似外形，非精確實物掃描。以下結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
-   <h3>對戰設定</h3>
+   <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、拉力、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
    <div class="sim-control-grid">
     <label>對戰形式<select id="simMatchType"><option value="1">1 對 1</option><option value="3">3 對 3（依序出戰）</option></select></label>
     <label>場地<select id="simArenaType"><option value="xtreme">Xtreme 模擬競技盤（含 Xtreme Line）</option><option value="plain">練習圓盤（無 Xtreme Line）</option></select></label>
@@ -86,7 +86,7 @@
   </article>
   <article class="sim-panel sim-stage-panel">
    <div class="sim-score-row"><strong id="simScore">我方 0 : 0 對手</strong><span id="simRound">尚未開始</span></div>
-   <div class="sim-arena" id="simArena" aria-label="3D 陀螺競技盤"></div>
+   <div class="sim-arena-wrap"><div class="sim-arena" id="simArena" aria-label="選定配件的 3D 對戰競技盤"></div><div id="simFinishOverlay" class="sim-finish-overlay" hidden role="status" aria-live="polite"></div></div><div id="simActiveParts" class="sim-active-parts" aria-label="本回合實際選用零件"></div>
    <p id="simRenderStatus" class="sim-technical-status">正在載入 3D 畫面</p>
    <div class="sim-playback-controls">
     <button class="primary" id="simStart" type="button">開始新對戰</button>
@@ -132,6 +132,6 @@
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-sim-v1"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-sim-v1"></script><script src="sim-view.js?v=20261116-sim-v1"></script><script src="sim-ui.js?v=20261116-sim-v1"></script>
+<script src="sim-engine.js?v=20261116-v11-finish-parts"></script><script src="sim-view.js?v=20261116-v11-finish-parts"></script><script src="sim-ui.js?v=20261116-v11-finish-parts"></script>
 </body>
 </html>
