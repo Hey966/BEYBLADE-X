@@ -140,11 +140,11 @@ function createBattle(left,right,settings={}){
    }
    if(r>R-t.model.radius*0.55){
     const theta=Math.atan2(t.y,t.x);
-    const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.22)?"extreme":
-      (Math.abs(theta-0.65)<0.20||Math.abs(theta-2.45)<0.18)?"over":null;
+    const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.30)?"extreme":
+      (Math.abs(theta-0.65)<0.30||Math.abs(theta-2.45)<0.18)?"over":null;
     const outward=(t.vx*t.x+t.vy*t.y)/Math.max(r,0.01);
     const momentum=Math.hypot(t.vx,t.vy);
-    const escapeThreshold=0.67+0.005*v.defense;
+    const escapeThreshold=0.36+0.0018*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
@@ -176,7 +176,7 @@ function createBattle(left,right,settings={}){
      const attackerAttack=attacker.model.vector.attack/100;
      t.spin=Math.max(0,t.spin-hitStrength*(1.6+2*attackerAttack)/(0.7+defense));
      t.wobble+=hitStrength*(.16+.15*attackerAttack)/(0.7+defense);
-     t.burstLoad+=hitStrength*(0.055+0.09*attackerAttack)/(0.65+t.model.vector.burst/100);
+     t.burstLoad+=hitStrength*(0.28+0.18*attackerAttack)/(0.65+t.model.vector.burst/100);
     }
     if(hitStrength>0.11&&state.collisionCount%2===1)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）");
     // Latched components do not have a measured mechanical burst threshold.
