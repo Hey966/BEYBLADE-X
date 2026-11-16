@@ -2,14 +2,23 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.8";
+const VERSION="sim-v1.9";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
 const sum=(...items)=>items.reduce((o,x)=>{for(const k of ['attack','defense','stamina'])o[k]+=n(x,k);return o},{attack:0,defense:0,stamina:0});
 function rand(seed){let t=(Math.trunc(Number(seed))>>>0)||1;return()=>{t+=0x6D2B79F5;let q=t;q=Math.imul(q^(q>>>15),q|1);q^=q+Math.imul(q^(q>>>7),q|61);return((q^(q>>>14))>>>0)/4294967296}}
 function labelOwner(owner,db){const b=db.beys.find(x=>x.id===owner);if(!b)throw Error("找不到實體配件："+owner);return b}
-function kind(owner,key,db,attributes){const b=labelOwner(owner,db),rec=attributes.beys?.[owner]?.parts?.[key];if(!rec?.available||!rec.stats)throw Error("配件缺少已核對的能力："+b.name+"／"+key);return{b,rec}}
+function kind(owner,key,db,attributes){
+ const b=labelOwner(owner,db),rec=attributes.beys?.[owner]?.parts?.[key];
+ if(!rec?.available||!rec.stats)throw Error("配件缺少已核對的能力："+b.name+"／"+key);
+ const fields=key==="bit"?["attack","defense","stamina","dash","burst"]:
+  key==="ratchet"?["attack","defense","stamina","height"]:
+  ["attack","defense","stamina"];
+ if(fields.some(field=>!Number.isFinite(rec.stats[field])||rec.stats[field]<0))
+  throw Error("配件能力資料不完整或無效："+b.name+"／"+key);
+ return{b,rec}
+}
 function makeBuild(config,db,attributes){
  if(!config||!config.ratchet||!config.bit)throw Error("請選擇固鎖與軸心。");
  const rc=kind(config.ratchet,"ratchet",db,attributes),bt=kind(config.bit,"bit",db,attributes);
@@ -33,8 +42,10 @@ function makeBuild(config,db,attributes){
     [["blade",main],["ratchet",rc],["bit",bt]];
  }
  const x={
-  attack:cap(n(bl,"attack")*.62+n(rc.rec.stats,"attack")*.12+n(bt.rec.stats,"attack")*.26+n(bt.rec.stats,"dash")*.17),
-  defense:cap(n(bl,"defense")*.62+n(rc.rec.stats,"defense")*.15+n(bt.rec.stats,"defense")*.23+n(bt.rec.stats,"burst")*.08),
+  // Keep the manufacturer's distinct ratings separate. Dash is NOT attack;
+  // burst resistance is NOT defense. No double-counted bonus points.
+  attack:cap(n(bl,"attack")*.62+n(rc.rec.stats,"attack")*.12+n(bt.rec.stats,"attack")*.26),
+  defense:cap(n(bl,"defense")*.62+n(rc.rec.stats,"defense")*.15+n(bt.rec.stats,"defense")*.23),
   stamina:cap(n(bl,"stamina")*.62+n(rc.rec.stats,"stamina")*.13+n(bt.rec.stats,"stamina")*.25),
   dash:cap(n(bt.rec.stats,"dash")),burst:cap(n(bt.rec.stats,"burst"))
  };
@@ -45,12 +56,32 @@ function makeBuild(config,db,attributes){
  if(unique.size!==signatures.length)flags.push("同顆配置存在重複同類名稱，請檢查相容性");
  const partPhysical=names.map(p=>p.key+":"+p.owner);
  const height=n(rc.rec.stats,"height");
- const launcherSpeed=(n(x,"attack")*.08+n(x,"dash")*.12);
+ const heightExposure=cap((height-55)/30,0,1);
+ const partStats=parts.map(([part,p])=>({
+  part,owner:p.b.id,code:p.rec.id,
+  attack:n(p.rec.stats,"attack"),defense:n(p.rec.stats,"defense"),
+  stamina:n(p.rec.stats,"stamina"),dash:n(p.rec.stats,"dash"),
+  burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
+  sourceUrl:p.rec.sourceUrl||""
+ }));
+ if(config.mode!=="cx"&&bladeOwner.system==="CX"){
+  // Factory-built CX uses its own complete Blade rating. Sub-component
+  // listings are informative only; they must not silently override it.
+  const factory=kind(bladeOwner.id,"blade",db,attributes).rec;
+  partStats.unshift({part:"factoryBlade",owner:bladeOwner.id,code:factory.id,
+   attack:n(factory.stats,"attack"),defense:n(factory.stats,"defense"),
+   stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
+   sourceUrl:factory.sourceUrl||""});
+  if(["attack","defense","stamina"].some(key=>
+   Math.abs(n(factory.stats,key)-parts.filter(([key])=>
+    ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
+   flags.push("此 CX 完整戰刃數值與可列出的模組加總不同；完整裝採用戰刃總值，模組數值只供檢視。");
+ }
  return{
   mode:config.mode==="cx"?"cx":"whole",
   config:{...config},name:bladeOwner.name+" "+rc.b.ratchet+bt.b.bit,
   spin:bladeOwner.spinDirection==="L"?-1:1,vector:x,
-  partPhysical,partModel:signatures,parts:names,flags,
+  partPhysical,partModel:signatures,partStats,parts:names,flags,
   // Unmeasured dynamics proxies; these are NOT grams, kg*m^2, N or RPM.
   // Approximate collision footprint sized relative to the dish; not a real diameter.
   radius:0.168+0.00023*(x.defense+x.attack),
@@ -58,14 +89,14 @@ function makeBuild(config,db,attributes){
   inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
   // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
   // Calibrated for an observable slowdown, not real measured revolutions.
-  staminaDrag:.72+(100-x.stamina)*.010,
-  lateralDrag:0.42+(100-x.stamina)*0.002,
+  staminaDrag:.65+(100-x.stamina)*.010,
+  lateralDrag:.32+(100-x.stamina)*.002+x.dash*.001,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
   // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
-  burstThreshold:5.5+0.008*x.burst+0.002*x.defense,
+  burstThreshold:6.30+.022*x.burst+.004*x.defense-.34*heightExposure,
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
-  railEfficiency:0.25+0.009*x.dash,
-  launchTransfer:0.74+0.0024*x.attack+0.001*launcherSpeed,
+  railEfficiency:.20+.014*x.dash,
+  launchTransfer:.75+.0011*x.stamina+.0005*x.defense,
   ratchetHeight:height,
   type:bt.rec.type||"unknown"
  };
@@ -95,13 +126,15 @@ function initTop(spec,side,opts,rng){
  const launching=power/14000,sign=side===0?1:-1;
  // The centre line divides LAUNCH ZONES, not the active battle arena.
  // Every seeded landing point stays inside its own semicircle and clear of the rim.
- const x=-sign*(0.22+0.40*rng()),y=(rng()-.5)*0.68;
+ const x=-sign*(0.30+0.20*rng()),y=(rng()-.5)*.48;
  // Differing tip mobility is visible at launch, before the first collision.
  // This is an empirical animation proxy rather than measured launch velocity.
- const motionBoost=spec.type==='attack'?1.60:spec.type==='balance'?1.30:spec.type==='defense'?1.0:.85;
- const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(0.90+0.20*rng());
- const headingJitter=(rng()-.5)*.24;
- const spin=(19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5))*Math.min(1,launching/.20);
+ // Mobility comes from the selected Attack and Dash scores, not a fixed
+ // multiplier decided only by the Bit's categorical type.
+ const motionBoost=.78+.009*spec.vector.attack+.013*spec.vector.dash;
+ const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(.96+.08*rng());
+ const headingJitter=(rng()-.5)*.12;
+ const spin=(19+launching*48*spec.launchTransfer*launcherProxy+2*(rng()-.5))*Math.min(1,launching/.20);
  return{
   x,y,vx:sign*speed*Math.cos(angle+headingJitter),vy:sign*speed*Math.sin(angle*1.35+headingJitter)*1.28,
   height:0.48+0.16*rng(),verticalVelocity:-0.16-0.10*rng(),landed:false,bounces:0,
@@ -190,7 +223,7 @@ function createBattle(left,right,settings={}){
    if(opponent?.landed&&state.elapsed<10&&t.spin>6){
     const ox=opponent.x-t.x,oy=opponent.y-t.y,d=Math.hypot(ox,oy);
     if(d>.30&&d<1.35){
-     const converge=(.28+.0030*v.dash)*(1-d/1.55);
+     const converge=(.13+.0035*v.attack+.002*v.dash)*(1-d/1.55);
      t.vx+=moveDt*converge*ox/d;
      t.vy+=moveDt*converge*oy/d;
     }
@@ -204,7 +237,7 @@ function createBattle(left,right,settings={}){
     // Attack-oriented tips sweep or 'flower' around the dish. Stamina tips
     // hold a quieter center path; balance and defense are intermediate.
     // The small radial oscillation is a stylized movement approximation.
-    const activity=m.type==='attack'?1:m.type==='balance'?.72:m.type==='defense'?.43:.22;
+    const activity=cap((v.attack*.60+v.dash*.80-v.stamina*.20)/65,.12,1);
     const motion=Math.max(0,Math.min(1,t.spin/40))*Math.max(0,1-state.elapsed/24);
     const pattern=Math.sin(state.elapsed*(3.5+.018*v.dash)+t.phase);
     const radialPulse=activity*.24*motion*pattern;
@@ -228,7 +261,7 @@ function createBattle(left,right,settings={}){
     t.vx+=-Math.sin(theta)*t.spinSign*push-Math.cos(theta)*push*1.15;
     t.vy+= Math.cos(theta)*t.spinSign*push-Math.sin(theta)*push*1.15;
     t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
-    t.railCooldown=1.85;state.railCount++;
+    t.railCooldown=2.30-.018*v.dash;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
    // Keep the full blade footprint inside the wall, not just its centre.
@@ -238,7 +271,7 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    const escapeThreshold=.90+0.002*v.defense;
+    const escapeThreshold=1.30+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
@@ -283,28 +316,38 @@ function createBattle(left,right,settings={}){
     state.collisionCount++;
     const impulse=-(1+0.49)*approach/(1/a.model.massProxy+1/b.model.massProxy);
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
-    const hitStrength=Math.min(2.2,(0.31+impulse*1.40)*(0.75+.57*(attackA+attackB))*(.90+.20*rng()));
+    // Relative speed sets the contact energy; both selected attack ratings
+    // adjust contact sharpness. Seeded variation is held to ±2%.
+    const hitStrength=Math.min(2.2,(0.31+impulse*1.40)*
+     (.90+.003*(a.model.vector.attack+b.model.vector.attack))*(.98+.04*rng()));
     const ia=impulse/a.model.massProxy,ib=impulse/b.model.massProxy;
+    // Attack defines outgoing recoil; the TARGET's Defense absorbs it.
+    // Both still receive ordinary mass-based normal impulse.
     const kick=.11+hitStrength*.36;
-    // Normal rebound plus a small tangential glancing impulse.
-    const tangent=Math.min(.20,(a.spinSign-b.spinSign)*.025+(rng()-.5)*.15);
-    a.vx-=nx*(ia+kick)-ny*tangent;a.vy-=ny*(ia+kick)+nx*tangent;
-    b.vx+=nx*(ib+kick)+ny*tangent;b.vy+=ny*(ib+kick)-nx*tangent;
+    const kickA=kick*(.72+.010*b.model.vector.attack)/(.82+.006*a.model.vector.defense);
+    const kickB=kick*(.72+.010*a.model.vector.attack)/(.82+.006*b.model.vector.defense);
+    const tangent=(a.spinSign-b.spinSign)*.025+(rng()-.5)*.03;
+    a.vx-=nx*(ia+kickA)-ny*tangent;a.vy-=ny*(ia+kickA)+nx*tangent;
+    b.vx+=nx*(ib+kickB)+ny*tangent;b.vy+=ny*(ib+kickB)-nx*tangent;
     for(const [t,attacker] of [[a,b],[b,a]]){
      const defense=t.model.vector.defense/100;
      const attackerAttack=attacker.model.vector.attack/100;
      // Collisions consume rotation, but do not erase the remaining momentum.
-     t.spin=Math.max(0,t.spin-.45*hitStrength*(1.7+2.5*attackerAttack)/(0.7+defense));
-     t.wobble+=hitStrength*(.25+.22*attackerAttack)/(0.7+defense);
+     const attackerStats=attacker.model.vector,defenderStats=t.model.vector;
+     t.spin=Math.max(0,t.spin-.45*hitStrength*(1.5+.033*attackerStats.attack)/
+      (.74+.008*defenderStats.defense+.002*defenderStats.stamina));
+     t.wobble+=hitStrength*(.25+.22*attackerAttack)/(.70+.006*defenderStats.defense);
      // Lock damage accumulates across contacts; not every first hit bursts.
      // A lower burst-resistance bit and a stronger attack increase damage.
-     t.burstLoad+=hitStrength*(.40+.43*attackerAttack)/(0.83+.40*t.model.vector.burst/100);
+     t.burstLoad+=hitStrength*(.55+.006*attackerStats.attack)/
+      (.85+.007*defenderStats.burst+.004*defenderStats.defense);
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
      // Lean away from the contact normal. A rapidly spinning, defensive
      // top only dips briefly; it does not randomly rock like a pendulum.
      const stability=cap(t.spin/50,0,1);
-     const leanKick=Math.min(.27,hitStrength*.18/(.72+defense*.55+stability*.35))*(.94+.12*rng());
+     const leanKick=Math.min(.27,hitStrength*.18/
+      (.72+.006*defenderStats.defense+stability*.35))*(.98+.04*rng());
      t.tiltDir=Math.atan2(ny,nx)+(t.side===0?Math.PI:0);
      t.tilt=cap(Math.abs(t.tilt)*.38+leanKick,0,.45);
      t.tiltVelocity=cap(t.tiltVelocity*.25+leanKick*2.0,-.95,.95);

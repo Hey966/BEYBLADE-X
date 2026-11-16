@@ -69,6 +69,20 @@ function fire(id,type='click',value){
 }
 assert(modelCalls.length>0);
 assert(nodes.simActiveParts.innerHTML.includes('戰刃'));
+assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
+ 'visible five-metric ratings must be shown for each current build');
+assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
+ 'part-level audit must be available in the simulation UI');
+const firstStatHtml=nodes.simActiveParts.innerHTML;
+const changeBit={value:'OWN-UX-08-01',dataset:{team:'0',index:'0',part:'bit'}};
+changeBit.closest=()=>changeBit;
+for(const handler of nodes.simTeam0.events.change||[])handler({target:changeBit});
+assert.notEqual(nodes.simActiveParts.innerHTML,firstStatHtml,
+ 'selected Bit must change the displayed effective stats');
+assert(nodes.simActiveParts.innerHTML.includes('爆裂抗性 <b>30.0</b>'),
+ 'swapping to FB uses its 30-point burst resistance');
+changeBit.value='OWN-G3084-01';
+for(const handler of nodes.simTeam0.events.change||[])handler({target:changeBit});
 fire('simArenaType','change','plain');
 assert.equal(arenaCalls.at(-1),'plain');
 fire('simSettingsReset');
