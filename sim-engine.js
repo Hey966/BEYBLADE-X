@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.0";
+const VERSION="sim-v1.3";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=33;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -84,16 +84,19 @@ function validateDeck(deck){
  return true;
 }
 function initTop(spec,side,opts,rng){
- const power=cap(opts.power,20,100),angle=cap(opts.angle,-35,35)*Math.PI/180;
+ // SP is a user-controlled simulation input, not a calibrated Beybattle Pass measurement.
+ const power=cap(opts.power??10500,0,14000),angle=cap(opts.angle??0,-35,35)*Math.PI/180;
  const launcherProxy=opts.type==='string'?1.04:1; // uncalibrated launcher model
- const launching=power/100,sign=side===0?1:-1;
- const x=sign*-0.43,y=(side===0?-0.075:0.075);
- const speed=0.31+0.25*launching+(spec.vector.dash/100)*0.12;
+ const launching=power/14000,sign=side===0?1:-1;
+ // The centre line divides LAUNCH ZONES, not the active battle arena.
+ // Every seeded landing point stays inside its own semicircle and clear of the rim.
+ const x=-sign*(0.22+0.46*rng()),y=(rng()-.5)*0.88;
+ const speed=(0.31+0.25*launching+(spec.vector.dash/100)*0.12)*launching*(0.94+0.12*rng());
+ const spin=(19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5))*Math.min(1,launching/.20);
  return{
-  x,y,vx:sign*speed*Math.cos(angle)+0.05*(rng()-.5),
-  vy:sign*speed*Math.sin(angle)+(side===0?0.11:-0.11),
-  spin:19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5),
-  wobble:0,shock:0,burstLoad:0,railCooldown:0,
+  x,y,vx:sign*speed*Math.cos(angle),vy:sign*speed*Math.sin(angle)+(side===0?0.11:-0.11)*launching,
+  height:0.48+0.16*rng(),verticalVelocity:-0.16-0.10*rng(),landed:false,bounces:0,
+  spin:Math.max(0,spin),wobble:0,shock:0,burstLoad:0,railCooldown:0,
   exited:false,burst:false,spinSign:spec.spin,side,
   heading:rng()*TAU,tilt:0,model:spec
  };
@@ -122,6 +125,24 @@ function createBattle(left,right,settings={}){
   for(const t of state.tops){
    const m=t.model,v=m.vector;
    t.heading+=t.spinSign*t.spin*dt*0.46;
+   // First descend from above the stadium, rebound gently once, then join the fight.
+   // All airborne and bounce states are deterministic and shared by 3D / 2D / batch.
+   if(!t.landed){
+    t.verticalVelocity-=7.2*dt;
+    t.height=Math.max(0,t.height+t.verticalVelocity*dt);
+    if(t.height===0){
+     if(t.bounces===0){
+      t.bounces=1;
+      t.verticalVelocity=Math.min(.60,-t.verticalVelocity*.16);
+      t.wobble+=.025;
+      record("land",t.side,"落地輕彈（模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+t.verticalVelocity.toFixed(3)});
+     }else{
+      t.verticalVelocity=0;t.landed=true;
+      record("settle",t.side,"落地穩定（模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3)});
+     }
+    }
+    if(!t.landed)continue;
+   }
    t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble));
    const damping=Math.max(0,1-dt*(m.lateralDrag+0.09*t.wobble));
    t.vx*=damping;t.vy*=damping;
@@ -165,7 +186,9 @@ function createBattle(left,right,settings={}){
     if(vn>0){t.vx-=1.63*vn*nx;t.vy-=1.63*vn*ny;t.spin=Math.max(0,t.spin-(0.25+vn*0.55));t.wobble+=0.04+vn*.05;}
    }
   }
-  const [a,b]=state.tops,dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||0.0001;
+  const [a,b]=state.tops;
+  if(!a.landed||!b.landed)return; // no collisions before both tops touch down
+  const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||0.0001;
   const minDist=a.model.radius+b.model.radius;
   if(dist<minDist){
    const nx=dx/dist,ny=dy/dist;
