@@ -47,8 +47,7 @@
     {
       "id": "OWN-G3084-02",
       "part": "whole",
-      "status": "awaiting_verified_photo",
-      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
+      "status": "awaiting_verified_photo"
     },
     {
       "id": "OWN-G3084-02",
@@ -132,8 +131,7 @@
     {
       "id": "OWN-G3084-04",
       "part": "whole",
-      "status": "awaiting_verified_photo",
-      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
+      "status": "awaiting_verified_photo"
     },
     {
       "id": "OWN-G3084-04",
@@ -174,8 +172,7 @@
     {
       "id": "OWN-G3084-05",
       "part": "whole",
-      "status": "awaiting_verified_photo",
-      "note": "Original whole image rejected due to background artifacts. Collection card uses verified transparent upper Blade image."
+      "status": "awaiting_verified_photo"
     },
     {
       "id": "OWN-G3084-05",
