@@ -541,3 +541,105 @@ button.analysis-reference-hero .analysis-result-image{
     object-fit:contain;
   }
 }
+
+
+/* Ability suppression mode: visible 1v1 / 3v3 and matchup evidence. */
+.counter-number-controls{
+  padding:13px;
+  border:1px solid #41657a;
+  background:#122d3b;
+  border-radius:10px;
+  margin:13px 0 16px;
+}
+.counter-number-controls label{font-weight:800;color:#d4f3f4}
+.counter-number-controls select{border-color:#4d8b9c;background:#0e2935}
+.counter-opponents{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.counter-opponent-card{
+  border:1px solid #324b5d;
+  border-radius:10px;
+  background:#142432;
+  padding:13px;
+  min-width:0;
+}
+.counter-opponent-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:12px;
+}
+.counter-opponent-heading strong{font-size:14px;color:#c0eff4}
+.counter-opponent-heading span{font-size:10px;color:#92abbd}
+.counter-opponent-card .analysis-controls{display:flex;flex-direction:column}
+.counter-opponent-card .analysis-controls label{width:100%;flex:0 0 auto;min-width:0}
+.counter-opponent-card select{width:100%;font-size:12px}
+.counter-enemy-overview,.counter-team-coverage{
+  border:1px solid #36556b;
+  border-radius:10px;
+  padding:14px;
+  background:#122434;
+  margin:0 0 13px;
+}
+.counter-enemy-overview h4,.counter-team-coverage h4{
+  color:#ccecf0;
+  margin:0 0 11px;
+  font-size:14px;
+}
+.counter-enemy-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.counter-enemy-overview h4{grid-column:1 / -1}
+.counter-target{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  border:1px solid #334d60;
+  border-radius:7px;
+  padding:10px;
+  overflow-wrap:anywhere;
+  min-width:0;
+}
+.counter-target strong{font-size:12px;line-height:1.5}
+.counter-target .analysis-vector,.counter-result-vector{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+.counter-target .analysis-vector span{font-size:9px}
+.counter-team-coverage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.counter-team-coverage h4{grid-column:1 / -1}
+.counter-coverage{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  border-radius:7px;
+  background:#213949;
+  padding:10px;
+}
+.counter-coverage strong{font-size:12px;color:#bce9ef}
+.counter-coverage span{font-size:11px;line-height:1.5;color:#bbd0e0}
+.counter-why-title{font-size:12px;color:#d3edf2;margin:13px 0 6px}
+.counter-reasons{
+  padding-left:18px;
+  color:#b5c8d8;
+  font-size:11px;
+  line-height:1.65;
+}
+.counter-reasons li{margin-bottom:9px}
+.counter-reasons small{color:#8fb6c6;font-size:10px}
+#counterResults .analysis-vector{grid-template-columns:repeat(5,minmax(0,1fr))}
+#counterResults .analysis-vector span{font-size:9px;padding:7px 1px}
+@media(max-width:1000px){
+  .counter-opponents{grid-template-columns:1fr}
+  .counter-opponent-card .analysis-controls{flex-direction:row}
+  .counter-opponent-card .analysis-controls label{flex:1 1 150px;width:auto}
+  .counter-enemy-overview,.counter-team-coverage{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .counter-number-controls{gap:11px}
+  .counter-number-controls label{flex:1 1 100%;font-size:13px}
+  .counter-opponent-card .analysis-controls{flex-direction:column}
+  .counter-opponent-card .analysis-controls label{width:100%;flex:0 0 auto}
+  .counter-opponent-heading{align-items:flex-start}
+  .counter-enemy-overview,.counter-team-coverage{padding:10px}
+}
