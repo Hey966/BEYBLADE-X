@@ -26,6 +26,9 @@ assert(sceneCode.includes("paintImage(ctx,texture,0,0,r*2)"),
 assert(!sceneCode.includes("r*2.24"),'legacy oversized 2D sprite causes clipping');
 assert(sceneCode.includes("const topOrder="),'airborne tops must use correct depth order');
 assert(sceneCode.includes("const bladeLow="),'tilted blades must be lifted clear of the floor');
+assert(sceneCode.includes("function coastRotation("),'post-finish winner needs a smooth coasting phase');
+assert(sceneCode.includes("t-t*t/(2*COAST_DURATION)"),
+ 'post-finish spin should decelerate to zero smoothly');
 const nodes={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  const id=match[1];
@@ -41,7 +44,7 @@ browser.BBX_SIM_VIEW={create:()=>({
  setArena:value=>arenaCalls.push(value),
  setBuilds:items=>modelCalls.push(items.map(x=>x?.name)),
  getVisuals:spec=>[{name:'戰刃',value:spec.name,image:'images/reference/example.png'}],
- render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0,lean:state?.tops?.[0]?.tilt??0})
+ render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0,coast:options?.coastAge||0,lean:state?.tops?.[0]?.tilt??0})
 })};
 let frames=[],now=0;
 const uiContext={
@@ -103,6 +106,11 @@ assert(scoredFrame>visualFrame+40,'score must follow visible terminal animation'
 assert.equal(scoreBefore,scoreAtStart,'score must not update before animation');
 assert.notEqual(nodes.simScore.textContent,scoreAtStart,'score should update after terminal animation');
 assert(renderEvents.some(r=>r.age>=1),'finish motion should receive final age');
+for(let i=0;i<320&&frames.length;i++){
+ const cb=frames.shift();now+=16;cb(now);
+}
+assert(renderEvents.some(r=>r.coast>=4),
+ 'winner should keep spinning smoothly after the score has appeared');
 fire('simMatchType','change','3');
 assert.equal((nodes.simTeam0.innerHTML.match(/sim-build-card/g)||[]).length,3);
 assert.equal((nodes.simTeam1.innerHTML.match(/sim-build-card/g)||[]).length,3);
