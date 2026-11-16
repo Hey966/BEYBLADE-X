@@ -106,8 +106,9 @@ assert(activeContacts/120>1.85,'typical battles must contain repeated contact, n
 assert(activeRails/120>.40,'Xtreme dash should visibly contribute to typical battles');
 assert(activeBursts>0&&activeBursts<90,'burst finish should be possible but not automatic');
 assert(activeSpins>0,'spin finish must remain possible');
+assert(activeExtremes+activeOver>0,'pocket ring-outs must remain reachable with Xtreme rail enabled');
 const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
  {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
 assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
 
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins},null,2));
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver},null,2));
