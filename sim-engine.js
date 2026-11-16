@@ -126,15 +126,15 @@ function initTop(spec,side,opts,rng){
  const launching=power/14000,sign=side===0?1:-1;
  // The centre line divides LAUNCH ZONES, not the active battle arena.
  // Every seeded landing point stays inside its own semicircle and clear of the rim.
- const x=-sign*(0.22+0.40*rng()),y=(rng()-.5)*0.68;
+ const x=-sign*(0.30+0.20*rng()),y=(rng()-.5)*.48;
  // Differing tip mobility is visible at launch, before the first collision.
  // This is an empirical animation proxy rather than measured launch velocity.
  // Mobility comes from the selected Attack and Dash scores, not a fixed
  // multiplier decided only by the Bit's categorical type.
  const motionBoost=.78+.009*spec.vector.attack+.013*spec.vector.dash;
- const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(0.90+0.20*rng());
- const headingJitter=(rng()-.5)*.24;
- const spin=(19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5))*Math.min(1,launching/.20);
+ const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(.96+.08*rng());
+ const headingJitter=(rng()-.5)*.12;
+ const spin=(19+launching*48*spec.launchTransfer*launcherProxy+2*(rng()-.5))*Math.min(1,launching/.20);
  return{
   x,y,vx:sign*speed*Math.cos(angle+headingJitter),vy:sign*speed*Math.sin(angle*1.35+headingJitter)*1.28,
   height:0.48+0.16*rng(),verticalVelocity:-0.16-0.10*rng(),landed:false,bounces:0,
@@ -223,7 +223,7 @@ function createBattle(left,right,settings={}){
    if(opponent?.landed&&state.elapsed<10&&t.spin>6){
     const ox=opponent.x-t.x,oy=opponent.y-t.y,d=Math.hypot(ox,oy);
     if(d>.30&&d<1.35){
-     const converge=(.28+.0030*v.dash)*(1-d/1.55);
+     const converge=(.13+.0035*v.attack+.002*v.dash)*(1-d/1.55);
      t.vx+=moveDt*converge*ox/d;
      t.vy+=moveDt*converge*oy/d;
     }
@@ -271,7 +271,7 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    const escapeThreshold=1.23+0.002*v.defense;
+    const escapeThreshold=1.30+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
