@@ -1,0 +1,25 @@
+{
+  "imageSize": [
+    800,
+    800
+  ],
+  "lineComponents": [
+    {
+      "x": 429,
+      "y": 666,
+      "width": 241,
+      "height": 13,
+      "area": 508
+    },
+    {
+      "x": 125,
+      "y": 671,
+      "width": 197,
+      "height": 7,
+      "area": 409
+    }
+  ],
+  "removedPixels": 1093,
+  "sourceOpaquePixels": 237544,
+  "resultOpaquePixels": 237544
+}
