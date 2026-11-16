@@ -93,10 +93,14 @@ function initTop(spec,side,opts,rng){
  // The centre line divides LAUNCH ZONES, not the active battle arena.
  // Every seeded landing point stays inside its own semicircle and clear of the rim.
  const x=-sign*(0.22+0.40*rng()),y=(rng()-.5)*0.68;
- const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*(0.94+0.12*rng());
+ // Differing tip mobility is visible at launch, before the first collision.
+ // This is an empirical animation proxy rather than measured launch velocity.
+ const motionBoost=spec.type==='attack'?1.60:spec.type==='balance'?1.30:spec.type==='defense'?1.0:.85;
+ const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(0.90+0.20*rng());
+ const headingJitter=(rng()-.5)*.24;
  const spin=(19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5))*Math.min(1,launching/.20);
  return{
-  x,y,vx:sign*speed*Math.cos(angle),vy:sign*speed*Math.sin(angle*1.35)*1.28,
+  x,y,vx:sign*speed*Math.cos(angle+headingJitter),vy:sign*speed*Math.sin(angle*1.35+headingJitter)*1.28,
   height:0.48+0.16*rng(),verticalVelocity:-0.16-0.10*rng(),landed:false,bounces:0,
   // Angle changes both the horizontal launch course and visible lean.
   launchAngle:angle,tilt:angle*.95,tiltDir:side===0?0:Math.PI,
