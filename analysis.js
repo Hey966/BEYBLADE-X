@@ -164,27 +164,9 @@ function scoreStyle(vec,style,bitType){
  const match=bitType===style?9:bitType==='balance'?1.5:-5;
  return core+match;
 }
-function matchupStyle(enemyType){
- return {attack:'defense',defense:'stamina',stamina:'attack',balance:'balance'}[enemyType]||'balance';
-}
-function power(c,style,enemy){
+function power(c,style){
  const vec=combatVector(c.blade,c.ratchet,c.bit),bitType=roleOf(c.bit.data);
- let value=scoreStyle(vec,style,bitType);
- if(enemy){
-  // Official broad matchups are directional, not a guarantee for specific builds.
-  const their=enemy.vector;
-  value+=(bitType===style?7:0);
-  if(enemy.type==='attack')value+=.11*vec.defense+.035*vec.burst;
-  else if(enemy.type==='stamina')value+=.12*vec.attack+.08*vec.dash;
-  else if(enemy.type==='defense')value+=.13*vec.stamina;
-  else value+=.04*(vec.attack+vec.defense+vec.stamina);
-  // Penalize large specialization gaps against a balanced enemy.
-  if(enemy.type==='balance')value-=.025*(Math.max(vec.attack,vec.defense,vec.stamina)-Math.min(vec.attack,vec.defense,vec.stamina));
-  // Opponent intensity influences comparisons via threat magnitude.
-  const intensity=(their.attack+their.defense+their.stamina)/300;
-  value+=intensity*2;
- }
- return {value,vec,bitType};
+ return {value:scoreStyle(vec,style,bitType),vec,bitType};
 }
 function usable(choices){
  const keys=new Set();
@@ -193,7 +175,7 @@ function usable(choices){
  }
  return true;
 }
-function candidateList(style,enemy=null){
+function candidateList(style){
  const bs=bladePool(),rs=ratchets(),ts=bits();
  if(!bs.length||!rs.length||!ts.length)return [];
  // Keep promising blades while retaining at least one source from each owned base.
@@ -204,7 +186,7 @@ function candidateList(style,enemy=null){
  const result=[];
  for(const blade of selected)for(const ratchet of rs)for(const bit of ts){
   const c={blade,ratchet,bit,keys:[...blade.keys,'ratchet:'+ratchet.owner,'bit:'+bit.owner]};
-  const evaluated=power(c,style,enemy);
+  const evaluated=power(c,style);
   // Requested class is governed by Bit type. Non-matching Bits remain selectable only
   // when the requested class has no available compatible Bit.
   if(evaluated.bitType!==style)continue;
