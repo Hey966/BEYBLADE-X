@@ -4,11 +4,13 @@ on:
     paths:
       - 'sim-engine.js'
       - 'sim-ui.js'
+      - 'sim-audio.js'
       - 'sim-view.js'
       - 'data/collection.json'
       - 'data/part-abilities.json'
       - 'tests/sim-smoke.cjs'
       - 'tests/sim-ui-smoke.cjs'
+      - 'tests/sim-audio-smoke.cjs'
       - '.github/workflows/simulator-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -27,7 +29,11 @@ jobs:
           node --check sim-engine.js
           node --check sim-ui.js
           node --check sim-view.js
+          node --check sim-audio.js
       - name: Validate model and 3on3 restrictions
         run: node tests/sim-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization
         run: node tests/sim-ui-smoke.cjs
+
+      - name: Verify original audio events, mute, pause and audio level
+        run: node tests/sim-audio-smoke.cjs
