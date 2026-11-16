@@ -20,7 +20,7 @@ try { const x=JSON.parse(localStorage.getItem(KEY)||'null'); if(x&&x.version===V
 function save(){try {localStorage.setItem(KEY,JSON.stringify({version:VERSION,additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots}));return true}catch(e){notify('本機儲存失敗，請匯出備份');return false}}
 let toastTimer;
 function notify(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
-function nav(v){if(!['collection','parts','builder','counter','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();window.scrollTo({top:0,behavior:'smooth'});}
+function nav(v){if(!['collection','parts','builder','counter','sim','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',()=>nav(el.dataset.nav)));
 function getBey(id){return DB.beys.find(b=>b.id===id)}
 function pack(b){return pmap().get(b.packageId)||{market:b.ownMarket||'OTHER',title:'自行新增',manufacturer:b.ownMarket==='US'?'Hasbro':b.ownMarket==='JP'?'Takara Tomy':'手動登記'};}
