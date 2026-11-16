@@ -56,13 +56,23 @@ function buildVisualPreview(specs,preview=true){
  previewSpecs=specs;
  viewer.setArena($('simArenaType').value);
  viewer.setBuilds(specs);
+ const statNames=[['攻擊','attack'],['防禦','defense'],['持久','stamina'],['衝刺','dash'],['爆裂抗性','burst']];
+ const partNames={blade:'戰刃',lockChip:'紋章',mainBlade:'主刃',assistBlade:'輔助刃',ratchet:'固鎖',bit:'軸心'};
+ const statNum=value=>Number(value||0).toFixed(1);
  const content=specs.map((spec,i)=>{
   if(!spec)return '';
   const images=viewer.getVisuals(spec);
+  const effective='<div class="sim-stat-grid" aria-label="目前配置實際參與對戰的能力">'+
+   statNames.map(([label,key])=>'<span>'+clean(label)+' <b>'+statNum(spec.vector[key])+'</b></span>').join('')+'</div>';
+  const source='<details class="sim-part-stats"><summary>查看各零件原始數值</summary>'+
+   (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(partNames[p.part]||p.part)+'</b> '+
+    statNames.map(([label,key])=>clean(label)+':'+statNum(p[key])).join(' / ')+
+    (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+'</div>').join('')+'</details>';
   return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name)+'</strong>'+
    '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
     (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
-    '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div></div>';
+    '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div>'+
+    effective+source+'</div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
  if(preview)renderLaunchPreview();
