@@ -200,6 +200,10 @@ function createBattle(left,right,settings={}){
    t.railCooldown=Math.max(0,t.railCooldown-dt);
    t.wobble=Math.max(0,t.wobble-dt*(0.22+v.defense*.002));
    const r=Math.hypot(t.x,t.y);
+   // Keep pre-rail velocity for ring-outs: Xtreme assistance cannot undo an
+   // already committed outward pocket entry in the same physics step.
+   const speedBeforeRail=Math.hypot(t.vx,t.vy);
+   const outwardBeforeRail=r>.001?(t.vx*t.x+t.vy*t.y)/r:0;
    if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12){
     const theta=Math.atan2(t.y,t.x);
     // Xtreme rail contact creates a sudden inward-and-tangential sprint.
@@ -213,11 +217,11 @@ function createBattle(left,right,settings={}){
    }
    if(r>R-t.model.radius*0.55){
     const theta=Math.atan2(t.y,t.x);
-    const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.30)?"extreme":
-      (Math.abs(theta-0.65)<0.30||Math.abs(theta-2.45)<0.18)?"over":null;
-    const outward=(t.vx*t.x+t.vy*t.y)/Math.max(r,0.01);
-    const momentum=Math.hypot(t.vx,t.vy);
-    const escapeThreshold=0.64+0.002*v.defense;
+    const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.46)?"extreme":
+      (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
+    const outward=outwardBeforeRail;
+    const momentum=speedBeforeRail;
+    const escapeThreshold=0.53+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
