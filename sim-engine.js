@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.5";
+const VERSION="sim-v1.6";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=33;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -215,7 +215,8 @@ function createBattle(left,right,settings={}){
     t.railCooldown=1.85;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
-   if(r>R-t.model.radius*0.55){
+   // Keep the full blade footprint inside the wall, not just its centre.
+   if(r>R-t.model.radius){
     const theta=Math.atan2(t.y,t.x);
     const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.46)?"extreme":
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
@@ -226,7 +227,7 @@ function createBattle(left,right,settings={}){
       t.exited=true;decide(1-t.side,pocket);return;
     }
     const nx=t.x/r,ny=t.y/r;
-    t.x=nx*(R-m.radius*0.55);t.y=ny*(R-m.radius*0.55);
+    t.x=nx*(R-m.radius);t.y=ny*(R-m.radius);
     const vn=t.vx*nx+t.vy*ny;
     if(vn>0){
     t.vx-=1.72*vn*nx;t.vy-=1.72*vn*ny;
@@ -243,10 +244,16 @@ function createBattle(left,right,settings={}){
   }
   const [a,b]=state.tops;
   if(!a.landed||!b.landed)return; // no collisions before both tops touch down
-  const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||0.0001;
+  const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy);
   const minDist=a.model.radius+b.model.radius;
-  if(dist<minDist&&Math.abs(a.height-b.height)<.15){
-   const nx=dx/dist,ny=dy/dist;
+  // Compare the true blade footprints including nearby airborne trajectories.
+  // Resolve overlap on EVERY step, even during impact cooldown.
+  if(dist<minDist&&Math.abs(a.height-b.height)<.24){
+   // Exactly coincident centres need a stable fallback normal: otherwise
+   // dx/dist produces NaN or zero and the tops can remain superimposed.
+   const relX=b.vx-a.vx,relY=b.vy-a.vy,relLength=Math.hypot(relX,relY);
+   const nx=dist>1e-8?dx/dist:relLength>1e-8?-relX/relLength:1;
+   const ny=dist>1e-8?dy/dist:relLength>1e-8?-relY/relLength:0;
    const penetration=minDist-dist;
    a.x-=nx*penetration*.5;a.y-=ny*penetration*.5;
    b.x+=nx*penetration*.5;b.y+=ny*penetration*.5;
@@ -304,7 +311,15 @@ function createBattle(left,right,settings={}){
  }
  state.step=(steps=1)=>{
   const count=Math.max(1,Math.min(180,Math.trunc(steps)));
-  for(let i=0;i<count&&!state.done;i++)move(DT);
+  for(let i=0;i<count&&!state.done;i++){
+   // Adaptive microsteps prevent a fast rail dash from jumping across the
+   // other top between collision checks. Normal-speed frames remain unchanged.
+   const [a,b]=state.tops;
+   const relativeSpeed=Math.hypot(a.vx-b.vx,a.vy-b.vy);
+   const minRadius=Math.min(a.model.radius,b.model.radius);
+   const substeps=Math.max(1,Math.min(6,Math.ceil(relativeSpeed*DT/(minRadius*.40))));
+   for(let j=0;j<substeps&&!state.done;j++)move(DT/substeps);
+  }
   return state;
  };
  return state;
