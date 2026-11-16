@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜戰鬥陀螺收藏智慧中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-clipfix-v16">
+  <link rel="stylesheet" href="style.css?v=20261116-spin-pacing-v17">
 </head>
 <body>
   <header class="site-head">
@@ -59,9 +59,9 @@
 <section id="sim" class="view">
  <div class="section-header">
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
-  <p class="hint">依軸心類型模擬移動：攻擊型高速跑動、持久型偏向中央。碰撞、導軌衝刺及爆裂均影響對戰節奏。</p>
+  <p class="hint">1× 速度已加快攻擊節奏。撞擊後保留旋轉動能，逐漸減速、搖晃，最後才停轉。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。碰撞、落地傾斜、擊飛與爆裂依能力差異進行近似演算，並未以實物測量校正。3D 外形為近似示意，結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。新版把高速攻擊移動與轉速衰減分開計算。碰撞、落地傾斜、擊飛、持久及爆裂均屬近似模型，未經實物量測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
    <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、SP 力道、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
@@ -75,7 +75,7 @@
     <label>對戰形式<select id="simMatchType"><option value="1">1 對 1</option><option value="3">3 對 3（依序出戰）</option></select></label>
     <label>場地<select id="simArenaType"><option value="xtreme">Xtreme 模擬競技盤（含 Xtreme Line）</option><option value="plain">練習圓盤（無 Xtreme Line）</option></select></label>
     <label>亂數種子<input type="number" id="simSeed" value="966" min="1" max="4294967295"></label>
-    <label>畫面時間倍率<select id="simSpeed"><option value="1">1× 即時</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    <label>畫面播放倍率<select id="simSpeed"><option value="1">1× 新版對戰節奏</option><option value="2">2× 快轉</option><option value="4">4× 快轉</option></select></label>
    </div>
    <div class="sim-launch-row">
     <div><strong>我方發射</strong>
@@ -100,8 +100,8 @@
     <button id="simNext" type="button" disabled>下一回合</button>
     <button id="simReset" type="button">重設</button>
    </div>
-   <p id="simTime" class="sim-technical-status">0.0s / 33.0s（模型時間）</p>
-   <p id="simMessage" class="sim-message" role="status">雙方從上方投放。不同軸心移動速度不同；撞擊可彈飛、斜倒、爆裂，或進入導軌衝刺。</p>
+   <p id="simTime" class="sim-technical-status">0.0s / 65.0s（模型時間）</p>
+   <p id="simMessage" class="sim-message" role="status">雙方從上方投放。前段高速移動、後段持續旋轉並逐漸慢下來。撞擊仍可能爆裂或擊飛。</p>
    <ul id="simEvents" class="sim-events"></ul>
   </article>
  </div>
@@ -137,7 +137,7 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-clipfix-v16"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-clipfix-v16"></script><script src="sim-view.js?v=20261116-clipfix-v16"></script><script src="sim-audio.js?v=20261116-clipfix-v16"></script><script src="sim-ui.js?v=20261116-clipfix-v16"></script>
+  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-spin-pacing-v17"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
+<script src="sim-engine.js?v=20261116-spin-pacing-v17"></script><script src="sim-view.js?v=20261116-spin-pacing-v17"></script><script src="sim-audio.js?v=20261116-spin-pacing-v17"></script><script src="sim-ui.js?v=20261116-spin-pacing-v17"></script>
 </body>
 </html>
