@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.4";
+const VERSION="sim-v1.5";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=33;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -52,13 +52,14 @@ function makeBuild(config,db,attributes){
   spin:bladeOwner.spinDirection==="L"?-1:1,vector:x,
   partPhysical,partModel:signatures,parts:names,flags,
   // Unmeasured dynamics proxies; these are NOT grams, kg*m^2, N or RPM.
-  radius:0.107+0.00015*(x.defense+x.attack),
+  // Approximate collision footprint sized relative to the dish; not a real diameter.
+  radius:0.168+0.00023*(x.defense+x.attack),
   massProxy:1+0.0024*x.defense+0.0013*x.attack,
   inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
   staminaDrag:1.15+(100-x.stamina)*0.023,
   lateralDrag:0.42+(100-x.stamina)*0.002,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
-  burstThreshold:0.42+0.0058*x.burst+0.0010*x.defense,
+  burstThreshold:1.46+0.008*x.burst+0.002*x.defense,
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
   railEfficiency:0.25+0.009*x.dash,
   launchTransfer:0.74+0.0024*x.attack+0.001*launcherSpeed,
@@ -102,7 +103,7 @@ function initTop(spec,side,opts,rng){
   tiltVelocity:0,impact:0,
   spin:Math.max(0,spin),wobble:0,shock:0,burstLoad:0,railCooldown:0,
   exited:false,burst:false,spinSign:spec.spin,side,
-  heading:rng()*TAU,model:spec
+  heading:rng()*TAU,phase:rng()*TAU,model:spec
  };
 }
 function createBattle(left,right,settings={}){
@@ -157,18 +158,19 @@ function createBattle(left,right,settings={}){
    t.tiltVelocity+=dt*(-5.8*t.tilt-3.1*t.tiltVelocity);
    t.tilt=cap(t.tilt+t.tiltVelocity*dt,-1.18,1.18);
    t.impact=Math.max(0,t.impact-dt*2.5);
+   t.burstLoad=Math.max(0,t.burstLoad-dt*.008);
    t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble+Math.abs(t.tilt)*.55));
    const damping=Math.max(0,1-dt*(m.lateralDrag+0.09*t.wobble));
    t.vx*=damping;t.vy*=damping;
    // The selected launch tilt changes the first seconds of lateral motion.
    const angleInfluence=Math.max(0,1-state.elapsed/3.0);
    t.vy+=dt*Math.sin(t.launchAngle)*t.spinSign*.55*angleInfluence;
-   // Weak course convergence helps moving tops meet, without a collision barrier.
+   // Small convergence toward an encounter point. A game-model heuristic, not magnetic force.
    const opponent=state.tops[1-t.side];
    if(opponent?.landed&&state.elapsed<10&&t.spin>6){
     const ox=opponent.x-t.x,oy=opponent.y-t.y,d=Math.hypot(ox,oy);
     if(d>.30&&d<1.35){
-     const converge=(.13+.0022*v.attack)*(1-d/1.55);
+     const converge=(.28+.0030*v.dash)*(1-d/1.55);
      t.vx+=dt*converge*ox/d;
      t.vy+=dt*converge*oy/d;
     }
@@ -179,22 +181,30 @@ function createBattle(left,right,settings={}){
     const slope=0.15+0.11*Math.min(1,radius/R)-0.29*(v.dash/100);
     t.vx-=dt*slope*t.x/radius;
     t.vy-=dt*slope*t.y/radius;
-    // Bit mobility is modelled as an additional tangential tendency.
-    const roam=0.026+0.0013*v.dash;
-    t.vx+=dt*(-t.y/radius)*t.spinSign*roam;
-    t.vy+=dt*(t.x/radius)*t.spinSign*roam;
+    // Attack-oriented tips sweep or 'flower' around the dish. Stamina tips
+    // hold a quieter center path; balance and defense are intermediate.
+    // The small radial oscillation is a stylized movement approximation.
+    const activity=m.type==='attack'?1:m.type==='balance'?.72:m.type==='defense'?.43:.22;
+    const motion=Math.max(0,Math.min(1,t.spin/40))*Math.max(0,1-state.elapsed/24);
+    const pattern=Math.sin(state.elapsed*(3.5+.018*v.dash)+t.phase);
+    const radialPulse=activity*.24*motion*pattern;
+    const roam=(.026+.15*activity+.0013*v.dash)*motion;
+    t.vx+=dt*(radialPulse*t.x/radius-t.y/radius*t.spinSign*roam);
+    t.vy+=dt*(radialPulse*t.y/radius+t.x/radius*t.spinSign*roam);
    }
    t.x+=t.vx*dt;t.y+=t.vy*dt;
    t.railCooldown=Math.max(0,t.railCooldown-dt);
    t.wobble=Math.max(0,t.wobble-dt*(0.22+v.defense*.002));
    const r=Math.hypot(t.x,t.y);
-   if(env.rail&&r>1.10&&r<R&&t.railCooldown===0&&t.spin>12){
+   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12){
     const theta=Math.atan2(t.y,t.x);
-    const push=Math.min(0.94,m.railEfficiency*0.75)*(0.25+t.spin/130);
-    t.vx+=-Math.sin(theta)*t.spinSign*push;
-    t.vy+= Math.cos(theta)*t.spinSign*push;
+    // Xtreme rail contact creates a sudden inward-and-tangential sprint.
+    // Unlike the older formula, the dash carries the top across the dish.
+    const push=Math.min(1.4,m.railEfficiency*1.35)*(0.55+t.spin/130);
+    t.vx+=-Math.sin(theta)*t.spinSign*push-Math.cos(theta)*push*1.15;
+    t.vy+= Math.cos(theta)*t.spinSign*push-Math.sin(theta)*push*1.15;
     t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
-    t.railCooldown=2.6;state.railCount++;
+    t.railCooldown=1.85;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
    if(r>R-t.model.radius*0.55){
@@ -203,7 +213,7 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.30||Math.abs(theta-2.45)<0.18)?"over":null;
     const outward=(t.vx*t.x+t.vy*t.y)/Math.max(r,0.01);
     const momentum=Math.hypot(t.vx,t.vy);
-    const escapeThreshold=0.36+0.0018*v.defense;
+    const escapeThreshold=0.64+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
@@ -240,7 +250,7 @@ function createBattle(left,right,settings={}){
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
     const hitStrength=Math.min(2.2,(0.31+impulse*1.40)*(0.75+.57*(attackA+attackB))*(.90+.20*rng()));
     const ia=impulse/a.model.massProxy,ib=impulse/b.model.massProxy;
-    const kick=.28+hitStrength*.62;
+    const kick=.11+hitStrength*.36;
     // Normal rebound plus a small tangential glancing impulse.
     const tangent=Math.min(.20,(a.spinSign-b.spinSign)*.025+(rng()-.5)*.15);
     a.vx-=nx*(ia+kick)-ny*tangent;a.vy-=ny*(ia+kick)+nx*tangent;
@@ -250,6 +260,8 @@ function createBattle(left,right,settings={}){
      const attackerAttack=attacker.model.vector.attack/100;
      t.spin=Math.max(0,t.spin-hitStrength*(1.7+2.5*attackerAttack)/(0.7+defense));
      t.wobble+=hitStrength*(.25+.22*attackerAttack)/(0.7+defense);
+     // Lock damage accumulates across contacts; not every first hit bursts.
+     // A lower burst-resistance bit and a stronger attack increase damage.
      t.burstLoad+=hitStrength*(.40+.43*attackerAttack)/(0.83+.40*t.model.vector.burst/100);
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
@@ -263,7 +275,7 @@ function createBattle(left,right,settings={}){
       t.height=Math.max(t.height,.009);
      }
     }
-    if(hitStrength>.11)record("hit",null,(hitStrength>.80?"強烈撞擊！":"碰撞反彈 ")+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3)});
+    if(hitStrength>.11)record("hit",null,(hitStrength>.80?"強烈撞擊！":"碰撞反彈 ")+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3),impactSides:[+a.impact.toFixed(2),+b.impact.toFixed(2)]});
     // Latched components do not have a measured mechanical burst threshold.
     const excess=[a,b].map(t=>t.burstLoad-t.model.burstThreshold);
     if(Math.max(...excess)>0){
