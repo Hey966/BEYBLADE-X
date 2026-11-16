@@ -64,9 +64,15 @@ function buildVisualPreview(specs,preview=true){
  }).join('');
  $('simActiveParts').innerHTML=content;
  if(preview){
-  const state={done:false,terminal:null,tops:specs.map((b,i)=>b?({
-   x:i===0?-.42:.42,y:i===0?-.05:.05,heading:0,spin:0,wobble:0,railCooldown:0,model:b,side:i
-  }):null)};
+  const state={done:false,terminal:null,tops:specs.map((b,i)=>{
+   if(!b)return null;
+   const launchAngle=(Number($('simAngle'+i)?.value)||0)*Math.PI/180;
+   return{
+    x:i===0?-.42:.42,y:i===0?-.05:.05,heading:0,spin:0,wobble:0,
+    tilt:launchAngle*.95,tiltDir:i===0?0:Math.PI,launchAngle,
+    height:0,landed:true,railCooldown:0,model:b,side:i
+   };
+  })};
   viewer.render(state);
  }
 }
@@ -181,6 +187,7 @@ function playFrame(token,lastTime){
    const e=b.events[i];
    if(e.type==='hit')audio?.play?.('hit',Math.min(1.45,Math.max(.4,Number(e.strength)||.7)));
    else if(e.type==='land')audio?.play?.('land',.65);
+   else if(e.type==='wall')audio?.play?.('hit',Math.min(.95,.40+Number(e.strength||0)));
    else if(e.type==='dash')audio?.play?.('dash',.8);
    else if(e.type==='finish')audio?.play?.(b.finish||'draw',1);
   }
@@ -252,7 +259,7 @@ for(const i of [0,1]){
  $('simPower'+i+'Number').addEventListener('change',()=>syncPower(i,'number'));
  $('simAngle'+i).addEventListener('input',()=>{
   $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
-  if(runtime)clearMatch('角度已變更，請重新開始。');
+  clearMatch('角度已變更。已更新陀螺傾斜預覽，請重新開始。');
  });
 }
 $('simSettingsReset').addEventListener('click',()=>{
