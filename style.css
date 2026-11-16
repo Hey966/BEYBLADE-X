@@ -846,3 +846,64 @@ button.analysis-reference-hero .analysis-result-image{
   .sim-piece-preview img{height:44px}
   .sim-piece-preview span,.sim-piece-preview small{font-size:8px}
 }
+
+
+/* Simulation replay aesthetic: match supplied reference's white stadium,
+   blue technical-grid backdrop, lime-green Xtreme rail and SFX control bar. */
+.sim-audio-controls{
+ display:grid;
+ grid-template-columns:auto auto minmax(65px,1fr);
+ align-items:center;
+ column-gap:10px;
+ row-gap:7px;
+ border:1px solid #42637c;
+ border-radius:9px;
+ padding:10px 11px;
+ background:linear-gradient(110deg,#15354d,#213c52);
+ margin-bottom:14px;
+}
+.sim-audio-controls .sim-sound-button{
+ min-height:36px;
+ padding:7px 11px;
+ background:#39616a;
+ border-color:#6ccfba;
+ color:#ecffff;
+ white-space:nowrap;
+ font-size:11px;
+}
+.sim-audio-controls label{
+ display:flex;
+ flex-direction:row;
+ align-items:center;
+ gap:6px;
+ white-space:nowrap;
+ font-size:11px;
+}
+.sim-audio-controls input[type=range]{
+ min-height:25px;
+ width:100%;
+ margin:0;
+ accent-color:#b7f454;
+}
+.sim-audio-hint{
+ grid-column:1/-1;
+ color:#afc7d7;
+ font-size:10px;
+ line-height:1.55;
+}
+.sim-arena{
+ background:linear-gradient(145deg,#245a9c,#123769 70%,#0a2854);
+ border:1px solid #618cc4;
+ box-shadow:inset 0 0 25px #040d2899;
+}
+.sim-arena canvas{
+ width:100%;
+ height:100%;
+ display:block;
+}
+@media(max-width:720px){
+ .sim-audio-controls{grid-template-columns:auto minmax(65px,1fr);gap:6px 9px;padding:9px}
+ .sim-audio-controls label{grid-column:1 / 2;grid-row:2}
+ .sim-audio-controls input[type=range]{grid-column:2 / 3;grid-row:2}
+ .sim-audio-controls .sim-sound-button{grid-column:1 / 3}
+}
