@@ -84,6 +84,11 @@ def process_task(task):
     try:
         raw=download(spec["url"])
         png=transparent_png(raw)
+        if bey["id"]=="OWN-G3393-01" and layer=="whole":
+            # The online Rudder Phoenix photo contains a thin neutral scan line
+            # beneath the red blade. Remove only the detected strip.
+            from clean_horizontal_artifacts import clean_horizontal_line
+            png,_=clean_horizontal_line(png)
         destination.parent.mkdir(parents=True,exist_ok=True)
         png.save(destination,format="PNG",optimize=True)
         print("OK",bey["id"],layer,destination.name,flush=True)
