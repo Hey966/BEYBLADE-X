@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜戰鬥陀螺收藏智慧中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-spin-pacing-v17">
+  <link rel="stylesheet" href="style.css?v=20261116-gyro-recoil-v18">
 </head>
 <body>
   <header class="site-head">
@@ -59,9 +59,9 @@
 <section id="sim" class="view">
  <div class="section-header">
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
-  <p class="hint">1× 速度已加快攻擊節奏。撞擊後保留旋轉動能，逐漸減速、搖晃，最後才停轉。</p>
+  <p class="hint">1× 保留高速攻擊。碰撞後短暫傾斜、進動，接著恢復穩定；轉速變慢後才逐漸晃動。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。新版把高速攻擊移動與轉速衰減分開計算。碰撞、落地傾斜、擊飛、持久及爆裂均屬近似模型，未經實物量測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。新版把高速攻擊移動與轉速衰減分開計算。碰撞後的姿態採短暫反衝、旋轉軸進動與轉速相關的回正效果。擊飛、持久及爆裂仍屬未經實物量測校正的近似模型。3D 外形為近似示意，結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
    <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、SP 力道、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
@@ -137,7 +137,7 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-spin-pacing-v17"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-spin-pacing-v17"></script><script src="sim-view.js?v=20261116-spin-pacing-v17"></script><script src="sim-audio.js?v=20261116-spin-pacing-v17"></script><script src="sim-ui.js?v=20261116-spin-pacing-v17"></script>
+  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-gyro-recoil-v18"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
+<script src="sim-engine.js?v=20261116-gyro-recoil-v18"></script><script src="sim-view.js?v=20261116-gyro-recoil-v18"></script><script src="sim-audio.js?v=20261116-gyro-recoil-v18"></script><script src="sim-ui.js?v=20261116-gyro-recoil-v18"></script>
 </body>
 </html>
