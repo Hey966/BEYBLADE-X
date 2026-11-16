@@ -22,7 +22,7 @@ function create(container,status,api){
   const events=state.events||[];
   for(let i=eventCursor;i<events.length;i++){
    const ev=events[i];
-   if(['hit','dash','finish','land'].includes(ev.type))
+   if(['hit','wall','dash','finish','land'].includes(ev.type))
     fx.push({kind:ev.type,x:Number(ev.x)||0,y:Number(ev.y)||0,t:ev.t||state.elapsed,
       strength:Number(ev.strength)||.7,who:ev.who});
   }
@@ -504,9 +504,9 @@ function create(container,status,api){
    const size=(burst.kind==='dash'?.36:burst.kind==='land'?.20:burst.kind==='finish'?.72:.46)*(1+age*(3+Math.min(2,burst.strength*.8)))*(burst.kind==='hit'?Math.max(.8,burst.strength*.95):1);
    sprite.scale.set(size,size,1);
    sprite.material.opacity=remaining*.97;
-   sprite.material.color.setHex(burst.kind==='dash'?0x79ffff:burst.kind==='land'?0x8ddff3:burst.kind==='finish'?0xf7ffdc:0xffd686);
+   sprite.material.color.setHex(burst.kind==='dash'?0x79ffff:burst.kind==='land'?0x8ddff3:burst.kind==='wall'?0xffbd82:burst.kind==='finish'?0xf7ffdc:0xffd686);
   }
-  const recent=fx.slice().reverse().find(e=>e.kind==='hit'&&now-e.t<.2);
+  const recent=fx.slice().reverse().find(e=>(e.kind==='hit'||e.kind==='wall')&&now-e.t<.2);
   if(recent){
    // Small camera tremor on impact; synchronized to the collision event.
    const t=Math.max(0,1-(now-recent.t)/.2);
