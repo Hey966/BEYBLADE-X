@@ -4,7 +4,7 @@
 const C=root.BBX_SIM_CORE,V=root.BBX_SIM_VIEW,api=root.BBX_COLLECTION_API,abilities=root.BBX_PART_STATS;
 const $=id=>document.getElementById(id);
 if(!C||!V||!api||!abilities){const e=$('simMessage');if(e)e.textContent="模擬器缺少收藏或能力資料。";return}
-const clean=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const clean=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const beys=api.getBeys().filter(b=>abilities.beys?.[b.id]?.parts?.ratchet&&abilities.beys?.[b.id]?.parts?.bit);
 const cx=beys.filter(b=>b.system==='CX');
 const choose=(p,b,valid=true)=>'<option value="'+clean(p)+'"'+(String(p)===String(b)?' selected':'')+(valid?'':' disabled')+'>'+clean(beys.find(x=>x.id===p)?.name||p)+'</option>';
