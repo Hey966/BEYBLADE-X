@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.3";
+const VERSION="sim-v1.4";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=33;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -57,7 +57,8 @@ function makeBuild(config,db,attributes){
   inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
   staminaDrag:1.15+(100-x.stamina)*0.023,
   lateralDrag:0.42+(100-x.stamina)*0.002,
-  burstThreshold:0.52+0.0078*x.burst,
+  // Prototype burst resistance: parts with higher burst and defense scores resist shock.
+  burstThreshold:0.42+0.0058*x.burst+0.0010*x.defense,
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
   railEfficiency:0.25+0.009*x.dash,
   launchTransfer:0.74+0.0024*x.attack+0.001*launcherSpeed,
@@ -90,20 +91,23 @@ function initTop(spec,side,opts,rng){
  const launching=power/14000,sign=side===0?1:-1;
  // The centre line divides LAUNCH ZONES, not the active battle arena.
  // Every seeded landing point stays inside its own semicircle and clear of the rim.
- const x=-sign*(0.22+0.46*rng()),y=(rng()-.5)*0.88;
- const speed=(0.31+0.25*launching+(spec.vector.dash/100)*0.12)*launching*(0.94+0.12*rng());
+ const x=-sign*(0.22+0.40*rng()),y=(rng()-.5)*0.68;
+ const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*(0.94+0.12*rng());
  const spin=(19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5))*Math.min(1,launching/.20);
  return{
-  x,y,vx:sign*speed*Math.cos(angle),vy:sign*speed*Math.sin(angle)+(side===0?0.11:-0.11)*launching,
+  x,y,vx:sign*speed*Math.cos(angle),vy:sign*speed*Math.sin(angle*1.35)*1.28,
   height:0.48+0.16*rng(),verticalVelocity:-0.16-0.10*rng(),landed:false,bounces:0,
+  // Angle changes both the horizontal launch course and visible lean.
+  launchAngle:angle,tilt:angle*.95,tiltDir:side===0?0:Math.PI,
+  tiltVelocity:0,impact:0,
   spin:Math.max(0,spin),wobble:0,shock:0,burstLoad:0,railCooldown:0,
   exited:false,burst:false,spinSign:spec.spin,side,
-  heading:rng()*TAU,tilt:0,model:spec
+  heading:rng()*TAU,model:spec
  };
 }
 function createBattle(left,right,settings={}){
  const seed=(Number(settings.seed)||1)>>>0,rng=rand(seed);
- const launcher=settings.launch||[{power:75,angle:0},{power:75,angle:0}];
+ const launcher=settings.launch||[{power:10500,angle:0},{power:10500,angle:0}];
  const env={rail:settings.rail!==false,arena:settings.arena||"xtreme"};
  const state={version:VERSION,seed,elapsed:0,done:false,winner:null,finish:null,points:0,
   tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,terminal:null,collisionCount:0,railCount:0,lastContactAt:-5};
@@ -143,9 +147,32 @@ function createBattle(left,right,settings={}){
     }
     if(!t.landed)continue;
    }
-   t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble));
+   // Impacts can briefly lift a spinning top off the floor after initial landing.
+   if(t.height>0||t.verticalVelocity>0){
+    t.verticalVelocity-=8.2*dt;
+    t.height=Math.max(0,t.height+t.verticalVelocity*dt);
+    if(t.height===0){t.verticalVelocity=0;t.wobble+=.04;}
+   }
+   // Lean from launch angle persists at entry, while impact-induced tilt settles.
+   t.tiltVelocity+=dt*(-5.8*t.tilt-3.1*t.tiltVelocity);
+   t.tilt=cap(t.tilt+t.tiltVelocity*dt,-1.18,1.18);
+   t.impact=Math.max(0,t.impact-dt*2.5);
+   t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble+Math.abs(t.tilt)*.55));
    const damping=Math.max(0,1-dt*(m.lateralDrag+0.09*t.wobble));
    t.vx*=damping;t.vy*=damping;
+   // The selected launch tilt changes the first seconds of lateral motion.
+   const angleInfluence=Math.max(0,1-state.elapsed/3.0);
+   t.vy+=dt*Math.sin(t.launchAngle)*t.spinSign*.55*angleInfluence;
+   // Weak course convergence helps moving tops meet, without a collision barrier.
+   const opponent=state.tops[1-t.side];
+   if(opponent?.landed&&state.elapsed<10&&t.spin>6){
+    const ox=opponent.x-t.x,oy=opponent.y-t.y,d=Math.hypot(ox,oy);
+    if(d>.30&&d<1.35){
+     const converge=(.13+.0022*v.attack)*(1-d/1.55);
+     t.vx+=dt*converge*ox/d;
+     t.vy+=dt*converge*oy/d;
+    }
+   }
    // Stadium slope pulls inward; Xtreme-style rails drive tangent movement.
    const radius=Math.hypot(t.x,t.y);
    if(radius>0.01){
@@ -183,36 +210,60 @@ function createBattle(left,right,settings={}){
     const nx=t.x/r,ny=t.y/r;
     t.x=nx*(R-m.radius*0.55);t.y=ny*(R-m.radius*0.55);
     const vn=t.vx*nx+t.vy*ny;
-    if(vn>0){t.vx-=1.63*vn*nx;t.vy-=1.63*vn*ny;t.spin=Math.max(0,t.spin-(0.25+vn*0.55));t.wobble+=0.04+vn*.05;}
+    if(vn>0){
+    t.vx-=1.72*vn*nx;t.vy-=1.72*vn*ny;
+    t.spin=Math.max(0,t.spin-(0.25+vn*0.80));
+    t.wobble+=.08+vn*.12;
+    t.tiltVelocity+=Math.min(.85,vn*.8)*(rng()<.5?-1:1);
+    if(vn>.40){
+     t.verticalVelocity=Math.max(t.verticalVelocity,Math.min(.68,vn*.32));
+     t.height=Math.max(t.height,.006);
+    }
+    if(vn>.28)record("wall",t.side,"競技盤邊緣反彈",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+vn.toFixed(3)});
+   }
    }
   }
   const [a,b]=state.tops;
   if(!a.landed||!b.landed)return; // no collisions before both tops touch down
   const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||0.0001;
   const minDist=a.model.radius+b.model.radius;
-  if(dist<minDist){
+  if(dist<minDist&&Math.abs(a.height-b.height)<.15){
    const nx=dx/dist,ny=dy/dist;
    const penetration=minDist-dist;
    a.x-=nx*penetration*.5;a.y-=ny*penetration*.5;
    b.x+=nx*penetration*.5;b.y+=ny*penetration*.5;
    const approach=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
-   if(approach<0&&state.elapsed-state.lastContactAt>0.24){
+   if(approach<-.03&&state.elapsed-state.lastContactAt>0.18){
     state.lastContactAt=state.elapsed;
     state.collisionCount++;
     const impulse=-(1+0.49)*approach/(1/a.model.massProxy+1/b.model.massProxy);
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
-    const hitStrength=(0.28+impulse)*(0.7+.42*(attackA+attackB))*(.90+.2*rng());
+    const hitStrength=Math.min(2.2,(0.31+impulse*1.40)*(0.75+.57*(attackA+attackB))*(.90+.20*rng()));
     const ia=impulse/a.model.massProxy,ib=impulse/b.model.massProxy;
-    a.vx-=nx*(ia+0.34+hitStrength*.73);a.vy-=ny*(ia+0.34+hitStrength*.73);
-    b.vx+=nx*(ib+0.34+hitStrength*.73);b.vy+=ny*(ib+0.34+hitStrength*.73);
+    const kick=.28+hitStrength*.62;
+    // Normal rebound plus a small tangential glancing impulse.
+    const tangent=Math.min(.20,(a.spinSign-b.spinSign)*.025+(rng()-.5)*.15);
+    a.vx-=nx*(ia+kick)-ny*tangent;a.vy-=ny*(ia+kick)+nx*tangent;
+    b.vx+=nx*(ib+kick)+ny*tangent;b.vy+=ny*(ib+kick)-nx*tangent;
     for(const [t,attacker] of [[a,b],[b,a]]){
      const defense=t.model.vector.defense/100;
      const attackerAttack=attacker.model.vector.attack/100;
-     t.spin=Math.max(0,t.spin-hitStrength*(1.6+2*attackerAttack)/(0.7+defense));
-     t.wobble+=hitStrength*(.16+.15*attackerAttack)/(0.7+defense);
-     t.burstLoad+=hitStrength*(0.28+0.18*attackerAttack)/(0.65+t.model.vector.burst/100);
+     t.spin=Math.max(0,t.spin-hitStrength*(1.7+2.5*attackerAttack)/(0.7+defense));
+     t.wobble+=hitStrength*(.25+.22*attackerAttack)/(0.7+defense);
+     t.burstLoad+=hitStrength*(.40+.43*attackerAttack)/(0.83+.40*t.model.vector.burst/100);
+     // A harder collision knocks the top briefly into the air and sideways.
+     // The rebound magnitude depends on attack, defense, and relative motion.
+     const leanSign=t.side===0?-1:1;
+     t.tiltDir=Math.atan2(ny,nx)+(t.side===0?Math.PI:0);
+     t.tiltVelocity+=leanSign*(.9+hitStrength*2.1)*(rng()<.5?-1:1);
+     t.tilt=cap(t.tilt+leanSign*hitStrength*.11,-1.18,1.18);
+     t.impact=Math.max(t.impact,Math.min(1.8,hitStrength));
+     if(hitStrength>.43){
+      t.verticalVelocity=Math.max(t.verticalVelocity,Math.min(1.62,.18+hitStrength*.86/(.70+defense*.60)));
+      t.height=Math.max(t.height,.009);
+     }
     }
-    if(hitStrength>0.11)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3)});
+    if(hitStrength>.11)record("hit",null,(hitStrength>.80?"強烈撞擊！":"碰撞反彈 ")+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3)});
     // Latched components do not have a measured mechanical burst threshold.
     const excess=[a,b].map(t=>t.burstLoad-t.model.burstThreshold);
     if(Math.max(...excess)>0){

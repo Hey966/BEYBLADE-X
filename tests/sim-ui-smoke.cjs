@@ -34,7 +34,7 @@ browser.BBX_SIM_VIEW={create:()=>({
  setArena:value=>arenaCalls.push(value),
  setBuilds:items=>modelCalls.push(items.map(x=>x?.name)),
  getVisuals:spec=>[{name:'戰刃',value:spec.name,image:'images/reference/example.png'}],
- render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0})
+ render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0,lean:state?.tops?.[0]?.tilt??0})
 })};
 let frames=[],now=0;
 const uiContext={
@@ -66,6 +66,13 @@ assert.equal(nodes.simPower0Number.value,'10500');
 assert.equal(nodes.simAngle1.value,'0');
 assert.equal(nodes.simLauncher1.value,'winder');
 assert.equal(nodes.simMatchType.value,'1');
+const beforeAnglePreviewMeshes=modelCalls.length;
+fire('simAngle0','input','35');
+assert(renderEvents.at(-1).lean>.4,'positive angle tilts preview');
+fire('simAngle0','input','-35');
+assert(renderEvents.at(-1).lean<-.4,'negative angle tilts preview');
+assert.equal(modelCalls.length,beforeAnglePreviewMeshes,'slider moves should not rebuild 3D geometry');
+fire('simAngle0','input','0');
 const beforeModels=modelCalls.length;
 const changed={value:'OWN-G3084-03',dataset:{team:'0',index:'0',part:'blade'}};
 changed.closest=()=>changed;

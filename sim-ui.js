@@ -51,7 +51,9 @@ for(const team of [0,1])$('simTeam'+team).addEventListener('change',e=>{
  if(field==='mode')renderTeams();
  clearMatch('零件已更改。畫面將顯示所選戰刃與配件，請重新開始。');
 });
+let previewSpecs=[null,null];
 function buildVisualPreview(specs,preview=true){
+ previewSpecs=specs;
  viewer.setArena($('simArenaType').value);
  viewer.setBuilds(specs);
  const content=specs.map((spec,i)=>{
@@ -63,12 +65,20 @@ function buildVisualPreview(specs,preview=true){
     '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div></div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
- if(preview){
-  const state={done:false,terminal:null,tops:specs.map((b,i)=>b?({
-   x:i===0?-.42:.42,y:i===0?-.05:.05,heading:0,spin:0,wobble:0,railCooldown:0,model:b,side:i
-  }):null)};
-  viewer.render(state);
- }
+ if(preview)renderLaunchPreview();
+}
+function renderLaunchPreview(){
+ if(runtime)return;
+ const state={done:false,terminal:null,tops:previewSpecs.map((b,i)=>{
+   if(!b)return null;
+   const launchAngle=(Number($('simAngle'+i)?.value)||0)*Math.PI/180;
+   return{
+    x:i===0?-.42:.42,y:i===0?-.05:.05,heading:0,spin:0,wobble:0,
+    tilt:launchAngle*.95,tiltDir:i===0?0:Math.PI,launchAngle,
+    height:0,landed:true,railCooldown:0,model:b,side:i
+   };
+  })};
+ viewer.render(state);
 }
 function previewCurrent(){
  try{
@@ -181,6 +191,7 @@ function playFrame(token,lastTime){
    const e=b.events[i];
    if(e.type==='hit')audio?.play?.('hit',Math.min(1.45,Math.max(.4,Number(e.strength)||.7)));
    else if(e.type==='land')audio?.play?.('land',.65);
+   else if(e.type==='wall')audio?.play?.('hit',Math.min(.95,.40+Number(e.strength||0)));
    else if(e.type==='dash')audio?.play?.('dash',.8);
    else if(e.type==='finish')audio?.play?.(b.finish||'draw',1);
   }
@@ -253,6 +264,7 @@ for(const i of [0,1]){
  $('simAngle'+i).addEventListener('input',()=>{
   $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
   if(runtime)clearMatch('角度已變更，請重新開始。');
+  else{renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
  });
 }
 $('simSettingsReset').addEventListener('click',()=>{

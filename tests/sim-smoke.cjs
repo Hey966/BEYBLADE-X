@@ -41,6 +41,30 @@ const maxPower=E.createBattle(a[0],b[0],{seed:966,launch:[{power:14000},{power:1
 assert(maxPower.tops.every((t,i)=>t.spin>noPower.tops[i].spin),'power controls spin');
 const clamped=E.createBattle(a[0],b[0],{seed:966,launch:[{power:99999},{power:99999}]});
 assert.equal(maxPower.tops[0].spin,clamped.tops[0].spin,'SP capped at 14000');
+// Launcher angle must change actual lean, horizontal velocity, and subsequent course.
+const straight=E.createBattle(a[0],b[0],{seed:333,launch:[{power:14000,angle:0},{power:14000,angle:0}]});
+const steep=E.createBattle(a[0],b[0],{seed:333,launch:[{power:14000,angle:35},{power:14000,angle:0}]});
+const opposite=E.createBattle(a[0],b[0],{seed:333,launch:[{power:14000,angle:-35},{power:14000,angle:0}]});
+assert.equal(straight.tops[0].tilt,0,'flat launch begins upright');
+assert(steep.tops[0].tilt>.4&&opposite.tops[0].tilt<-.4,'angle visibly tilts on either side');
+assert(steep.tops[0].vy>straight.tops[0].vy&&opposite.tops[0].vy<straight.tops[0].vy,'launch angle steers');
+for(let step=0;step<250;step++){straight.step();steep.step();opposite.step();}
+assert(Math.abs(steep.tops[0].y-opposite.tops[0].y)>.08,'angle changes actual battle trajectory');
+// High-energy contact has to be observable. Burst is not guaranteed per hit.
+const attacker=owned('OWN-BXG-57-02'),target=owned('OWN-G3084-02');
+let impactSeen=false,burstCount=0,highContactCount=0;
+for(let seed=1;seed<=120;seed++){
+ const play=E.createBattle(attacker,target,{seed:seed*197,arena:'xtreme',launch:[{power:14000,angle:0},{power:14000,angle:0}]});
+ for(let j=0;j<4100&&!play.done;j++){
+  play.step();
+  if(play.collisionCount>0)highContactCount++;
+  if(play.tops.some(t=>t.landed&&t.height>0.012&&t.impact>.04))impactSeen=true;
+ }
+ if(play.finish==='burst')burstCount++;
+}
+assert(highContactCount>0,'high energy tops should meet');
+assert(impactSeen,'hit should produce airborne knockback');
+assert(burstCount>0,'some repeatable high energy battles should burst');
 const three=E.simulateMatch(a,b,{seed:966});
 assert.equal(three.mode,'3v3');
 assert(three.rounds.length>0);
@@ -63,4 +87,4 @@ for(let i=0;i<130;i++){
 }
 assert(kinds.has('spin'));
 assert(kinds.size>=2,'engine should produce more than one finish type in varied seeds');
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds]},null,2));
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount},null,2));

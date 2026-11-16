@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜戰鬥陀螺收藏智慧中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-launch-sp-v13">
+  <link rel="stylesheet" href="style.css?v=20261116-impact-tilt-v14">
 </head>
 <body>
   <header class="site-head">
@@ -59,9 +59,9 @@
 <section id="sim" class="view">
  <div class="section-header">
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
-  <p class="hint">兩方各自在場地一側隨機落點，從上方投放並輕彈入場。支援即時 3D 與大量模擬。</p>
+  <p class="hint">雙方從各自半場上方投放。碰撞會反彈、騰空、傾斜，亦可能爆裂或擊飛。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。重量、摩擦、碰撞與爆裂參數尚未實測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。碰撞、落地傾斜、擊飛與爆裂依能力差異進行近似演算，並未以實物測量校正。3D 外形為近似示意，結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
    <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、SP 力道、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
@@ -81,12 +81,12 @@
     <div><strong>我方發射</strong>
      <label>發射器<select id="simLauncher0"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
      <div class="sim-power-control"><label for="simPower0">發射力道 <output id="simPower0Display">10500 SP</output></label><input type="range" id="simPower0" min="0" max="14000" step="100" value="10500" aria-label="我方發射力道 SP"><input type="number" id="simPower0Number" min="0" max="14000" step="1" value="10500" inputmode="numeric" aria-label="我方發射力道精確 SP 數值"></div>
-     <label>發射角度 <output id="simAngle0Display">0°</output><input type="range" id="simAngle0" min="-35" max="35" value="0"></label>
+     <label>發射角度／傾斜 <output id="simAngle0Display">0°</output><input type="range" id="simAngle0" min="-35" max="35" value="0"></label>
     </div>
     <div><strong>對手發射</strong>
      <label>發射器<select id="simLauncher1"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
      <div class="sim-power-control"><label for="simPower1">發射力道 <output id="simPower1Display">10500 SP</output></label><input type="range" id="simPower1" min="0" max="14000" step="100" value="10500" aria-label="對手發射力道 SP"><input type="number" id="simPower1Number" min="0" max="14000" step="1" value="10500" inputmode="numeric" aria-label="對手發射力道精確 SP 數值"></div>
-     <label>發射角度 <output id="simAngle1Display">0°</output><input type="range" id="simAngle1" min="-35" max="35" value="0"></label>
+     <label>發射角度／傾斜 <output id="simAngle1Display">0°</output><input type="range" id="simAngle1" min="-35" max="35" value="0"></label>
     </div>
    </div>
   </article>
@@ -101,7 +101,7 @@
     <button id="simReset" type="button">重設</button>
    </div>
    <p id="simTime" class="sim-technical-status">0.0s / 33.0s（模型時間）</p>
-   <p id="simMessage" class="sim-message" role="status">雙方分別從場地兩側上方投放。落地輕彈後自由對戰。</p>
+   <p id="simMessage" class="sim-message" role="status">雙方從各自半場上方投放。角度改變軌跡及傾斜，撞擊可能使陀螺騰空或爆裂。</p>
    <ul id="simEvents" class="sim-events"></ul>
   </article>
  </div>
@@ -137,7 +137,7 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-launch-sp-v13"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-launch-sp-v13"></script><script src="sim-view.js?v=20261116-invisible-launch-v14"></script><script src="sim-audio.js?v=20261116-launch-sp-v13"></script><script src="sim-ui.js?v=20261116-launch-sp-v13"></script>
+  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-impact-tilt-v14"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
+<script src="sim-engine.js?v=20261116-impact-tilt-v14"></script><script src="sim-view.js?v=20261116-impact-tilt-v14"></script><script src="sim-audio.js?v=20261116-impact-tilt-v14"></script><script src="sim-ui.js?v=20261116-impact-tilt-v14"></script>
 </body>
 </html>
