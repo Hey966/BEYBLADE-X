@@ -14,6 +14,13 @@ const buildDefault=id=>({mode:'whole',blade:id,chip:cx[0]?.id||'',main:cx[0]?.id
 const selections=[first.map(buildDefault),second.map(buildDefault)];
 let runtime=null,showed=null,frameToken=0,frameRequest=0,batchCancel=false,latestBatch=null;
 const viewer=V.create($('simArena'),$('simRenderStatus'),api);
+const audio=root.BBX_SIM_AUDIO?.create?.()||null;
+function syncSoundButton(){
+ const on=audio?.isEnabled?.()!==false;
+ const b=$('simSoundToggle');
+ b.textContent=on?'音效：開啟':'音效：關閉';
+ b.setAttribute?.('aria-pressed',String(on));
+}
 function options(ids,selected,part){
  return ids.map(b=>{
   const disabled=!abilities.beys?.[b.id]?.parts?.[part]?.available;
@@ -115,6 +122,7 @@ function stopAnimation(){
  frameRequest=0;
 }
 function clearMatch(message){
+ audio?.stop?.();
  stopAnimation();runtime=null;showed=null;updateScore();
  $('simNext').disabled=true;$('simPause').disabled=true;$('simPause').textContent='暫停';
  $('simFinishOverlay').hidden=true;
@@ -142,6 +150,8 @@ function showFinal(battle){
  $('simNext').disabled=runtime.complete;
  $('simPause').disabled=true;
  $('simPause').textContent='暫停';
+ audio?.stop?.();
+ if(runtime.complete)audio?.play?.('win',.75);
  renderEvents(battle.events);updateScore();
 }
 function playFrame(token,lastTime){
@@ -158,6 +168,15 @@ function playFrame(token,lastTime){
   }
   $('simTime').textContent=fmt(b.elapsed)+'s / 33.0s（模型時間）';
   if(b.events.length!==runtime.logged){runtime.logged=b.events.length;renderEvents(b.events)}
+  // Audio is triggered by NEW physics events. Visuals use the same event stream.
+  for(let i=runtime.sounded||0;i<b.events.length;i++){
+   const e=b.events[i];
+   if(e.type==='hit')audio?.play?.('hit',Math.min(1.45,Math.max(.4,Number(e.strength)||.7)));
+   else if(e.type==='dash')audio?.play?.('dash',.8);
+   else if(e.type==='finish')audio?.play?.(b.finish||'draw',1);
+  }
+  runtime.sounded=b.events.length;
+  audio?.update?.(b.tops,runtime.paused||b.done);
   if(b.done){
    if(runtime.finishStarted===null){
     runtime.finishStarted=now;
@@ -174,12 +193,15 @@ function playFrame(token,lastTime){
 }
 function beginRound(){
  if(!runtime||runtime.complete)return;
+ audio?.unlock?.();
+ audio?.stop?.();
+ audio?.play?.('launch',.9);
  const idx=runtime.deckIndex%runtime.teams[0].length,conf=runtime.opts;
  const seed=(conf.seed+Math.imul(runtime.round+1,0x9E3779B1))>>>0;
  runtime.battle=C.createBattle(runtime.teams[0][idx],runtime.teams[1][idx],{
   seed,arena:conf.arena,rail:conf.rail,launch:conf.launch,record:true
  });
- runtime.paused=false;runtime.accumulator=0;runtime.logged=0;runtime.finishStarted=null;
+ runtime.paused=false;runtime.accumulator=0;runtime.logged=0;runtime.sounded=0;runtime.lastCollisions=0;runtime.lastRails=0;runtime.finishStarted=null;
  $('simFinishOverlay').hidden=true;
  buildVisualPreview([runtime.teams[0][idx],runtime.teams[1][idx]],false);
  $('simNext').disabled=true;$('simPause').disabled=false;$('simPause').textContent='暫停';
@@ -203,6 +225,7 @@ $('simNext').addEventListener('click',()=>{
 $('simPause').addEventListener('click',()=>{
  if(!runtime?.battle||runtime.battle.done)return;
  runtime.paused=!runtime.paused;$('simPause').textContent=runtime.paused?'繼續':'暫停';
+ audio?.update?.(runtime.battle.tops,runtime.paused);
 });
 $('simReset').addEventListener('click',()=>clearMatch('已清空。種子與設定不變，可再次重現結果。'));
 $('simMatchType').addEventListener('change',()=>{
@@ -234,6 +257,20 @@ $('simSettingsReset').addEventListener('click',()=>{
  renderTeams();
  clearMatch('已重置對戰形式、場地、發射器、拉力、角度、種子與播放速度。自訂零件保留。');
 });
+$('simSoundToggle')?.addEventListener('click',()=>{
+ if(audio){
+  audio.enable(!audio.isEnabled());
+  if(audio.isEnabled())audio.unlock();
+ }
+ syncSoundButton();
+});
+$('simSoundVolume')?.addEventListener('input',()=>{
+ const v=Math.max(0,Math.min(100,Number($('simSoundVolume').value)||0));
+ $('simSoundVolumeDisplay').textContent=v+'%';
+ audio?.volume?.(v/100);
+});
+syncSoundButton();
+
 let runStamp=0;
 function renderBatch(result){
  latestBatch=result;
