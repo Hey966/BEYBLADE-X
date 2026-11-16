@@ -250,7 +250,7 @@ function createBattle(left,right,settings={}){
     t.spin=Math.max(0,t.spin-(0.25+vn*0.80));
     t.wobble+=.08+vn*.12;
     // The wall knocks the axle inward, not randomly left and right.
-    const wallLean=Math.min(.13,vn*.08)/(1+.003*v.defense);
+    const wallLean=Math.min(.13,vn*.08)/(1+.003*v.defense)*(.94+.12*rng());
     t.tiltDir=theta+Math.PI;
     t.tilt=cap(Math.abs(t.tilt)*.40+wallLean,0,.38);
     t.tiltVelocity=cap(t.tiltVelocity*.25+wallLean*2.2,-.8,.8);
@@ -304,7 +304,7 @@ function createBattle(left,right,settings={}){
      // Lean away from the contact normal. A rapidly spinning, defensive
      // top only dips briefly; it does not randomly rock like a pendulum.
      const stability=cap(t.spin/50,0,1);
-     const leanKick=Math.min(.27,hitStrength*.18/(.72+defense*.55+stability*.35));
+     const leanKick=Math.min(.27,hitStrength*.18/(.72+defense*.55+stability*.35))*(.94+.12*rng());
      t.tiltDir=Math.atan2(ny,nx)+(t.side===0?Math.PI:0);
      t.tilt=cap(Math.abs(t.tilt)*.38+leanKick,0,.45);
      t.tiltVelocity=cap(t.tiltVelocity*.25+leanKick*2.0,-.95,.95);
