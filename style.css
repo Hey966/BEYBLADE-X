@@ -355,3 +355,156 @@ button.part-visual{width:100%;display:flex;flex-direction:column;align-items:cen
   .analysis-part-thumb img{height:86px}
   .analysis-mixed-gallery .analysis-part-thumb img{height:95px}
 }
+
+
+/* 2026-11-16: Fit entire blade image. Keep physical part source photos tappable. */
+button.analysis-reference-hero{
+  width:100%;
+  height:auto;
+  min-height:0;
+  aspect-ratio:1 / 1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  padding:13px 12px 26px;
+  overflow:hidden;
+  background:radial-gradient(circle at 50% 48%,#34495c 0%,#192738 72%);
+  border:1px solid #30475a;
+  border-radius:8px;
+  color:#d9e8f5;
+  font:inherit;
+  cursor:pointer;
+}
+button.analysis-reference-hero .analysis-result-image{
+  display:block;
+  position:static;
+  box-sizing:border-box;
+  width:min(100%,275px);
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  aspect-ratio:1 / 1;
+  object-fit:contain;
+  object-position:center;
+  padding:9px;
+  margin:auto;
+  background:transparent;
+  transform:none!important;
+}
+.analysis-hero-source{
+  position:absolute;
+  bottom:8px;
+  left:0;
+  right:0;
+  color:#b5dce9;
+  font-size:11px;
+  font-weight:650;
+  text-align:center;
+  line-height:1.2;
+}
+button.analysis-part-thumb{
+  width:100%;
+  min-width:0;
+  color:inherit;
+  font:inherit;
+  text-align:center;
+  cursor:pointer;
+}
+button.analysis-part-thumb small{
+  display:block;
+  font-size:10px;
+  color:#8fd9e8;
+  line-height:1.35;
+}
+.source-photo:hover,.source-photo:focus-visible{
+  border-color:#66adbd;
+  outline:2px solid rgba(101,195,214,.65);
+  outline-offset:1px;
+}
+#sourceDialog{
+  width:min(520px,calc(100% - 20px));
+  max-height:90dvh;
+  padding:0;
+}
+.source-sheet{padding:24px 22px 20px}
+.source-sheet h2{
+  margin:10px 42px 6px 0;
+  font-size:23px;
+  overflow-wrap:anywhere;
+}
+.source-subtitle{
+  color:#a4bacb;
+  line-height:1.6;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
+.source-photo-frame{
+  height:min(270px,38vh);
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle,#2d4359,#172432 75%);
+  border:1px solid #344e61;
+  border-radius:9px;
+  margin:13px 0;
+  padding:10px;
+  overflow:hidden;
+}
+.source-photo-frame img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+.source-identified{
+  background:#18313c;
+  border:1px solid #396c79;
+  border-radius:8px;
+  padding:12px;
+  margin:14px 0;
+}
+.source-identified strong{font-size:13px;color:#b7edf3}
+.source-identified p{margin:7px 0 0;font-size:13px;color:#f1f7fa;line-height:1.5}
+.source-original-specs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.source-original-specs>div{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  background:#1b2b3b;
+  border:1px solid #334b5f;
+  border-radius:7px;
+  padding:9px 10px;
+  overflow-wrap:anywhere;
+}
+.source-original-specs span{font-size:10px;color:#a6bac9}
+.source-original-specs strong{font-size:13px;color:#eff7fb}
+.source-disclaimer{
+  font-size:11px;
+  line-height:1.6;
+  color:#8da5b8;
+  margin-bottom:0;
+}
+@media(max-width:720px){
+  button.analysis-reference-hero{
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:1/1;
+    padding:10px 9px 25px;
+  }
+  button.analysis-reference-hero .analysis-result-image{
+    width:min(100%,270px);
+    height:auto;
+    max-height:100%;
+    padding:8px;
+  }
+  .source-sheet{padding:18px 15px 15px}
+  .source-photo-frame{height:min(250px,34vh)}
+}
