@@ -331,7 +331,9 @@ function createBattle(left,right,settings={}){
    // Include the fast movement clock in swept-collision substep selection.
    const relativeSpeed=Math.hypot(a.vx-b.vx,a.vy-b.vy)*3.5;
    const minRadius=Math.min(a.model.radius,b.model.radius);
-   const substeps=Math.max(1,Math.min(6,Math.ceil(relativeSpeed*DT/(minRadius*.40))));
+   // Extreme launch or externally injected velocities need more than six steps.
+   // Normal battles still use one or two substeps, so batch cost stays modest.
+   const substeps=Math.max(1,Math.min(128,Math.ceil(relativeSpeed*DT/(minRadius*.40))));
    for(let j=0;j<substeps&&!state.done;j++)move(DT/substeps);
   }
   return state;
