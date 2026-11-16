@@ -18,7 +18,7 @@ function create(container,status,api){
    activeBattle=state;eventCursor=0;fx=[];trails=[[],[]];
   }
   if(!state)return;
-  const now=state.elapsed+(state.done?finalAge:0);
+  const now=(Number(state.elapsed)||0)+(state.done?finalAge:0);
   const events=state.events||[];
   for(let i=eventCursor;i<events.length;i++){
    const ev=events[i];
@@ -459,7 +459,36 @@ function create(container,status,api){
     mesh.blade.position.set(0,0,0);mesh.ratchet.position.set(0,0,0);mesh.bit.position.set(0,0,0);
    }
   }
-  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.15:.55);
+  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.45:.84);
+  for(let i=0;i<trailLines.length;i++){
+   const line=trailLines[i],points=trails[i]||[];
+   line.visible=!!state&&!state.done&&points.length>=2;
+   if(line.visible){
+    line.geometry.dispose();
+    line.geometry=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(p.x,.13,p.y)));
+   }
+  }
+  const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
+  const bursts=fx.slice(-fxSprites.length);
+  for(let i=0;i<fxSprites.length;i++){
+   const sprite=fxSprites[i],burst=bursts[i];
+   if(!burst){sprite.visible=false;continue}
+   const age=Math.max(0,now-burst.t),remaining=Math.max(0,1-age/.65);
+   if(!remaining){sprite.visible=false;continue}
+   sprite.visible=true;
+   sprite.position.set(burst.x,.29,burst.y);
+   const size=(burst.kind==='dash'?.32:burst.kind==='finish'?.67:.48)*(1+age*3);
+   sprite.scale.set(size,size,1);
+   sprite.material.opacity=remaining*.97;
+   sprite.material.color.setHex(burst.kind==='dash'?0x79ffff:burst.kind==='finish'?0xf7ffdc:0xffd686);
+  }
+  const recent=fx.slice().reverse().find(e=>e.kind==='hit'&&now-e.t<.2);
+  if(recent){
+   // Small camera tremor on impact; synchronized to the collision event.
+   const t=Math.max(0,1-(now-recent.t)/.2);
+   camera.position.set(.018*t*Math.sin(recent.t*83),3.5,.018*t*Math.cos(recent.t*95)+2.45);
+  }else camera.position.set(0,3.5,2.45);
+  camera.lookAt(0,0,0);
   renderer.render(world,camera);
  }
  init3D();
