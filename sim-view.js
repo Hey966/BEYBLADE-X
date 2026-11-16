@@ -308,44 +308,108 @@ function create(container,status,api){
   try{
    const T=await import(THREE_CDN);const gl=new T.WebGLRenderer({antialias:true,powerPreference:'low-power'});
    gl.setPixelRatio(Math.min(1.7,root.devicePixelRatio||1));
-   gl.setClearColor(0x091421,1);gl.outputColorSpace=T.SRGBColorSpace;
+   gl.setClearColor(0x112f61,1);gl.outputColorSpace=T.SRGBColorSpace;
    const scene=new T.Scene();
-   scene.fog=new T.Fog(0x091421,4.4,7.8);
-   const cam=new T.PerspectiveCamera(48,1,.1,25);
-   cam.position.set(0,2.65,2.75);cam.lookAt(0,0,0);
-   scene.add(new T.HemisphereLight(0xcfe6ff,0x304151,2.5));
-   const key=new T.DirectionalLight(0xfaf0da,2.9);key.position.set(-1.7,3,2);scene.add(key);
+   scene.background=new T.Color(0x112f61);
+   scene.fog=new T.Fog(0x112f61,5.2,10);
+   const cam=new T.PerspectiveCamera(43,1,.1,25);
+   cam.position.set(0,3.5,2.45);cam.lookAt(0,0,0);
+   scene.add(new T.HemisphereLight(0xf8fcff,0x5b789f,3.1));
+   const key=new T.DirectionalLight(0xfffbec,3.15);key.position.set(-2.2,4.2,2.8);scene.add(key);
+   const backgroundGrid=new T.GridHelper(8,24,0x6999cf,0x3061a2);
+   backgroundGrid.position.y=-.29;
+   scene.add(backgroundGrid);
    const group=new T.Group();
-   const mat=new T.MeshStandardMaterial({color:0x1a2e41,metalness:.3,roughness:.55});
-   const basin=new T.Mesh(new T.CylinderGeometry(1.31,1.36,.14,96),mat);basin.position.y=-.10;group.add(basin);
-   const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.015,96),mat);floor.position.y=-.013;group.add(floor);
-   const rim=new T.Mesh(new T.TorusGeometry(1.36,.048,12,110),
-    new T.MeshStandardMaterial({color:0xaebac5,metalness:.62,roughness:.3}));
-   rim.rotation.x=Math.PI/2;rim.position.y=.016;group.add(rim);
-   const guide=new T.Mesh(new T.TorusGeometry(1.15,.025,10,100),
-    new T.MeshStandardMaterial({color:0xff9857,emissive:0x893814,emissiveIntensity:.55,metalness:.38}));
-   guide.rotation.x=Math.PI/2;guide.position.y=.018;group.add(guide);
-   const pocketsGroup=new T.Group();
+   const shell=new T.MeshStandardMaterial({color:0xf1f5f8,metalness:.14,roughness:.31});
+   const bright=new T.MeshStandardMaterial({color:0xf9fcff,metalness:.11,roughness:.26});
+   const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.13,roughness:.38});
+   const frame=new T.Mesh(new T.CylinderGeometry(1.45,1.53,.20,12),shell);
+   frame.position.y=-.15;frame.rotation.y=Math.PI/12;group.add(frame);
+   const basin=new T.Mesh(new T.CylinderGeometry(1.32,1.34,.095,112),bright);
+   basin.position.y=-.045;group.add(basin);
+   const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.014,112),mat);
+   floor.position.y=.011;group.add(floor);
+   const rim=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),
+    new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24}));
+   rim.rotation.x=Math.PI/2;rim.position.y=.065;group.add(rim);
+   const groove=new T.Mesh(new T.TorusGeometry(1.29,.026,10,112),
+    new T.MeshStandardMaterial({color:0x9db3c5,metalness:.38,roughness:.42}));
+   groove.rotation.x=Math.PI/2;groove.position.y=.02;group.add(groove);
+   // Light green Xtreme line: only visible on Xtreme stadium.
+   const guide=new T.Mesh(new T.TorusGeometry(1.17,.038,12,116),
+    new T.MeshStandardMaterial({color:0xb6f344,emissive:0x69b626,
+      emissiveIntensity:.84,metalness:.19,roughness:.2}));
+   guide.rotation.x=Math.PI/2;guide.position.y=.075;group.add(guide);
+   const pocketGroup=new T.Group();
+   const darkPocket=new T.MeshStandardMaterial({color:0x6b8397,metalness:.28,roughness:.43});
    for(const [j,theta] of [-.70,.65,2.45].entries()){
-    const pocket=new T.Mesh(new T.RingGeometry(1.02,1.28,18,1,theta-.26,.52),
-     new T.MeshBasicMaterial({color:j===0?0xf2894d:0x507c9a,transparent:true,opacity:.58,side:T.DoubleSide,depthWrite:false}));
-    pocket.rotation.x=-Math.PI/2;pocket.position.y=.02;pocketsGroup.add(pocket);
+    const pocket=new T.Mesh(new T.RingGeometry(1.13,1.40,20,1,theta-.22,.44),
+     new T.MeshBasicMaterial({color:j===0?0x97de3a:0x7b96ae,transparent:true,
+       opacity:j===0?.8:.57,side:T.DoubleSide,depthWrite:false}));
+    pocket.rotation.x=-Math.PI/2;pocket.position.y=.049;pocketGroup.add(pocket);
+    const rimPost=new T.Mesh(new T.BoxGeometry(.24,.115,.20),bright);
+    rimPost.position.set(Math.cos(theta)*1.47,.08,Math.sin(theta)*1.47);
+    rimPost.rotation.y=-theta;pocketGroup.add(rimPost);
    }
-   group.add(pocketsGroup);
-   for(let j=0;j<48;j++){
-    const theta=j*TAU/48;
-    const dot=new T.Mesh(new T.BoxGeometry(.027,.006,.017),
-     new T.MeshBasicMaterial({color:j%8===0?0xeed493:0x7794aa}));
-    dot.position.set(Math.cos(theta)*.98,.01,Math.sin(theta)*.98);
-    dot.rotation.y=-theta;group.add(dot);
+   group.add(pocketGroup);
+   const frontGuide=new T.Mesh(new T.BoxGeometry(1.85,.052,.075),
+     new T.MeshStandardMaterial({color:0xbbf64d,emissive:0x5aaa20,emissiveIntensity:.75}));
+   frontGuide.position.set(0,.03,1.35);pocketGroup.add(frontGuide);
+   for(let j=0;j<68;j++){
+    const theta=j*TAU/68;
+    const tick=new T.Mesh(new T.BoxGeometry(.02,.003,.011),
+     new T.MeshBasicMaterial({color:j%8===0?0x52697c:0xaac0ce}));
+    tick.position.set(Math.cos(theta)*.86,.021,Math.sin(theta)*.86);
+    tick.rotation.y=-theta;group.add(tick);
+   }
+   // Embossed white side panels echo the stepped stadium shell.
+   for(let j=0;j<8;j++){
+    const theta=j*TAU/8;
+    const arm=new T.Mesh(new T.BoxGeometry(.16,.045,.27),shell);
+    arm.position.set(Math.cos(theta)*1.42,.055,Math.sin(theta)*1.42);
+    arm.rotation.y=-theta;group.add(arm);
+   }
+   // Effects are purely visual. Physics remains in sim-engine.js.
+   fx3D=new T.Group();scene.add(fx3D);
+   for(let i=0;i<2;i++){
+    const geo=new T.BufferGeometry().setFromPoints([new T.Vector3(),new T.Vector3()]);
+    const line=new T.Line(geo,new T.LineBasicMaterial({
+      color:i===0?0x45eeff:0xff9861,transparent:true,opacity:.85,depthWrite:false
+    }));
+    line.visible=false;scene.add(line);trailLines[i]=line;
+   }
+   const sparkCanvas=document.createElement('canvas');
+   sparkCanvas.width=128;sparkCanvas.height=128;
+   const sparkCtx=sparkCanvas.getContext('2d');
+   const gradient=sparkCtx.createRadialGradient(64,64,2,64,64,58);
+   gradient.addColorStop(0,'rgba(255,255,255,1)');
+   gradient.addColorStop(.17,'rgba(255,251,210,.94)');
+   gradient.addColorStop(.48,'rgba(255,198,93,.5)');
+   gradient.addColorStop(1,'rgba(255,165,55,0)');
+   sparkCtx.fillStyle=gradient;sparkCtx.fillRect(0,0,128,128);
+   sparkCtx.strokeStyle='#fff7d1';sparkCtx.lineWidth=3;
+   for(let j=0;j<14;j++){
+    const theta=j*TAU/14;
+    sparkCtx.beginPath();
+    sparkCtx.moveTo(64+Math.cos(theta)*14,64+Math.sin(theta)*14);
+    sparkCtx.lineTo(64+Math.cos(theta)*(j%3===0?61:42),64+Math.sin(theta)*(j%3===0?61:42));
+    sparkCtx.stroke();
+   }
+   const sparkTexture=new T.CanvasTexture(sparkCanvas);
+   for(let i=0;i<14;i++){
+    const material=new T.SpriteMaterial({map:sparkTexture,
+      color:0xffe9ae,blending:T.AdditiveBlending,transparent:true,depthWrite:false});
+    const sprite=new T.Sprite(material);
+    sprite.visible=false;sprite.position.y=.21;
+    sprite.scale.set(.4,.4,1);fx3D.add(sprite);fxSprites.push(sprite);
    }
    scene.add(group);
-   THREE=T;renderer=gl;world=scene;camera=cam;stadium=group;rail=guide;pockets=pocketsGroup;floorMaterial=mat;
+   THREE=T;renderer=gl;world=scene;camera=cam;stadium=group;rail=guide;pockets=pocketGroup;floorMaterial=mat;
    container.replaceChildren(gl.domElement);
    gl.domElement.className='sim-three-canvas';
    setArena(currentArena);
    setBuilds(visualBuilds);
-   status.textContent='3D 即時畫面：套用所選零件 PNG（外形為近似模型）';
+   status.textContent='3D 即時畫面｜白色立體盤・亮綠導軌・零件貼圖（外形近似）';
    renderState(lastState,{finalAge:lastFinishAge});
   }catch(error){
    status.textContent='3D 載入失敗，已改用相同物理狀態的 2D 畫面。';
