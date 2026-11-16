@@ -841,6 +841,7 @@ button.analysis-reference-hero .analysis-result-image{
 .sim-part-stats{margin-top:7px;color:#aec8d8;font-size:10px}
 .sim-part-stats summary{cursor:pointer;color:#aee5d2}
 .sim-part-stat-row{line-height:1.65;margin-top:4px;overflow-wrap:anywhere}
+.sim-build-flags{margin-top:6px;padding:5px;border-left:2px solid #e4c176;font-size:10px;line-height:1.5;color:#ead4a0}
 .sim-part-empty{
   height:52px;
   display:grid;
