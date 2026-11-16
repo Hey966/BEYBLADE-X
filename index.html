@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜收藏指揮中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-ability-counter">
+  <link rel="stylesheet" href="style.css?v=20261116-locked-counter">
 </head>
 <body>
   <header class="site-head">
@@ -40,7 +40,7 @@
   <p class="hint">比較對手組裝後的完整能力，找出攻防、持久、抗爆與衝刺的相對優勢。不只看類型。</p>
  </div>
  <article class="analysis-panel">
-  <div class="analysis-topline"><strong>對手配置與推薦數量</strong><span>支援 1 對 1、3 對 3，也可交叉比較</span></div>
+  <div class="analysis-topline"><strong>對手陀螺數量</strong><span>自動對應 1 對 1 或 3 對 3</span></div>
   <div class="analysis-controls counter-number-controls">
    <label>對手陀螺數量
     <select id="opponentCount" aria-label="對手陀螺數量">
@@ -48,18 +48,12 @@
      <option value="3" selected>3 顆對手陀螺</option>
     </select>
    </label>
-   <label>我方壓制推薦數量
-    <select id="counterCount" aria-label="我方壓制推薦數量">
-     <option value="1">推薦 1 顆</option>
-     <option value="3" selected>推薦 3 顆（零件不重複）</option>
-    </select>
-   </label>
   </div>
-  <p class="analysis-note">選擇對方的實際戰刃、固鎖與軸心。CX 也能選擇紋章、主刃、輔助刃。對手配件不會占用你的庫存。</p>
+  <p class="analysis-note">選 1 顆就設定 1 顆對手，並推薦 1 顆；選 3 顆就分別設定 3 顆對手，並推薦 3 顆。CX 可調整紋章、主刃與輔助刃。</p>
   <div id="opponentEntries" class="counter-opponents"></div>
   <div class="analysis-actions"><button class="primary" type="button" id="runCounter">開始能力壓制分析</button></div>
   <p class="analysis-note">比較組裝後五項能力。採用可解釋的相對壓制分數與隊伍覆蓋搜尋。不是官方實測勝率，亦不保證勝負。</p>
-  <div id="counterResults" class="analysis-output" aria-live="polite">設定對手 1 顆或 3 顆後，選擇我方推薦數量，再開始分析。</div>
+  <div id="counterResults" class="analysis-output" aria-live="polite">選擇 1 顆或 3 顆對手後，系統會推薦相同數量的壓制配置。</div>
  </article>
 </section><section id="data" class="view"><div class="section-header"><div><span class="eyebrow">05 / DATABASE CONTROL</span><h2>資料管理</h2></div><p class="hint">先在瀏覽器記錄，之後可匯出交由 GitHub 更新。</p></div>
       <div class="two-col"><article class="panel"><h3>備份與還原</h3><p>匯出包含收藏、新增項目與組裝配置的 JSON。匯入會覆蓋本機記錄。</p><div class="stack-buttons"><button class="primary" id="export">↓ 匯出完整備份</button><label class="file-button">↑ 匯入 JSON 備份<input id="import" type="file" accept=".json,application/json" hidden></label></div></article><article class="panel"><h3>新增收藏</h3><p>可以先在此新增一顆。要讓所有裝置同步，仍需提交到 GitHub。</p><form id="addForm" class="add-form"><label>名稱<input name="name" required placeholder="例如：Dran Sword"></label><div class="form-grid"><label>系列<select name="system"><option>BX</option><option>UX</option><option>CX</option></select></label><label>版本<select name="market"><option value="JP">日版</option><option value="US">美版</option></select></label></div><div class="form-grid"><label>固鎖<input name="ratchet" required placeholder="3-60"></label><label>軸心<input name="bit" required placeholder="F"></label></div><label>戰刃名稱<input name="blade" required placeholder="完整戰刃名稱"></label><button class="ghost" type="submit">＋ 新增至本機收藏</button></form></article></div>
@@ -72,6 +66,6 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-source-and-fit2"></script><script src="analysis.js?v=20261116-ability-counter"></script>
+  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-source-and-fit2"></script><script src="analysis.js?v=20261116-locked-counter"></script>
 </body>
 </html>
