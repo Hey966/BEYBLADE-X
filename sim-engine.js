@@ -61,8 +61,22 @@ function makeBuild(config,db,attributes){
   part,owner:p.b.id,code:p.rec.id,
   attack:n(p.rec.stats,"attack"),defense:n(p.rec.stats,"defense"),
   stamina:n(p.rec.stats,"stamina"),dash:n(p.rec.stats,"dash"),
-  burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height")
+  burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
+  sourceUrl:p.rec.sourceUrl||""
  }));
+ if(config.mode!=="cx"&&bladeOwner.system==="CX"){
+  // Factory-built CX uses its own complete Blade rating. Sub-component
+  // listings are informative only; they must not silently override it.
+  const factory=kind(bladeOwner.id,"blade",db,attributes).rec;
+  partStats.unshift({part:"factoryBlade",owner:bladeOwner.id,code:factory.id,
+   attack:n(factory.stats,"attack"),defense:n(factory.stats,"defense"),
+   stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
+   sourceUrl:factory.sourceUrl||""});
+  if(["attack","defense","stamina"].some(key=>
+   Math.abs(n(factory.stats,key)-parts.filter(([key])=>
+    ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
+   flags.push("此 CX 完整戰刃數值與可列出的模組加總不同；完整裝採用戰刃總值，模組數值只供檢視。");
+ }
  return{
   mode:config.mode==="cx"?"cx":"whole",
   config:{...config},name:bladeOwner.name+" "+rc.b.ratchet+bt.b.bit,
