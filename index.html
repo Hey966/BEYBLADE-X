@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜收藏指揮中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-locked-counter">
+  <link rel="stylesheet" href="style.css?v=20261116-sim-v1">
 </head>
 <body>
   <header class="site-head">
@@ -26,7 +26,7 @@
     <nav class="tabs" aria-label="主要功能">
       <button data-nav="collection" class="active"><span>◈</span> 收藏圖鑑</button>
       <button data-nav="parts"><span>▥</span> 配件庫存</button>
-      <button data-nav="builder"><span>⚒</span> 組裝模擬</button><button data-nav="counter"><span>◇</span> 克制分析</button>
+      <button data-nav="builder"><span>⚒</span> 組裝模擬</button><button data-nav="counter"><span>◇</span> 克制分析</button><button data-nav="sim"><span>◎</span> 模擬對戰</button>
       <button data-nav="data"><span>⇪</span> 資料管理</button>
     </nav>
     <section id="collection" class="view active"><div class="section-header"><div><span class="eyebrow">01 / THE COLLECTION</span><h2>我的陀螺 <span id="countView"></span></h2></div><p class="hint">點選卡片查看原廠零件。</p></div>
@@ -55,17 +55,83 @@
   <p class="analysis-note">比較組裝後五項能力。採用可解釋的相對壓制分數與隊伍覆蓋搜尋。不是官方實測勝率，亦不保證勝負。</p>
   <div id="counterResults" class="analysis-output" aria-live="polite">選擇 1 顆或 3 顆對手後，系統會推薦相同數量的壓制配置。</div>
  </article>
-</section><section id="data" class="view"><div class="section-header"><div><span class="eyebrow">05 / DATABASE CONTROL</span><h2>資料管理</h2></div><p class="hint">先在瀏覽器記錄，之後可匯出交由 GitHub 更新。</p></div>
+</section>
+<section id="sim" class="view">
+ <div class="section-header">
+  <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
+  <p class="hint">以實際收藏配件能力推算動態碰撞。支援即時 3D 與大量模擬。</p>
+ </div>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>目前計算使用攻擊、防禦、持久、衝刺、抗爆等相對數值。重量、摩擦、旋轉慣量、碰撞係數與爆裂閾值尚未實測校正。3D 是通用模型，不是商品外形重建。以下結果不是實戰勝率。</p>
+ <div class="sim-topgrid">
+  <article class="sim-panel">
+   <h3>對戰設定</h3>
+   <div class="sim-control-grid">
+    <label>對戰形式<select id="simMatchType"><option value="1">1 對 1</option><option value="3">3 對 3（依序出戰）</option></select></label>
+    <label>場地<select id="simArenaType"><option value="xtreme">Xtreme 模擬競技盤（含 Xtreme Line）</option><option value="plain">練習圓盤（無 Xtreme Line）</option></select></label>
+    <label>亂數種子<input type="number" id="simSeed" value="966" min="1" max="4294967295"></label>
+    <label>畫面時間倍率<select id="simSpeed"><option value="1">1× 即時</option><option value="2">2×</option><option value="4">4×</option></select></label>
+   </div>
+   <div class="sim-launch-row">
+    <div><strong>我方發射</strong>
+     <label>發射器<select id="simLauncher0"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
+     <label>模型拉力 <output id="simPower0Display">75%</output><input type="range" id="simPower0" min="20" max="100" step="1" value="75"></label>
+     <label>發射角度 <output id="simAngle0Display">0°</output><input type="range" id="simAngle0" min="-35" max="35" value="0"></label>
+    </div>
+    <div><strong>對手發射</strong>
+     <label>發射器<select id="simLauncher1"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
+     <label>模型拉力 <output id="simPower1Display">75%</output><input type="range" id="simPower1" min="20" max="100" step="1" value="75"></label>
+     <label>發射角度 <output id="simAngle1Display">0°</output><input type="range" id="simAngle1" min="-35" max="35" value="0"></label>
+    </div>
+   </div>
+  </article>
+  <article class="sim-panel sim-stage-panel">
+   <div class="sim-score-row"><strong id="simScore">我方 0 : 0 對手</strong><span id="simRound">尚未開始</span></div>
+   <div class="sim-arena" id="simArena" aria-label="3D 陀螺競技盤"></div>
+   <p id="simRenderStatus" class="sim-technical-status">正在載入 3D 畫面</p>
+   <div class="sim-playback-controls">
+    <button class="primary" id="simStart" type="button">開始新對戰</button>
+    <button id="simPause" type="button" disabled>暫停</button>
+    <button id="simNext" type="button" disabled>下一回合</button>
+    <button id="simReset" type="button">重設</button>
+   </div>
+   <p id="simTime" class="sim-technical-status">0.0s / 33.0s（模型時間）</p>
+   <p id="simMessage" class="sim-message" role="status">選擇配件開始模擬。</p>
+   <ul id="simEvents" class="sim-events"></ul>
+  </article>
+ </div>
+ <article class="sim-panel sim-decks-panel">
+  <div class="sim-section-heading"><h3>自訂雙方零件</h3><span id="simDeckLabel">雙方固定一顆陀螺，逐回合累積得分。</span></div>
+  <div class="sim-teams">
+   <div class="sim-team"><h4>我方陀螺</h4><div id="simTeam0"></div></div>
+   <div class="sim-team"><h4>對手陀螺</h4><div id="simTeam1"></div></div>
+  </div>
+  <p class="analysis-note">3 對 3 依 1、2、3 號順序輪流出戰，先獲得 4 分勝利。系統檢查同一實體及同型號重複零件（一般零件，CX 鎖定紋章依例外）。對手選用零件不會占用我方庫存。</p>
+ </article>
+ <article class="sim-panel">
+  <div class="sim-section-heading"><h3>大量模擬／模型勝率統計</h3><span>批次計算不播放每場動畫</span></div>
+  <div class="sim-batch-controls">
+   <label>模擬完整比賽場數<select id="simBatchCount"><option value="25">25 場</option><option value="100" selected>100 場</option><option value="500">500 場</option><option value="1000">1,000 場</option></select></label>
+   <button type="button" class="primary" id="simBatchRun">執行批次模擬</button>
+   <button type="button" id="simBatchCancel" disabled>停止</button>
+   <button type="button" id="simBatchDownload" disabled>下載結果 JSON</button>
+  </div>
+  <p id="simBatchProgress" class="sim-technical-status">尚未執行批次模擬。</p>
+  <div class="sim-progress"><i id="simBatchBar" style="width:0%"></i></div>
+  <div id="simBatchOutput" class="sim-batch-output" aria-live="polite">可重複模擬同一組配置，觀察此模型的不同結局。</div>
+ </article>
+</section>
+<section id="data" class="view"><div class="section-header"><div><span class="eyebrow">06 / DATABASE CONTROL</span><h2>資料管理</h2></div><p class="hint">先在瀏覽器記錄，之後可匯出交由 GitHub 更新。</p></div>
       <div class="two-col"><article class="panel"><h3>備份與還原</h3><p>匯出包含收藏、新增項目與組裝配置的 JSON。匯入會覆蓋本機記錄。</p><div class="stack-buttons"><button class="primary" id="export">↓ 匯出完整備份</button><label class="file-button">↑ 匯入 JSON 備份<input id="import" type="file" accept=".json,application/json" hidden></label></div></article><article class="panel"><h3>新增收藏</h3><p>可以先在此新增一顆。要讓所有裝置同步，仍需提交到 GitHub。</p><form id="addForm" class="add-form"><label>名稱<input name="name" required placeholder="例如：Dran Sword"></label><div class="form-grid"><label>系列<select name="system"><option>BX</option><option>UX</option><option>CX</option></select></label><label>版本<select name="market"><option value="JP">日版</option><option value="US">美版</option></select></label></div><div class="form-grid"><label>固鎖<input name="ratchet" required placeholder="3-60"></label><label>軸心<input name="bit" required placeholder="F"></label></div><label>戰刃名稱<input name="blade" required placeholder="完整戰刃名稱"></label><button class="ghost" type="submit">＋ 新增至本機收藏</button></form></article></div>
       <article class="panel full-note"><h3>資料同步說明</h3><p><strong>GitHub 上的資料</strong>是公開網站的共同版本。本頁新增與保存的配置僅儲存在目前瀏覽器。換手機、無痕瀏覽或清除網站資料後，可能無法保留。請定期匯出備份。若你把新陀螺照片與備份交給我，可以協助核對並更新儲存庫。</p></article>
     </section>
     <footer><span>BEYBLADE X / PRIVATE COLLECTION</span><span>19 ORIGINAL TOPS • FIRST EDITION</span><a href="https://github.com/Hey966/BEYBLADE-X" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></footer>
   </main>
-  <nav class="mobile-nav" aria-label="手機導覽"><button data-nav="collection" class="active"><span>◈</span>圖鑑</button><button data-nav="parts"><span>▥</span>配件</button><button data-nav="builder"><span>⚒</span>組裝</button><button data-nav="counter"><span>◇</span>對抗</button><button data-nav="data"><span>⇪</span>資料</button></nav>
+  <nav class="mobile-nav" aria-label="手機導覽"><button data-nav="collection" class="active"><span>◈</span>圖鑑</button><button data-nav="parts"><span>▥</span>配件</button><button data-nav="builder"><span>⚒</span>組裝</button><button data-nav="counter"><span>◇</span>對抗</button><button data-nav="sim"><span>◎</span>模擬</button><button data-nav="data"><span>⇪</span>資料</button></nav>
   <dialog id="detailDialog"><div id="detailContent"></div><button class="dialog-close" aria-label="關閉詳情" id="closeDetail">×</button></dialog>
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-rudder-clean"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
+<script src="sim-engine.js?v=20261116-sim-v1"></script><script src="sim-view.js?v=20261116-sim-v1"></script><script src="sim-ui.js?v=20261116-sim-v1"></script>
 </body>
 </html>
