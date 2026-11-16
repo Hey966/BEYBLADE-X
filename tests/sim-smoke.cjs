@@ -103,6 +103,42 @@ for(let seed=1;seed<=24;seed++){
 }
 assert(checkedFrames>1000,'clipping stress test should cover many active frames');
 assert.equal(clippingFrames,0,'battle tops must never interpenetrate while at contact height');
+// The faster attack clock must not consume the rotation clock at the same rate.
+const reserve=E.createBattle(owned('OWN-UX-08-01'),owned('OWN-G3084-02'),
+ {seed:916,launch:[{power:10500,angle:0},{power:10500,angle:0}],arena:'xtreme'});
+const reserveStart=reserve.tops[0].spin;
+for(let k=0;k<150&&!reserve.done;k++)reserve.step();
+assert(reserve.tops[0].spin>reserveStart*.76,
+ 'a strong launch must retain most of its spin after the first second');
+const settling=E.createBattle(owned('OWN-UX-08-01'),owned('OWN-G3084-02'),
+ {seed:617,launch:[{power:10500},{power:10500}],arena:'plain',rail:false});
+settling.tops.forEach((top,i)=>{
+ top.landed=true;top.height=0;top.verticalVelocity=0;
+ top.x=i===0?-.95:.95;top.y=0;top.vx=0;top.vy=0;
+});
+settling.tops[0].spin=2.4;
+settling.tops[1].spin=30;
+settling.step();
+assert(!settling.done&&settling.tops[0].spin>2,
+ 'a low spin must continue slowing rather than suddenly stopping at 3');
+for(let k=0;k<350&&!settling.done;k++)settling.step();
+assert(settling.done&&settling.finish==='spin',
+ 'a near-stopped top should eventually finish after gradual deceleration');
+let staminaRounds=0,staminaSeconds=0,staminaContacts=0,staminaSpinFinishes=0;
+for(let i=1;i<=90;i++){
+ const left=owned(db.beys[i%db.beys.length].id);
+ const right=owned(db.beys[(i*7+4)%db.beys.length].id);
+ const result=E.runBattle(left,right,{seed:i*397,arena:'xtreme',
+  launch:[{power:10500,angle:0},{power:10500,angle:0}],record:false});
+ staminaRounds++;staminaSeconds+=result.time;staminaContacts+=result.collisions;
+ staminaSpinFinishes+=result.finish==='spin';
+}
+assert(staminaSeconds/staminaRounds>15,
+ 'stamina should survive the opening attack phase in typical seeded battles');
+assert(staminaContacts/staminaRounds>5,
+ 'the 1x battle motion should remain energetic');
+assert(staminaSpinFinishes>25,
+ 'spin finishes should remain common after the longer deceleration phase');
 const three=E.simulateMatch(a,b,{seed:966});
 assert.equal(three.mode,'3v3');
 assert(three.rounds.length>0);
@@ -149,4 +185,4 @@ const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
  {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
 assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
 
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames},null,2));
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames,meanStaminaSeconds:+(staminaSeconds/staminaRounds).toFixed(2),meanStaminaContacts:+(staminaContacts/staminaRounds).toFixed(2)},null,2));
