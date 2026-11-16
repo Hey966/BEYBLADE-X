@@ -721,3 +721,128 @@ button.analysis-reference-hero .analysis-result-image{
   .sim-control-grid{grid-template-columns:1fr}
   .sim-launch-row{grid-template-columns:1fr}
 }
+
+
+/* Simulator V1.1: settings reset, arena-specific visuals, part inspection,
+   and physical end-state overlay. */
+.sim-settings-header{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;
+}
+.sim-settings-header h3{margin:0}
+.sim-panel button.sim-settings-reset{
+  flex:0 0 auto;
+  min-height:34px;
+  padding:7px 11px;
+  font-size:11px;
+  background:#213d4e;
+  border-color:#53778a;
+  color:#cdeaf5;
+}
+.sim-settings-reset span{font-size:17px;line-height:0;margin-left:3px}
+.sim-arena-wrap{position:relative}
+.sim-arena{
+  height:clamp(300px,41vw,500px);
+  border-color:#5c8597;
+}
+.sim-finish-overlay{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:8px 14px;
+  max-width:calc(100% - 20px);
+  border:1px solid #e6b273;
+  border-radius:9px;
+  background:rgba(11,30,42,.92);
+  color:#ffdeb0;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.4;
+  text-align:center;
+  text-wrap:balance;
+  pointer-events:none;
+  box-shadow:0 5px 18px #0008;
+  z-index:4;
+}
+.sim-finish-overlay[hidden]{display:none}
+.sim-active-parts{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:11px;
+}
+.sim-visual-side{
+  min-width:0;
+  border:1px solid #385c70;
+  border-radius:9px;
+  background:#162b3a;
+  padding:9px;
+}
+.sim-visual-side>strong{
+  display:block;
+  color:#d3eaf5;
+  font-size:11px;
+  line-height:1.45;
+  min-height:29px;
+  margin-bottom:6px;
+  overflow-wrap:anywhere;
+}
+.sim-visual-pieces{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  justify-content:space-around;
+}
+.sim-piece-preview{
+  flex:1 1 44px;
+  min-width:38px;
+  max-width:100px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:start;
+  gap:2px;
+  text-align:center;
+  padding:4px 2px;
+  background:#24394a;
+  border-radius:6px;
+}
+.sim-piece-preview img{
+  display:block;
+  width:100%;
+  height:52px;
+  object-fit:contain;
+}
+.sim-piece-preview span{
+  font-size:9px;
+  color:#a8d4dd;
+}
+.sim-piece-preview small{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  font-size:9px;
+  line-height:1.4;
+  color:#e1e8ef;
+}
+.sim-part-empty{
+  height:52px;
+  display:grid;
+  place-items:center;
+  color:#8ba2b1;
+  font-size:9px;
+}
+@media(max-width:1000px){
+  .sim-arena{height:clamp(290px,62vw,480px)}
+}
+@media(max-width:720px){
+  .sim-arena{height:clamp(270px,86vw,405px)}
+  .sim-finish-overlay{font-size:12px}
+  .sim-active-parts{gap:6px}
+  .sim-visual-side{padding:6px}
+  .sim-piece-preview{padding:3px 1px;min-width:32px}
+  .sim-piece-preview img{height:44px}
+  .sim-piece-preview span,.sim-piece-preview small{font-size:8px}
+}
