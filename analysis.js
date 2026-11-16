@@ -361,7 +361,14 @@ function pickCounterDeck(pool,count,enemies){
    if(++secondCount>=12)break;
   }
  }
- return best||[];
+ if(best)return best;
+ // Expand beyond the initial shortlist if all leading candidates share parts.
+ const fallback=[];
+ for(const candidate of pool){
+  if(usable([...fallback,candidate]))fallback.push(candidate);
+  if(fallback.length===3)break;
+ }
+ return fallback.length===3?fallback:[];
 }
 
 function toSlots(c){
