@@ -208,4 +208,4 @@ $('simBatchDownload').addEventListener('click',()=>{
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
 renderTeams();clearMatch('第一版採能力數值推估。請選擇兩隊配件、發射力與場地。');
-})();
+})(typeof window!=='undefined'?window:this);
