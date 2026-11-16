@@ -144,7 +144,7 @@ function create(container,status,api){
    const py=cy+(t.y+t.y/dist*escape)/1.32*radius*.95;
    const r=Math.max(15,radius*(spec?.radius||.13)/1.32*1.65);
    ctx.save();ctx.translate(px,py);
-   ctx.rotate(t.heading+(loser&&finished==='spin'?age*1.5:0));
+   ctx.rotate(t.heading+(state.done&&outcome?.winner===i?t.spin*age*.46*t.spinSign:0)+(loser&&finished==='spin'?age*1.5:0));
    const collapsed=loser&&finished==='spin'?Math.max(.23,1-age*.6):1;
    ctx.scale(1,collapsed);
    if(loser&&finished==='burst'&&age>.1){
@@ -305,7 +305,7 @@ function create(container,status,api){
     x+=t.x/dist*age*.7;z+=t.y/dist*age*.7;
    }
    mesh.root.position.set(x,.016+(loser&&finish==='burst'?age*.014:0),z);
-   mesh.root.rotation.y=t.heading;
+   mesh.root.rotation.y=t.heading+(terminal?.winner===i?t.spin*age*.46*t.spinSign:0);
    mesh.root.rotation.x=Math.cos(t.heading*.38)*Math.min(.12,t.wobble*.07);
    mesh.root.rotation.z=Math.sin(t.heading*.38)*Math.min(.12,t.wobble*.07);
    if(loser&&finish==='spin'){
