@@ -33,7 +33,7 @@ const audio=browser.BBX_SIM_AUDIO.create();
 assert.equal(audio.isSupported(),true);
 assert.equal(audio.isEnabled(),true);
 assert.equal(audio.unlock(),true);
-for(const name of ['launch','hit','dash','spin','burst','over','extreme','draw','win'])
+for(const name of ['launch','land','hit','dash','spin','burst','over','extreme','draw','win'])
  audio.play(name,.8);
 assert(starts>=20,'all sound events should create original signal generators');
 audio.update([{spin:55,vx:.5,vy:.2},{spin:42,vx:.2,vy:.2}],false);
