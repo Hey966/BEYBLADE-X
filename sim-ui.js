@@ -100,7 +100,7 @@ function showTerminalStatus(battle){
  const loserSide=loser===0?'我方':loser===1?'對手':'雙方';
  $('simFinishOverlay').textContent=side+(winner===null?'平手':'勝利')+' · '+loserSide+label;
  $('simFinishOverlay').hidden=false;
- $('simTime').textContent=fmt(battle.elapsed)+'s / 33.0s（模型時間）';
+ $('simTime').textContent=fmt(battle.elapsed)+'s / '+fmt(C.MAX_TIME)+'s（模型時間）';
 }
 
 const spValue=value=>Math.max(0,Math.min(14000,Math.round(Number(value)||0)));
@@ -145,7 +145,7 @@ function clearMatch(message){
  $('simNext').disabled=true;$('simPause').disabled=true;$('simPause').textContent='暫停';
  $('simFinishOverlay').hidden=true;
  $('simEvents').innerHTML='';
- $('simTime').textContent='0.0s / 33.0s（模型時間）';
+ $('simTime').textContent='0.0s / '+fmt(C.MAX_TIME)+'s（模型時間）';
  if(message)report(message);
  previewCurrent();
 }
@@ -184,7 +184,7 @@ function playFrame(token,lastTime){
    const steps=Math.min(55,Math.floor(runtime.accumulator/C.DT));
    if(steps){b.step(steps);runtime.accumulator-=steps*C.DT;}
   }
-  $('simTime').textContent=fmt(b.elapsed)+'s / 33.0s（模型時間）';
+  $('simTime').textContent=fmt(b.elapsed)+'s / '+fmt(C.MAX_TIME)+'s（模型時間）';
   if(b.events.length!==runtime.logged){runtime.logged=b.events.length;renderEvents(b.events)}
   // Audio is triggered by NEW physics events. Visuals use the same event stream.
   for(let i=runtime.sounded||0;i<b.events.length;i++){
@@ -204,9 +204,15 @@ function playFrame(token,lastTime){
     report('已判定'+(b.winner===0?'我方':b.winner===1?'對手':'雙方')+
      (b.finish==='spin'?'停轉結束':b.finish==='over'?'出界結束':b.finish==='extreme'?'極限出界':b.finish==='burst'?'爆裂結束':'平手')+'。正在呈現終結動作，再更新分數。');
    }
-   const age=Math.min(1.2,(now-runtime.finishStarted)/1000);
-   viewer.render(b,{finalAge:age});
-   if(age>=1.2){showFinal(b);return}
+   const coastDuration=Number(V.COAST_DURATION)||4.5;
+   const coastAge=Math.min(coastDuration,(now-runtime.finishStarted)/1000);
+   viewer.render(b,{finalAge:Math.min(1.2,coastAge),coastAge});
+   // Points appear after the original finish effect. The remaining spin
+   // continues to decelerate smoothly without pausing the battle or score.
+   if(coastAge>=1.2&&!runtime.finalReported){
+    runtime.finalReported=true;showFinal(b);
+   }
+   if(coastAge>=coastDuration)return;
   }else viewer.render(b);
   playFrame(token,now);
  });
@@ -221,7 +227,7 @@ function beginRound(){
  runtime.battle=C.createBattle(runtime.teams[0][idx],runtime.teams[1][idx],{
   seed,arena:conf.arena,rail:conf.rail,launch:conf.launch,record:true
  });
- runtime.paused=false;runtime.accumulator=0;runtime.logged=0;runtime.sounded=0;runtime.lastCollisions=0;runtime.lastRails=0;runtime.finishStarted=null;
+ runtime.paused=false;runtime.accumulator=0;runtime.logged=0;runtime.sounded=0;runtime.lastCollisions=0;runtime.lastRails=0;runtime.finishStarted=null;runtime.finalReported=false;
  $('simFinishOverlay').hidden=true;
  buildVisualPreview([runtime.teams[0][idx],runtime.teams[1][idx]],false);
  $('simNext').disabled=true;$('simPause').disabled=false;$('simPause').textContent='暫停';
