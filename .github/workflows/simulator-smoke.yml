@@ -1,0 +1,30 @@
+name: Simulator smoke tests
+on:
+  push:
+    paths:
+      - 'sim-engine.js'
+      - 'sim-ui.js'
+      - 'sim-view.js'
+      - 'data/collection.json'
+      - 'data/part-abilities.json'
+      - 'tests/sim-smoke.cjs'
+      - '.github/workflows/simulator-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  simulator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax
+        run: |
+          node --check app.js
+          node --check sim-engine.js
+          node --check sim-ui.js
+          node --check sim-view.js
+      - name: Validate model and 3on3 restrictions
+        run: node tests/sim-smoke.cjs
