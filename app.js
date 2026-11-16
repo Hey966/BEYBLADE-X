@@ -31,7 +31,10 @@ function stock(kind){let arr=[]; for(const b of DB.beys){ if(kind==='ratchet'||k
  return arr.filter(x=>x.value)}
 function countStats(){const count=DB.beys.length;const n=k=>DB.beys.filter(b=>b.system===k).length;const regions={US:0,JP:0};DB.beys.forEach(b=>{const m=pack(b).market;if(m in regions)regions[m]++}); $('stats').innerHTML=[['收藏總數',count],['BX 系列',n('BX')],['UX 系列',n('UX')],['CX 系列',n('CX')],['日版 / 美版',`${regions.JP} / ${regions.US}`]].map(([label,val],i)=>`<div class="stat"><span>${label}</span><strong class="${i===0?'tiny':''}">${esc(val)}</strong></div>`).join(''); }
 function renderFilters(){const f=$('filters');f.innerHTML=['ALL','BX','UX','CX'].map(v=>`<button data-filter="${v}" class="${v===filter?'on':''}">${v==='ALL'?'全部':v}</button>`).join('');f.querySelectorAll('button').forEach(n=>n.onclick=()=>{filter=n.dataset.filter;renderFilters();renderCollection()})}
-function displayImage(b){return b?.displayImagePath||''}
+function displayImage(b){
+ const url=b?.displayImagePath||'';
+ return url.includes('own-g3393-01.png')?url+(url.includes('?')?'&':'?')+'v=rudder-clean-20261116':url;
+}
 function photoTag(b,alt){const src=displayImage(b), fallback=b?.referenceImageUrl||'';return src?'<img src="'+esc(src)+'" alt="'+esc(alt)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片查核中\'))">':'<div class="photo-missing">圖片查核中</div>'}
 
 /* Unified image framing for all collection covers. */
