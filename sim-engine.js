@@ -168,8 +168,8 @@ function createBattle(left,right,settings={}){
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
     const hitStrength=(0.28+impulse)*(0.7+.42*(attackA+attackB))*(.90+.2*rng());
     const ia=impulse/a.model.massProxy,ib=impulse/b.model.massProxy;
-    a.vx-=nx*(ia+0.11+hitStrength*.22);a.vy-=ny*(ia+0.11+hitStrength*.22);
-    b.vx+=nx*(ib+0.11+hitStrength*.22);b.vy+=ny*(ib+0.11+hitStrength*.22);
+    a.vx-=nx*(ia+0.34+hitStrength*.73);a.vy-=ny*(ia+0.34+hitStrength*.73);
+    b.vx+=nx*(ib+0.34+hitStrength*.73);b.vy+=ny*(ib+0.34+hitStrength*.73);
     for(const [t,attacker] of [[a,b],[b,a]]){
      const defense=t.model.vector.defense/100;
      const attackerAttack=attacker.model.vector.attack/100;
