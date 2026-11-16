@@ -104,7 +104,7 @@ function createBattle(left,right,settings={}){
  const env={rail:settings.rail!==false,arena:settings.arena||"xtreme"};
  const state={version:VERSION,seed,elapsed:0,done:false,winner:null,finish:null,points:0,
   tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,terminal:null,collisionCount:0,railCount:0,lastContactAt:-5};
- function record(type,who,message){if(settings.record!==false&&state.events.length<120)state.events.push({t:+state.elapsed.toFixed(2),type,who,message})}
+ function record(type,who,message,data={}){if(settings.record!==false&&state.events.length<200)state.events.push({t:+state.elapsed.toFixed(3),type,who,message,...data})}
  function decide(winner,finish){
   if(state.done)return;
   state.done=true;state.winner=winner;state.finish=finish;
@@ -114,7 +114,7 @@ function createBattle(left,right,settings={}){
   if(finish==="spin"&&loser!==null)state.tops[loser].spin=0;
   if(finish==="draw")state.tops.forEach(top=>{top.spin=0});
   state.points=finish==="extreme"?3:finish==="over"||finish==="burst"?2:finish==="spin"?1:0;
-  record("finish",winner,finish==="extreme"?"Xtreme Finish":finish==="over"?"Over Finish":finish==="burst"?"Burst Finish":finish==="spin"?"Spin Finish":"平手");
+  record("finish",winner,finish==="extreme"?"Xtreme Finish":finish==="over"?"Over Finish":finish==="burst"?"Burst Finish":finish==="spin"?"Spin Finish":"平手",{x:loser===null?0:+state.tops[loser].x.toFixed(3),y:loser===null?0:+state.tops[loser].y.toFixed(3),result:finish});
  }
  function move(dt){
   if(state.done)return;
@@ -147,7 +147,7 @@ function createBattle(left,right,settings={}){
     t.vy+= Math.cos(theta)*t.spinSign*push;
     t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
     t.railCooldown=2.6;state.railCount++;
-    record("dash",t.side,"Xtreme Line 衝刺（近似模型）");
+    record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
    if(r>R-t.model.radius*0.55){
     const theta=Math.atan2(t.y,t.x);
@@ -189,7 +189,7 @@ function createBattle(left,right,settings={}){
      t.wobble+=hitStrength*(.16+.15*attackerAttack)/(0.7+defense);
      t.burstLoad+=hitStrength*(0.28+0.18*attackerAttack)/(0.65+t.model.vector.burst/100);
     }
-    if(hitStrength>0.11&&state.collisionCount%2===1)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）");
+    if(hitStrength>0.11)record("hit",null,"衝擊 "+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3)});
     // Latched components do not have a measured mechanical burst threshold.
     const excess=[a,b].map(t=>t.burstLoad-t.model.burstThreshold);
     if(Math.max(...excess)>0){
