@@ -23,8 +23,14 @@ function makeBuild(config,db,attributes){
  }else{
   const main=kind(config.blade,"blade",db,attributes);
   bl=main.rec.stats;bladeOwner=main.b;
-  // For CX's catalog-assembled Blade, use it as ONE locked element.
-  parts=[["blade",main],["ratchet",rc],["bit",bt]];
+  // A factory-assembled CX Blade still physically contains its own chip/main/assist.
+  // Track the three module owners for deck-uniqueness without double-counting stats.
+  parts=main.b.system==='CX'?
+    [["lockChip",kind(main.b.id,"lockChip",db,attributes)],
+     ["mainBlade",kind(main.b.id,"mainBlade",db,attributes)],
+     ["assistBlade",kind(main.b.id,"assistBlade",db,attributes)],
+     ["ratchet",rc],["bit",bt]]:
+    [["blade",main],["ratchet",rc],["bit",bt]];
  }
  const x={
   attack:cap(n(bl,"attack")*.62+n(rc.rec.stats,"attack")*.12+n(bt.rec.stats,"attack")*.26+n(bt.rec.stats,"dash")*.17),
@@ -217,13 +223,14 @@ function simulateMatch(left,right,options={}){
  const target=cap(options.targetPoints||4,1,12);
  const seed=Number(options.seed)||1;
  const points=[0,0],rounds=[];
- let number=0,streak=0;
+ let number=0,streak=0,deckIndex=0;
  // Sequential 3on3: never run six Beyblades inside the stadium at once.
+ // Ties replay the same pair, consistent with the basic 3on3 round procedure.
  while(Math.max(...points)<target&&number<24){
-  const offset=number%left.length,roundSeed=(seed+Math.imul(number+1,0x9E3779B1))>>>0;
+  const offset=deckIndex%left.length,roundSeed=(seed+Math.imul(number+1,0x9E3779B1))>>>0;
   const battle=runBattle(left[offset],right[offset],{seed:roundSeed,record:false,launch:options.launch,arena:options.arena,rail:options.rail});
   rounds.push({index:number+1,left:offset,right:offset,...battle});
-  if(battle.winner!==null){points[battle.winner]+=battle.points;streak=0}else streak++;
+  if(battle.winner!==null){points[battle.winner]+=battle.points;streak=0;deckIndex++}else streak++;
   number++;
   if(streak>=5)break;
  }
