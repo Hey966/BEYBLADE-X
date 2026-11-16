@@ -79,13 +79,14 @@ function validateDeck(deck){
 }
 function initTop(spec,side,opts,rng){
  const power=cap(opts.power,20,100),angle=cap(opts.angle,-35,35)*Math.PI/180;
+ const launcherProxy=opts.type==='string'?1.04:1; // uncalibrated launcher model
  const launching=power/100,sign=side===0?1:-1;
  const x=sign*-0.43,y=(side===0?-0.075:0.075);
  const speed=0.31+0.25*launching+(spec.vector.dash/100)*0.12;
  return{
   x,y,vx:sign*speed*Math.cos(angle)+0.05*(rng()-.5),
   vy:sign*speed*Math.sin(angle)+(side===0?0.11:-0.11),
-  spin:19+launching*48*spec.launchTransfer+4*(rng()-.5),
+  spin:19+launching*48*spec.launchTransfer*launcherProxy+4*(rng()-.5),
   wobble:0,shock:0,burstLoad:0,railCooldown:0,
   exited:false,burst:false,spinSign:spec.spin,side,
   heading:rng()*TAU,tilt:0,model:spec
