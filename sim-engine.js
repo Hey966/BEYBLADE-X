@@ -234,9 +234,11 @@ function simulateMatch(left,right,options={}){
   number++;
   if(streak>=5)break;
  }
- return {winner:points[0]>points[1]?0:points[1]>points[0]?1:null,
+ const achieved=Math.max(...points)>=target;
+ return {winner:achieved?(points[0]>points[1]?0:1):null,
   scores:points,rounds,mode:left.length===1?"1v1":"3v3",seed,
-  finalized:Math.max(...points)>=target||rounds.length>=24,assumptions:"unitless_uncalibrated_model"};
+  finalized:achieved,reason:achieved?"target_reached":"unresolved_round_limit",
+  assumptions:"unitless_uncalibrated_model"};
 }
 root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
 })(typeof window!=="undefined"?window:this);
