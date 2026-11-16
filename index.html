@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
-  <title>BEYBLADE X｜收藏指揮中心</title>
-  <link rel="stylesheet" href="style.css?v=20261116-replay-v2">
+  <title>BEYBLADE X｜戰鬥陀螺收藏智慧中心</title>
+  <link rel="stylesheet" href="style.css?v=20261116-launch-sp-v13">
 </head>
 <body>
   <header class="site-head">
@@ -17,7 +17,7 @@
     <section class="hero">
       <div class="hero-glow"></div>
       <div class="hero-copy"><span class="kicker">YOUR COLLECTION DATABASE <span class="tiny-line"></span> 01 / INVENTORY</span>
-        <h1>自己的戰鬥陀螺<br><em>收藏指揮中心</em></h1><p>收藏、管理、組裝。每一顆都有自己的紀錄。</p>
+        <h1>戰鬥陀螺<br><em>收藏智慧中心</em></h1><p>收藏、管理、組裝。每一顆都有自己的紀錄。</p>
         <div class="hero-actions"><button class="primary" data-nav="builder">開始組裝 <span>↗</span></button><button class="ghost" data-nav="collection">查看收藏 <span>→</span></button></div>
       </div>
       <div class="hero-logo" aria-hidden="true">X</div>
@@ -59,12 +59,12 @@
 <section id="sim" class="view">
  <div class="section-header">
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
-  <p class="hint">以實際收藏配件能力推算動態碰撞。支援即時 3D 與大量模擬。</p>
+  <p class="hint">左右半場隨機落點、上方投放與輕彈入場。支援即時 3D 與大量模擬。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>目前計算使用攻擊、防禦、持久、衝刺、抗爆等相對數值。重量、摩擦、旋轉慣量、碰撞係數與爆裂閾值尚未實測校正。3D 以所選零件 PNG 貼圖組合近似外形，非精確實物掃描。以下結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>中線只區分雙方投放落點區，不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。重量、摩擦、碰撞與爆裂參數尚未實測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
-   <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、拉力、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
+   <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、SP 力道、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
    <div class="sim-audio-controls">
     <button type="button" id="simSoundToggle" class="sim-sound-button" aria-pressed="true">音效：開啟</button>
     <label for="simSoundVolume">音效音量 <output id="simSoundVolumeDisplay">55%</output></label>
@@ -80,12 +80,12 @@
    <div class="sim-launch-row">
     <div><strong>我方發射</strong>
      <label>發射器<select id="simLauncher0"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
-     <label>模型拉力 <output id="simPower0Display">75%</output><input type="range" id="simPower0" min="20" max="100" step="1" value="75"></label>
+     <div class="sim-power-control"><label for="simPower0">發射力道 <output id="simPower0Display">10500 SP</output></label><input type="range" id="simPower0" min="0" max="14000" step="100" value="10500" aria-label="我方發射力道 SP"><input type="number" id="simPower0Number" min="0" max="14000" step="1" value="10500" inputmode="numeric" aria-label="我方發射力道精確 SP 數值"></div>
      <label>發射角度 <output id="simAngle0Display">0°</output><input type="range" id="simAngle0" min="-35" max="35" value="0"></label>
     </div>
     <div><strong>對手發射</strong>
      <label>發射器<select id="simLauncher1"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
-     <label>模型拉力 <output id="simPower1Display">75%</output><input type="range" id="simPower1" min="20" max="100" step="1" value="75"></label>
+     <div class="sim-power-control"><label for="simPower1">發射力道 <output id="simPower1Display">10500 SP</output></label><input type="range" id="simPower1" min="0" max="14000" step="100" value="10500" aria-label="對手發射力道 SP"><input type="number" id="simPower1Number" min="0" max="14000" step="1" value="10500" inputmode="numeric" aria-label="對手發射力道精確 SP 數值"></div>
      <label>發射角度 <output id="simAngle1Display">0°</output><input type="range" id="simAngle1" min="-35" max="35" value="0"></label>
     </div>
    </div>
@@ -101,7 +101,7 @@
     <button id="simReset" type="button">重設</button>
    </div>
    <p id="simTime" class="sim-technical-status">0.0s / 33.0s（模型時間）</p>
-   <p id="simMessage" class="sim-message" role="status">選擇配件開始模擬。</p>
+   <p id="simMessage" class="sim-message" role="status">左右分區投放。陀螺落地輕彈後自由對戰。</p>
    <ul id="simEvents" class="sim-events"></ul>
   </article>
  </div>
@@ -137,7 +137,7 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-sim-v1"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-replay-v2"></script><script src="sim-view.js?v=20261116-replay-v2"></script><script src="sim-audio.js?v=20261116-replay-v2"></script><script src="sim-ui.js?v=20261116-replay-v2"></script>
+  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-launch-sp-v13"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
+<script src="sim-engine.js?v=20261116-launch-sp-v13"></script><script src="sim-view.js?v=20261116-launch-sp-v13"></script><script src="sim-audio.js?v=20261116-launch-sp-v13"></script><script src="sim-ui.js?v=20261116-launch-sp-v13"></script>
 </body>
 </html>
