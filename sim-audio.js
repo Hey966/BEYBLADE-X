@@ -90,6 +90,9 @@ function create(){
   if(!ready())return;
   const scale=Math.max(.3,Math.min(2,Number(power)||1));
   switch(event){
+   case 'land':
+    noise(.095,.045*scale,1400,{high:true});
+    tone(215,.10,.065*scale,'triangle',{end:120});break;
    case 'launch':
     noise(.22,.07*scale,1300,{high:true});
     tone(145,.33,.15*scale,'sawtooth',{end:520});

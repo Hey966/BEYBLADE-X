@@ -663,6 +663,10 @@ button.analysis-reference-hero .analysis-result-image{
 .sim-launch-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
 .sim-launch-row>div{background:#172c3b;border:1px solid #3a566b;border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:11px}
 .sim-launch-row strong{color:#b8eaf4;font-size:13px}
+.sim-power-control{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sim-power-control label{flex-direction:row;align-items:center;justify-content:space-between;gap:5px}
+.sim-power-control output{font-variant-numeric:tabular-nums;color:#d1f1ff;font-weight:800}
+.sim-power-control input[type=number]{font-size:13px;font-variant-numeric:tabular-nums}
 .sim-score-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
 .sim-score-row strong{color:#f3e7c5;font-size:18px;font-variant-numeric:tabular-nums}
 .sim-score-row span{font-size:12px;color:#93baca}

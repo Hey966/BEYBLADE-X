@@ -93,12 +93,20 @@ function showTerminalStatus(battle){
  $('simTime').textContent=fmt(battle.elapsed)+'s / 33.0s（模型時間）';
 }
 
+const spValue=value=>Math.max(0,Math.min(14000,Math.round(Number(value)||0)));
+function syncPower(i,source){
+ const value=spValue($(source==='number'?'simPower'+i+'Number':'simPower'+i).value);
+ $('simPower'+i).value=String(value);
+ $('simPower'+i+'Number').value=String(value);
+ $('simPower'+i+'Display').textContent=value.toLocaleString('zh-TW')+' SP';
+ if(runtime)clearMatch('發射力道已變更，請重新開始。');
+}
 function settings(){
  return {
   seed:(Math.trunc(Number($('simSeed').value))||966)>>>0,
   arena:$('simArenaType').value,
   rail:$('simArenaType').value==='xtreme',
-  launch:[0,1].map(i=>({power:Number($('simPower'+i).value),
+  launch:[0,1].map(i=>({power:spValue($('simPower'+i+'Number').value),
    angle:Number($('simAngle'+i).value),type:$('simLauncher'+i).value}))
  };
 }
@@ -172,6 +180,7 @@ function playFrame(token,lastTime){
   for(let i=runtime.sounded||0;i<b.events.length;i++){
    const e=b.events[i];
    if(e.type==='hit')audio?.play?.('hit',Math.min(1.45,Math.max(.4,Number(e.strength)||.7)));
+   else if(e.type==='land')audio?.play?.('land',.65);
    else if(e.type==='dash')audio?.play?.('dash',.8);
    else if(e.type==='finish')audio?.play?.(b.finish||'draw',1);
   }
@@ -206,7 +215,7 @@ function beginRound(){
  buildVisualPreview([runtime.teams[0][idx],runtime.teams[1][idx]],false);
  $('simNext').disabled=true;$('simPause').disabled=false;$('simPause').textContent='暫停';
  viewer.render(runtime.battle);updateScore();
- report((idx+1)+' 號陀螺進場。物理演算進行中。');
+ report((idx+1)+' 號陀螺從左右半場上方投放，落點由亂數種子決定。');
  const token=++frameToken;playFrame(token,performance.now());
 }
 function start(){
@@ -238,10 +247,14 @@ $('simArenaType').addEventListener('change',()=>{
 for(const id of ['simSeed','simLauncher0','simLauncher1'])$(id).addEventListener('change',()=>{
  clearMatch('發射設定已變更，請重新開始。');
 });
-for(const id of ['simPower0','simPower1','simAngle0','simAngle1'])$(id).addEventListener('input',()=>{
- $(id+'Display').textContent=$(id).value+(id.includes('Angle')?'°':'%');
- if(runtime)clearMatch('拉力或角度已變更，請重新開始。');
-});
+for(const i of [0,1]){
+ $('simPower'+i).addEventListener('input',()=>syncPower(i,'range'));
+ $('simPower'+i+'Number').addEventListener('change',()=>syncPower(i,'number'));
+ $('simAngle'+i).addEventListener('input',()=>{
+  $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
+  if(runtime)clearMatch('角度已變更，請重新開始。');
+ });
+}
 $('simSettingsReset').addEventListener('click',()=>{
  $('simMatchType').value='1';
  $('simArenaType').value='xtreme';
@@ -249,13 +262,14 @@ $('simSettingsReset').addEventListener('click',()=>{
  $('simSpeed').value='1';
  for(const i of [0,1]){
   $('simLauncher'+i).value='winder';
-  $('simPower'+i).value='75';
+  $('simPower'+i).value='10500';
+  $('simPower'+i+'Number').value='10500';
   $('simAngle'+i).value='0';
-  $('simPower'+i+'Display').textContent='75%';
+  $('simPower'+i+'Display').textContent='10,500 SP';
   $('simAngle'+i+'Display').textContent='0°';
  }
  renderTeams();
- clearMatch('已重置對戰形式、場地、發射器、拉力、角度、種子與播放速度。自訂零件保留。');
+ clearMatch('已重置對戰形式、場地、發射器、SP 力道、角度、種子與播放速度。自訂零件保留。');
 });
 $('simSoundToggle')?.addEventListener('click',()=>{
  if(audio){
@@ -323,5 +337,5 @@ $('simBatchDownload').addEventListener('click',()=>{
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BEYBLADE-X_simulation_'+latestBatch.seed+'.json';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
-renderTeams();clearMatch('請選兩隊配件與發射設定。模擬器將使用相同物理狀態驅動畫面與計分。');
+renderTeams();clearMatch('請選兩隊配件與發射設定。雙方從盤面上方落入各自半場，落地輕彈後自由對戰。');
 })(typeof window!=='undefined'?window:this);

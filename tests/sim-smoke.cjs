@@ -22,9 +22,25 @@ assert.equal(E.validateDeck(b),true);
 assert.throws(()=>E.validateDeck([a[0],a[0],a[1]]),/重複/);
 const wolf1=owned('OWN-G3084-04'),wolf2=owned('OWN-UX-08-01');
 assert.throws(()=>E.validateDeck([wolf1,wolf2,a[0]]),/重複/); // 3-80/FB duplicate models
-const one=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:80,type:'string',angle:8},{power:78,type:'winder',angle:-8}]});
-const again=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:80,type:'string',angle:8},{power:78,type:'winder',angle:-8}]});
+const one=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:11200,type:'string',angle:8},{power:10920,type:'winder',angle:-8}]});
+const again=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:11200,type:'string',angle:8},{power:10920,type:'winder',angle:-8}]});
 assert.equal(JSON.stringify(one),JSON.stringify(again),'same seed reproducible');
+// Seeded drop positions stay in separate halves and start above the stadium.
+const launch={seed:966,arena:'xtreme',launch:[{power:10500,type:'string',angle:0},{power:10500,type:'winder',angle:0}]};
+const dropped=E.createBattle(a[0],b[0],launch);
+const droppedAgain=E.createBattle(a[0],b[0],launch);
+assert(dropped.tops[0].x<0&&dropped.tops[1].x>0,'launch halves');
+assert(dropped.tops.every(t=>t.height>0&&!t.landed),'tops begin airborne');
+assert.equal(JSON.stringify(dropped.tops),JSON.stringify(droppedAgain.tops),'same seed same drop');
+for(let i=0;i<150&&!dropped.tops.every(t=>t.landed);i++)dropped.step();
+assert(dropped.tops.every(t=>t.landed&&t.height===0),'tops settle before collisions');
+assert.equal(dropped.events.filter(e=>e.type==='land').length,2,'each top bounces once');
+const noPower=E.createBattle(a[0],b[0],{seed:966,launch:[{power:0},{power:0}]});
+assert(noPower.tops.every(t=>t.spin===0),'0 SP produces no launch spin');
+const maxPower=E.createBattle(a[0],b[0],{seed:966,launch:[{power:14000},{power:14000}]});
+assert(maxPower.tops.every((t,i)=>t.spin>noPower.tops[i].spin),'power controls spin');
+const clamped=E.createBattle(a[0],b[0],{seed:966,launch:[{power:99999},{power:99999}]});
+assert.equal(maxPower.tops[0].spin,clamped.tops[0].spin,'SP capped at 14000');
 const three=E.simulateMatch(a,b,{seed:966});
 assert.equal(three.mode,'3v3');
 assert(three.rounds.length>0);
@@ -40,7 +56,7 @@ let kinds=new Set();
 for(let i=0;i<130;i++){
  const left=owned(db.beys[i%db.beys.length].id);
  const right=owned(db.beys[(i*11+4)%db.beys.length].id);
- const battle=E.runBattle(left,right,{seed:i*97+42,launch:[{power:30+(i*31%71),type:'string',angle:-35+(i*17%71)},{power:30+(i*19%71),type:'winder',angle:-35+(i*29%71)}],arena:'xtreme',record:false});
+ const battle=E.runBattle(left,right,{seed:i*97+42,launch:[{power:3500+(i*773%10501),type:'string',angle:-35+(i*17%71)},{power:2800+(i*553%11201),type:'winder',angle:-35+(i*29%71)}],arena:'xtreme',record:false});
  kinds.add(battle.finish);
  assert(Number.isFinite(battle.time));
  assert(battle.time<=E.MAX_TIME+.01);
