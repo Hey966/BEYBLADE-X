@@ -65,6 +65,12 @@
  <div class="sim-topgrid">
   <article class="sim-panel">
    <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、拉力、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
+   <div class="sim-audio-controls">
+    <button type="button" id="simSoundToggle" class="sim-sound-button" aria-pressed="true">音效：開啟</button>
+    <label for="simSoundVolume">音效音量 <output id="simSoundVolumeDisplay">55%</output></label>
+    <input id="simSoundVolume" type="range" min="0" max="100" value="55" step="1" aria-label="模擬對戰音量">
+    <span class="sim-audio-hint">需按開始或音效鈕才能啟用手機聲音</span>
+   </div>
    <div class="sim-control-grid">
     <label>對戰形式<select id="simMatchType"><option value="1">1 對 1</option><option value="3">3 對 3（依序出戰）</option></select></label>
     <label>場地<select id="simArenaType"><option value="xtreme">Xtreme 模擬競技盤（含 Xtreme Line）</option><option value="plain">練習圓盤（無 Xtreme Line）</option></select></label>
@@ -132,6 +138,6 @@
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-sim-v1"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-sim-v11-verified"></script><script src="sim-view.js?v=20261116-sim-v11-verified"></script><script src="sim-ui.js?v=20261116-sim-v11-verified"></script>
+<script src="sim-engine.js?v=20261116-sim-v11-verified"></script><script src="sim-view.js?v=20261116-sim-v11-verified"></script><script src="sim-audio.js?v=20261116-sim-v12-video"></script><script src="sim-ui.js?v=20261116-sim-v11-verified"></script>
 </body>
 </html>
