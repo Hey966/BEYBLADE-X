@@ -2,8 +2,8 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.6";
-const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=33;
+const VERSION="sim-v1.7";
+const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
 const sum=(...items)=>items.reduce((o,x)=>{for(const k of ['attack','defense','stamina'])o[k]+=n(x,k);return o},{attack:0,defense:0,stamina:0});
@@ -56,10 +56,13 @@ function makeBuild(config,db,attributes){
   radius:0.168+0.00023*(x.defense+x.attack),
   massProxy:1+0.0024*x.defense+0.0013*x.attack,
   inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
-  staminaDrag:1.15+(100-x.stamina)*0.023,
+  // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
+  // Calibrated for an observable slowdown, not real measured revolutions.
+  staminaDrag:.72+(100-x.stamina)*.010,
   lateralDrag:0.42+(100-x.stamina)*0.002,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
-  burstThreshold:1.46+0.008*x.burst+0.002*x.defense,
+  // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
+  burstThreshold:5.5+0.008*x.burst+0.002*x.defense,
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
   railEfficiency:0.25+0.009*x.dash,
   launchTransfer:0.74+0.0024*x.attack+0.001*launcherSpeed,
@@ -158,33 +161,41 @@ function createBattle(left,right,settings={}){
     t.height=Math.max(0,t.height+t.verticalVelocity*dt);
     if(t.height===0){t.verticalVelocity=0;t.wobble+=.04;}
    }
-   // Lean from launch angle persists at entry, while impact-induced tilt settles.
-   t.tiltVelocity+=dt*(-5.8*t.tilt-3.1*t.tiltVelocity);
+   // Preserve a substantial spin reserve after attacks. Near the end the top
+   // progressively wobbles and leans instead of abruptly dropping to zero.
+   const lowSpin=cap((12-t.spin)/12,0,1);
+   const lateLean=lowSpin*.38*Math.sin(state.elapsed*(3.2+t.spin*.12)+t.phase);
+   t.tiltVelocity+=dt*(-5.8*(t.tilt-lateLean)-3.1*t.tiltVelocity);
    t.tilt=cap(t.tilt+t.tiltVelocity*dt,-1.18,1.18);
+   t.wobble=Math.max(t.wobble,lowSpin*.8);
    t.impact=Math.max(0,t.impact-dt*2.5);
    t.burstLoad=Math.max(0,t.burstLoad-dt*.008);
    t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble+Math.abs(t.tilt)*.55));
-   const damping=Math.max(0,1-dt*(m.lateralDrag+0.09*t.wobble));
+   // Decouple attack movement from rotational lifetime. At high spin, the
+   // horizontal movement clock runs up to 3.5x faster than the spin clock.
+   // Once spin falls, planar motion gradually returns to a slower drift.
+   const moveDt=dt*(1+2.5*cap((t.spin-5)/35,0,1));
+   const damping=Math.max(0,1-moveDt*(m.lateralDrag+0.09*t.wobble));
    t.vx*=damping;t.vy*=damping;
    // The selected launch tilt changes the first seconds of lateral motion.
    const angleInfluence=Math.max(0,1-state.elapsed/3.0);
-   t.vy+=dt*Math.sin(t.launchAngle)*t.spinSign*.55*angleInfluence;
+   t.vy+=moveDt*Math.sin(t.launchAngle)*t.spinSign*.55*angleInfluence;
    // Small convergence toward an encounter point. A game-model heuristic, not magnetic force.
    const opponent=state.tops[1-t.side];
    if(opponent?.landed&&state.elapsed<10&&t.spin>6){
     const ox=opponent.x-t.x,oy=opponent.y-t.y,d=Math.hypot(ox,oy);
     if(d>.30&&d<1.35){
      const converge=(.28+.0030*v.dash)*(1-d/1.55);
-     t.vx+=dt*converge*ox/d;
-     t.vy+=dt*converge*oy/d;
+     t.vx+=moveDt*converge*ox/d;
+     t.vy+=moveDt*converge*oy/d;
     }
    }
    // Stadium slope pulls inward; Xtreme-style rails drive tangent movement.
    const radius=Math.hypot(t.x,t.y);
    if(radius>0.01){
     const slope=0.15+0.11*Math.min(1,radius/R)-0.29*(v.dash/100);
-    t.vx-=dt*slope*t.x/radius;
-    t.vy-=dt*slope*t.y/radius;
+    t.vx-=moveDt*slope*t.x/radius;
+    t.vy-=moveDt*slope*t.y/radius;
     // Attack-oriented tips sweep or 'flower' around the dish. Stamina tips
     // hold a quieter center path; balance and defense are intermediate.
     // The small radial oscillation is a stylized movement approximation.
@@ -193,12 +204,12 @@ function createBattle(left,right,settings={}){
     const pattern=Math.sin(state.elapsed*(3.5+.018*v.dash)+t.phase);
     const radialPulse=activity*.24*motion*pattern;
     const roam=(.026+.15*activity+.0013*v.dash)*motion;
-    t.vx+=dt*(radialPulse*t.x/radius-t.y/radius*t.spinSign*roam);
-    t.vy+=dt*(radialPulse*t.y/radius+t.x/radius*t.spinSign*roam);
+    t.vx+=moveDt*(radialPulse*t.x/radius-t.y/radius*t.spinSign*roam);
+    t.vy+=moveDt*(radialPulse*t.y/radius+t.x/radius*t.spinSign*roam);
    }
-   t.x+=t.vx*dt;t.y+=t.vy*dt;
-   t.railCooldown=Math.max(0,t.railCooldown-dt);
-   t.wobble=Math.max(0,t.wobble-dt*(0.22+v.defense*.002));
+   t.x+=t.vx*moveDt;t.y+=t.vy*moveDt;
+   t.railCooldown=Math.max(0,t.railCooldown-moveDt);
+   t.wobble=Math.max(0,t.wobble-moveDt*(0.22+v.defense*.002));
    const r=Math.hypot(t.x,t.y);
    // Keep pre-rail velocity for ring-outs: Xtreme assistance cannot undo an
    // already committed outward pocket entry in the same physics step.
@@ -222,7 +233,7 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    const escapeThreshold=0.53+0.002*v.defense;
+    const escapeThreshold=.90+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
@@ -273,7 +284,8 @@ function createBattle(left,right,settings={}){
     for(const [t,attacker] of [[a,b],[b,a]]){
      const defense=t.model.vector.defense/100;
      const attackerAttack=attacker.model.vector.attack/100;
-     t.spin=Math.max(0,t.spin-hitStrength*(1.7+2.5*attackerAttack)/(0.7+defense));
+     // Collisions consume rotation, but do not erase the remaining momentum.
+     t.spin=Math.max(0,t.spin-.45*hitStrength*(1.7+2.5*attackerAttack)/(0.7+defense));
      t.wobble+=hitStrength*(.25+.22*attackerAttack)/(0.7+defense);
      // Lock damage accumulates across contacts; not every first hit bursts.
      // A lower burst-resistance bit and a stronger attack increase damage.
@@ -299,7 +311,8 @@ function createBattle(left,right,settings={}){
     }
    }
   }
-  const stopped=state.tops.map(x=>x.spin<3.0);
+  // Only end a spin finish when one top has almost stopped.
+  const stopped=state.tops.map(x=>x.spin<.6);
   if(stopped[0]||stopped[1]){
    if(stopped[0]&&stopped[1])decide(null,"draw");else decide(stopped[0]?1:0,"spin");
    return;
@@ -315,7 +328,8 @@ function createBattle(left,right,settings={}){
    // Adaptive microsteps prevent a fast rail dash from jumping across the
    // other top between collision checks. Normal-speed frames remain unchanged.
    const [a,b]=state.tops;
-   const relativeSpeed=Math.hypot(a.vx-b.vx,a.vy-b.vy);
+   // Include the fast movement clock in swept-collision substep selection.
+   const relativeSpeed=Math.hypot(a.vx-b.vx,a.vy-b.vy)*3.5;
    const minRadius=Math.min(a.model.radius,b.model.radius);
    const substeps=Math.max(1,Math.min(6,Math.ceil(relativeSpeed*DT/(minRadius*.40))));
    for(let j=0;j<substeps&&!state.done;j++)move(DT/substeps);
