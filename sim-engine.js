@@ -103,11 +103,16 @@ function createBattle(left,right,settings={}){
  const launcher=settings.launch||[{power:75,angle:0},{power:75,angle:0}];
  const env={rail:settings.rail!==false,arena:settings.arena||"xtreme"};
  const state={version:VERSION,seed,elapsed:0,done:false,winner:null,finish:null,points:0,
-  tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,collisionCount:0,railCount:0,lastContactAt:-5};
+  tops:[initTop(left,0,launcher[0]||{},rng),initTop(right,1,launcher[1]||{},rng)],events:[],env,terminal:null,collisionCount:0,railCount:0,lastContactAt:-5};
  function record(type,who,message){if(settings.record!==false&&state.events.length<120)state.events.push({t:+state.elapsed.toFixed(2),type,who,message})}
  function decide(winner,finish){
   if(state.done)return;
   state.done=true;state.winner=winner;state.finish=finish;
+  const loser=winner===null?null:1-winner;
+  state.terminal={winner,loser,finish,at:+state.elapsed.toFixed(3)};
+  // Terminal event is a physical model state, not a prerecorded animation.
+  if(finish==="spin"&&loser!==null)state.tops[loser].spin=0;
+  if(finish==="draw")state.tops.forEach(top=>{top.spin=0});
   state.points=finish==="extreme"?3:finish==="over"||finish==="burst"?2:finish==="spin"?1:0;
   record("finish",winner,finish==="extreme"?"Xtreme Finish":finish==="over"?"Over Finish":finish==="burst"?"Burst Finish":finish==="spin"?"Spin Finish":"平手");
  }
