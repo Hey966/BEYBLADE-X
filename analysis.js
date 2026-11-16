@@ -460,10 +460,6 @@ $('opponentCount')?.addEventListener('change',()=>{
  renderOpponentEntries();
  $('counterResults').textContent='已變更對手數量，請重新執行能力壓制分析。';
 });
-$('counterCount')?.addEventListener('change',()=>{
- lastCounter=[];
- $('counterResults').textContent='已變更我方推薦數量，請重新執行分析。';
-});
 $('opponentEntries')?.addEventListener('change',event=>{
  const input=event.target.closest('select[data-opp-field]');
  const card=input?.closest('[data-opp-index]');
@@ -543,7 +539,12 @@ function runCounter(){
   $('counterResults').textContent='請選齊每顆對手的戰刃、固鎖與軸心。';
   return;
  }
- const count=Number($('counterCount')?.value||3);
+ // Opponent count determines our recommended count: only 1v1 or 3v3.
+ const count=enemies.length;
+ if(count!==1&&count!==3){
+  $('counterResults').textContent='只支援 1 對 1 或 3 對 3 分析。';
+  return;
+ }
  $('counterResults').textContent='正在比較雙方完整能力與隊伍壓制覆蓋…';
  const pool=counterCandidates(enemies);
  const team=pickCounterDeck(pool,count,enemies);
