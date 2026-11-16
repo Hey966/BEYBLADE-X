@@ -51,7 +51,9 @@ for(const team of [0,1])$('simTeam'+team).addEventListener('change',e=>{
  if(field==='mode')renderTeams();
  clearMatch('零件已更改。畫面將顯示所選戰刃與配件，請重新開始。');
 });
+let previewSpecs=[null,null];
 function buildVisualPreview(specs,preview=true){
+ previewSpecs=specs;
  viewer.setArena($('simArenaType').value);
  viewer.setBuilds(specs);
  const content=specs.map((spec,i)=>{
@@ -63,8 +65,11 @@ function buildVisualPreview(specs,preview=true){
     '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div></div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
- if(preview){
-  const state={done:false,terminal:null,tops:specs.map((b,i)=>{
+ if(preview)renderLaunchPreview();
+}
+function renderLaunchPreview(){
+ if(runtime)return;
+ const state={done:false,terminal:null,tops:previewSpecs.map((b,i)=>{
    if(!b)return null;
    const launchAngle=(Number($('simAngle'+i)?.value)||0)*Math.PI/180;
    return{
@@ -73,8 +78,7 @@ function buildVisualPreview(specs,preview=true){
     height:0,landed:true,railCooldown:0,model:b,side:i
    };
   })};
-  viewer.render(state);
- }
+ viewer.render(state);
 }
 function previewCurrent(){
  try{
@@ -259,7 +263,8 @@ for(const i of [0,1]){
  $('simPower'+i+'Number').addEventListener('change',()=>syncPower(i,'number'));
  $('simAngle'+i).addEventListener('input',()=>{
   $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
-  clearMatch('角度已變更。已更新陀螺傾斜預覽，請重新開始。');
+  if(runtime)clearMatch('角度已變更，請重新開始。');
+  else{renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
  });
 }
 $('simSettingsReset').addEventListener('click',()=>{
