@@ -13,6 +13,12 @@ const abilities=JSON.parse(read('data/part-abilities.json'));
 const browser={};
 vm.runInNewContext(read('sim-engine.js'),{window:browser,console});
 const html=read('index.html');
+const sceneCode=read('sim-view.js');
+// The sides define only spawn positions, never visible stadium dividers or overlays.
+assert(!sceneCode.includes("zoneDividerMaterial"),'3D should not draw a centre divider');
+assert(!sceneCode.includes("CircleGeometry(1.23,64,angle,Math.PI)"),'3D should not tint the two halves');
+assert(!sceneCode.includes("ctx.fillText('我方落點區'"),'2D should not label launch halves');
+assert(!sceneCode.includes("ctx.fillRect(cx-radius,cy-radius,radius,radius*2)"),'2D should not tint half of the stadium');
 const nodes={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  const id=match[1];

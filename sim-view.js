@@ -171,17 +171,7 @@ function create(container,status,api){
   }
   ctx.setLineDash([2,9]);ctx.strokeStyle='rgba(45,64,89,.3)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,radius*.65,0,TAU);ctx.stroke();ctx.setLineDash([]);
-  // Two translucent launch halves. This is a start-position guide, not a wall.
-  ctx.save();
-  ctx.beginPath();ctx.arc(cx,cy,radius*.89,0,TAU);ctx.clip();
-  ctx.fillStyle='rgba(56,202,239,.09)';ctx.fillRect(cx-radius,cy-radius,radius,radius*2);
-  ctx.fillStyle='rgba(255,149,85,.09)';ctx.fillRect(cx,cy-radius,radius,radius*2);
-  ctx.setLineDash([7,7]);ctx.strokeStyle='rgba(39,65,87,.57)';ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(cx,cy-radius*.9);ctx.lineTo(cx,cy+radius*.9);ctx.stroke();
-  ctx.setLineDash([]);ctx.font='bold 11px system-ui';ctx.fillStyle='rgba(26,67,93,.78)';
-  ctx.fillText('我方落點區',cx-radius*.75,cy-radius*.45);
-  ctx.fillText('對手落點區',cx+radius*.15,cy-radius*.45);
-  ctx.restore();
+  // Initial launch halves are enforced by sim-engine, but not drawn on the stadium.
   // Moving trails show where each simulated top actually travelled.
   for(let i=0;i<2;i++){
    const points=trails[i];if(points.length<2)continue;
@@ -346,18 +336,7 @@ function create(container,status,api){
    basin.position.y=-.045;group.add(basin);
    const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.014,112),mat);
    floor.position.y=.011;group.add(floor);
-   // Left/right translucent semicircles indicate seeded launch zones.
-   // No collider is added: tops cross this centre line freely after landing.
-   for(const [angle,color] of [[Math.PI/2,0x44bbef],[-Math.PI/2,0xffa568]]){
-    const half=new T.Mesh(new T.CircleGeometry(1.23,64,angle,Math.PI),
-     new T.MeshBasicMaterial({color,transparent:true,opacity:.11,depthWrite:false,side:T.DoubleSide}));
-    half.rotation.x=-Math.PI/2;half.position.y=.021;group.add(half);
-   }
-   const zoneDividerMaterial=new T.MeshBasicMaterial({color:0x64839c,transparent:true,opacity:.68});
-   for(let j=0;j<15;j++){
-    const dash=new T.Mesh(new T.BoxGeometry(.014,.003,.093),zoneDividerMaterial);
-    dash.position.set(0,.030,-1.19+j*.17);group.add(dash);
-   }
+   // The launch halves are simulation-only. Keep the physical stadium visually continuous.
    const rim=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),
     new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24}));
    rim.rotation.x=Math.PI/2;rim.position.y=.065;group.add(rim);

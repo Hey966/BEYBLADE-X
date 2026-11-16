@@ -59,9 +59,9 @@
 <section id="sim" class="view">
  <div class="section-header">
   <div><span class="eyebrow">05 / ABILITY-DRIVEN STADIUM SIMULATION</span><h2>模擬對戰</h2></div>
-  <p class="hint">左右半場隨機落點、上方投放與輕彈入場。支援即時 3D 與大量模擬。</p>
+  <p class="hint">兩方各自在場地一側隨機落點，從上方投放並輕彈入場。支援即時 3D 與大量模擬。</p>
  </div>
- <p class="sim-disclaimer"><strong>原型模型：</strong>中線只區分雙方投放落點區，不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。重量、摩擦、碰撞與爆裂參數尚未實測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
+ <p class="sim-disclaimer"><strong>原型模型：</strong>雙方僅有初始落點範圍限制，場地不顯示分界，也不會阻隔碰撞。發射力道 0～14000 SP 為自訂模擬參數，並非官方實測 SP 轉速換算。重量、摩擦、碰撞與爆裂參數尚未實測校正。3D 外形為近似示意，結果不是實戰勝率。</p>
  <div class="sim-topgrid">
   <article class="sim-panel">
    <div class="sim-settings-header"><h3>對戰設定</h3><button type="button" id="simSettingsReset" class="sim-settings-reset" title="重置場地、發射器、SP 力道、角度、種子與速度；保留配件">重置對戰設定 <span>↺</span></button></div>
@@ -101,7 +101,7 @@
     <button id="simReset" type="button">重設</button>
    </div>
    <p id="simTime" class="sim-technical-status">0.0s / 33.0s（模型時間）</p>
-   <p id="simMessage" class="sim-message" role="status">左右分區投放。陀螺落地輕彈後自由對戰。</p>
+   <p id="simMessage" class="sim-message" role="status">雙方分別從場地兩側上方投放。落地輕彈後自由對戰。</p>
    <ul id="simEvents" class="sim-events"></ul>
   </article>
  </div>
@@ -138,6 +138,6 @@
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261115-part-ai1"></script><script src="app.js?v=20261116-launch-sp-v13"></script><script src="analysis.js?v=20261116-rudder-clean"></script>
-<script src="sim-engine.js?v=20261116-launch-sp-v13"></script><script src="sim-view.js?v=20261116-launch-sp-v13"></script><script src="sim-audio.js?v=20261116-launch-sp-v13"></script><script src="sim-ui.js?v=20261116-launch-sp-v13"></script>
+<script src="sim-engine.js?v=20261116-launch-sp-v13"></script><script src="sim-view.js?v=20261116-invisible-launch-v14"></script><script src="sim-audio.js?v=20261116-launch-sp-v13"></script><script src="sim-ui.js?v=20261116-launch-sp-v13"></script>
 </body>
 </html>
