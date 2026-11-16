@@ -26,6 +26,15 @@ assert(sceneCode.includes("paintImage(ctx,texture,0,0,r*2)"),
 assert(!sceneCode.includes("r*2.24"),'legacy oversized 2D sprite causes clipping');
 assert(sceneCode.includes("const topOrder="),'airborne tops must use correct depth order');
 assert(sceneCode.includes("const bladeLow="),'tilted blades must be lifted clear of the floor');
+assert(sceneCode.includes('mesh.root.rotation.x=Math.cos(dir)*lean;'),
+ '3D recoil must follow the impact-axis lean');
+assert(sceneCode.includes('mesh.root.rotation.z=Math.sin(dir)*lean;'),
+ '3D precession must move both tilt axes');
+assert(!sceneCode.includes('Math.cos(t.heading*.38)'),
+ 'blade spin must not cause unrelated high-frequency rocking');
+assert(!sceneCode.includes('Math.sin(t.heading*.38)'),
+ 'impact orientation must not be driven by heading texture');
+
 assert(sceneCode.includes("function coastRotation("),'post-finish winner needs a smooth coasting phase');
 assert(sceneCode.includes("t-t*t/(2*COAST_DURATION)"),
  'post-finish spin should decelerate to zero smoothly');
