@@ -189,7 +189,11 @@ function create(container,status,api){
    ctx.globalAlpha=.72;ctx.strokeStyle=colors[i];ctx.lineWidth=3.6;
    ctx.shadowColor=colors[i];ctx.shadowBlur=15;ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1;
   }
-  for(let i=0;i<2;i++){
+  // When airborne tops project onto the same XY point, paint the higher top
+  // last. This is depth ordering, not an invitation to intersect their blades.
+  const topOrder=(state?.tops||[]).map((_,i)=>i).sort((i,j)=>
+   (Number(state.tops[i]?.height)||0)-(Number(state.tops[j]?.height)||0));
+  for(const i of topOrder){
    const t=state?.tops?.[i],spec=visualBuilds[i];if(!t)continue;
    const outcome=state.done?state.terminal:null,loser=outcome?.loser===i,finished=outcome?.finish;
    const age=Math.min(1.2,Math.max(0,finalAge));
@@ -199,7 +203,9 @@ function create(container,status,api){
    const px=cx+(t.x+t.x/dist*escape)/1.32*radius*.95;
    const py=cy+(t.y+t.y/dist*escape)/1.32*radius*.95;
    const rise=Math.max(0,Number(t.height)||0);
-   const r=Math.max(15,radius*(spec?.radius||.13)/1.32*1.21)*(1+rise*.22);
+   // Screen footprint matches the engine's collision radius (unlike the
+   // previous 1.21x blade and 1.12x image oversizing).
+   const r=Math.max(10,radius*(spec?.radius||.18)/1.32*.95*.96)*(1+rise*.22);
    // Ground shadow stays on the launch point while the top descends.
    if(rise>0){
     ctx.save();ctx.globalAlpha=Math.max(.10,.30-rise*.18);ctx.fillStyle='#284e69';
@@ -228,7 +234,7 @@ function create(container,status,api){
    const pieces=getParts(spec),primary=pieces.find(p=>p.kind==='blade'||p.kind==='mainBlade')||pieces[0];
    const texture=getImage(primary?.src);
    ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fillStyle=i===0?'#a4d3dd':'#e5a47b';ctx.fill();
-   const drawn=paintImage(ctx,texture,0,0,r*2.24);
+   const drawn=paintImage(ctx,texture,0,0,r*2);
    if(!drawn){
     ctx.strokeStyle='#f0dec2';ctx.lineWidth=3;ctx.stroke();
     ctx.fillStyle='#30465c';ctx.beginPath();ctx.arc(0,0,r*.42,0,TAU);ctx.fill();
@@ -299,8 +305,10 @@ function create(container,status,api){
   const bitBody=new THREE.Mesh(new THREE.CylinderGeometry(.035,.015,.06,8),under);
   bitBody.position.y=.034;bit.add(bitBody);
   g.add(body,ratchet,bit);
-  // Keep the rendered blade footprint consistent with the impact radius proxy.
-  g.scale.setScalar(1.24);
+  // The blade image is up to 0.164 model units from its centre. Match its
+  // displayed outer radius to the same per-build radius used for physics.
+  // The small inset avoids alpha edges appearing to intersect on contact.
+  g.scale.setScalar((spec.radius||.18)/.164*.94);
   const centers={blade:.169,mainBlade:.172,assistBlade:.185,lockChip:.202,ratchet:.109,bit:.045};
   const dimensions={blade:.328,mainBlade:.326,assistBlade:.276,lockChip:.12,ratchet:.10,bit:.059};
   const textureKinds=parts.filter(p=>['blade','mainBlade','assistBlade','lockChip'].includes(p.kind));
@@ -489,6 +497,15 @@ function create(container,status,api){
    }else{
     mesh.blade.position.set(0,0,0);mesh.ratchet.position.set(0,0,0);mesh.bit.position.set(0,0,0);
     mesh.blade.rotation.set(0,0,0);mesh.ratchet.rotation.set(0,0,0);mesh.bit.rotation.set(0,0,0);
+   }
+   // A heavily tilted blade could otherwise cut through the opaque stadium
+   // floor, because its mesh rotates around the axle near the ground.
+   // Raise the axle only as much as necessary for rim clearance.
+   if(!(loser&&finish==='burst')&&Math.max(0,Number(t.height)||0)<.05){
+    const a=Math.min(1.4,Math.hypot(mesh.root.rotation.x,mesh.root.rotation.z));
+    const scale=mesh.root.scale.x;
+    const bladeLow=.169*scale*Math.cos(a)-.164*scale*Math.sin(a);
+    mesh.root.position.y+=Math.max(0,.02-bladeLow);
    }
   }
   if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.45:.84);
