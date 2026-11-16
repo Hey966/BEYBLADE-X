@@ -65,6 +65,44 @@ for(let seed=1;seed<=120;seed++){
 assert(highContactCount>0,'high energy tops should meet');
 assert(impactSeen,'hit should produce airborne knockback');
 assert(burstCount>0,'some repeatable high energy battles should burst');
+// Regression: two live tops must never visibly interpenetrate during contact.
+const coincident=E.createBattle(a[0],b[0],{seed:111});
+coincident.tops.forEach(t=>{t.landed=true;t.height=0;t.x=0;t.y=0;t.vx=0;t.vy=0;});
+coincident.step();
+assert(Math.hypot(coincident.tops[0].x-coincident.tops[1].x,
+ coincident.tops[0].y-coincident.tops[1].y)>=
+ coincident.tops[0].model.radius+coincident.tops[1].model.radius-1e-6,
+ 'exactly coincident centres must be separated without NaN');
+const highSpeed=E.createBattle(a[0],b[0],{seed:333});
+highSpeed.tops.forEach((t,i)=>{t.landed=true;t.height=0;t.x=i===0?-.45:.45;t.y=0;t.vx=i===0?150:-150;t.vy=0;});
+highSpeed.step();
+assert(highSpeed.collisionCount>=1,'swept high-speed movement must not tunnel past the opposing blade');
+const rimTop=E.createBattle(a[0],b[0],{seed:444});
+rimTop.tops[0].landed=true;rimTop.tops[0].height=0;
+rimTop.tops[0].x=1.30;rimTop.tops[0].y=0;rimTop.tops[0].vx=3;
+rimTop.tops[1].landed=true;rimTop.tops[1].height=0;
+rimTop.tops[1].x=-.50;rimTop.tops[1].y=0;
+rimTop.step();
+assert(Math.hypot(rimTop.tops[0].x,rimTop.tops[0].y)<=
+ 1.32-rimTop.tops[0].model.radius+1e-6,'full visual blade must remain inside stadium rim');
+let clippingFrames=0,checkedFrames=0;
+for(let seed=1;seed<=24;seed++){
+ const left=owned(db.beys[seed%db.beys.length].id);
+ const right=owned(db.beys[(seed*7+4)%db.beys.length].id);
+ const battle=E.createBattle(left,right,{seed:seed*397,arena:'xtreme',
+  launch:[{power:seed%3===0?14000:10500,angle:seed%2?35:0},
+   {power:seed%3===0?14000:10500,angle:seed%2?-35:0}],record:false});
+ for(let frame=0;frame<Math.ceil(E.MAX_TIME/E.DT)&&!battle.done;frame++){
+  battle.step();
+  if(battle.done||!battle.tops.every(t=>t.landed))continue;
+  checkedFrames++;
+  const [u,v]=battle.tops;
+  const gap=Math.hypot(u.x-v.x,u.y-v.y);
+  if(Math.abs(u.height-v.height)<.24&&gap<u.model.radius+v.model.radius-1e-5)clippingFrames++;
+ }
+}
+assert(checkedFrames>1000,'clipping stress test should cover many active frames');
+assert.equal(clippingFrames,0,'battle tops must never interpenetrate while at contact height');
 const three=E.simulateMatch(a,b,{seed:966});
 assert.equal(three.mode,'3v3');
 assert(three.rounds.length>0);
@@ -111,4 +149,4 @@ const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
  {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
 assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
 
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver},null,2));
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames},null,2));

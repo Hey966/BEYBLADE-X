@@ -19,6 +19,13 @@ assert(!sceneCode.includes("zoneDividerMaterial"),'3D should not draw a centre d
 assert(!sceneCode.includes("CircleGeometry(1.23,64,angle,Math.PI)"),'3D should not tint the two halves');
 assert(!sceneCode.includes("ctx.fillText('我方落點區'"),'2D should not label launch halves');
 assert(!sceneCode.includes("ctx.fillRect(cx-radius,cy-radius,radius,radius*2)"),'2D should not tint half of the stadium');
+assert(sceneCode.includes("g.scale.setScalar((spec.radius||.18)/.164*.94)"),
+ '3D outer blade footprint must track collision radius');
+assert(sceneCode.includes("paintImage(ctx,texture,0,0,r*2)"),
+ '2D blade image must not extend beyond its collision-sized painted disc');
+assert(!sceneCode.includes("r*2.24"),'legacy oversized 2D sprite causes clipping');
+assert(sceneCode.includes("const topOrder="),'airborne tops must use correct depth order');
+assert(sceneCode.includes("const bladeLow="),'tilted blades must be lifted clear of the floor');
 const nodes={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  const id=match[1];
