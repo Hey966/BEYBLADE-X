@@ -30,8 +30,9 @@ function create(container,status,api){
   fx=fx.filter(e=>now-e.t<.66).slice(-15);
   if(state.elapsed!==(state._previousRenderElapsed||-1)&&!state.done)
    state.tops.forEach((top,i)=>{
+    if(!top.landed)return;
     trails[i].push({x:top.x,y:top.y,t:now});
-    trails[i]=trails[i].filter(p=>now-p.t<.48).slice(-24);
+    trails[i]=trails[i].filter(p=>now-p.t<.73).slice(-34);
    });
   state._previousRenderElapsed=state.elapsed;
  }
@@ -180,8 +181,8 @@ function create(container,status,api){
     const xx=cx+points[k].x/1.32*radius*.95,yy=cy+points[k].y/1.32*radius*.95;
     if(!k)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
    }
-   ctx.globalAlpha=.55;ctx.strokeStyle=colors[i];ctx.lineWidth=3;
-   ctx.shadowColor=colors[i];ctx.shadowBlur=12;ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1;
+   ctx.globalAlpha=.72;ctx.strokeStyle=colors[i];ctx.lineWidth=3.6;
+   ctx.shadowColor=colors[i];ctx.shadowBlur=15;ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1;
   }
   for(let i=0;i<2;i++){
    const t=state?.tops?.[i],spec=visualBuilds[i];if(!t)continue;
@@ -199,17 +200,25 @@ function create(container,status,api){
     ctx.save();ctx.globalAlpha=Math.max(.10,.30-rise*.18);ctx.fillStyle='#284e69';
     ctx.beginPath();ctx.ellipse(px,py,r*.76,r*.30,0,0,TAU);ctx.fill();ctx.restore();
    }
-   ctx.save();ctx.translate(px,py-rise*radius*.53);
-   ctx.rotate(t.heading+(state.done&&outcome?.winner===i?t.spin*age*.46*t.spinSign:0)+(loser&&finished==='spin'?age*1.5:0));
+   const lean=Number(t.tilt)||0,leanDir=Number(t.tiltDir)||0;
    const collapsed=loser&&finished==='spin'?Math.max(.23,1-age*.6):1;
-   ctx.scale(1,collapsed);
+   ctx.save();
+   ctx.translate(px+Math.sin(leanDir)*lean*r*.16,py-rise*radius*.53);
+   ctx.rotate(leanDir);
+   ctx.scale(1,Math.max(.34,Math.cos(Math.abs(lean)))*collapsed);
+   ctx.rotate(t.heading-leanDir+(state.done&&outcome?.winner===i?t.spin*age*.46*t.spinSign:0)+(loser&&finished==='spin'?age*1.5:0));
    if(loser&&finished==='burst'&&age>.1){
-    ctx.fillStyle=i===0?'#bde1ef':'#f6bc89';
+    // Detach components instead of leaving a fully assembled Bey at the centre.
     for(let k=0;k<3;k++){
-     const angle=k*TAU/3+0.6;
-     ctx.save();ctx.translate(Math.cos(angle)*age*r*2,Math.sin(angle)*age*r*2);
-     ctx.rotate(angle+age*3);ctx.fillRect(-r*.45,-r*.18,r*.9,r*.36);ctx.restore();
+     const direction=k*TAU/3+.6;
+     ctx.save();ctx.translate(Math.cos(direction)*age*r*2.6,Math.sin(direction)*age*r*2.6);
+     ctx.rotate(direction+age*3.3);
+     ctx.fillStyle=k===0?'#d9eaf2':k===1?'#829cac':'#e2b078';
+     ctx.fillRect(-r*.45,-r*.17,r*.9,r*.34);
+     ctx.strokeStyle='#fff2d2';ctx.lineWidth=2;ctx.strokeRect(-r*.45,-r*.17,r*.9,r*.34);
+     ctx.restore();
     }
+    ctx.restore();continue;
    }
    const pieces=getParts(spec),primary=pieces.find(p=>p.kind==='blade'||p.kind==='mainBlade')||pieces[0];
    const texture=getImage(primary?.src);
@@ -230,12 +239,13 @@ function create(container,status,api){
    const age=Math.max(0,now-effect.t);
    if(age>.65)continue;
    const px=cx+effect.x/1.32*radius*.95,py=cy+effect.y/1.32*radius*.95;
-   const scale=1+age*3.2,opacity=Math.max(0,1-age/.65);
+   const strength=Math.max(.4,Number(effect.strength)||.7);
+   const scale=1+age*(3.2+strength*.9),opacity=Math.max(0,1-age/.65);
    ctx.save();ctx.translate(px,py);ctx.globalAlpha=opacity;
    ctx.strokeStyle=effect.kind==='dash'?'#4af5fa':effect.kind==='land'?'#8ddff3':'#fff5ad';
-   ctx.lineWidth=2.4;ctx.shadowBlur=12;
+   ctx.lineWidth=2.3+strength*.6;ctx.shadowBlur=12+strength*7;
    ctx.shadowColor=effect.kind==='dash'?'#2cf6ff':effect.kind==='land'?'#8ddff3':'#ffc441';
-   ctx.beginPath();ctx.arc(0,0,Math.min(33,10*scale),0,TAU);ctx.stroke();
+   ctx.beginPath();ctx.arc(0,0,Math.min(42,(10+strength*3)*scale),0,TAU);ctx.stroke();
    for(let k=0;k<12;k++){
     const a=k*TAU/12+effect.t*.8,d=18*scale*(k%3===0?1.3:.7);
     ctx.beginPath();ctx.moveTo(Math.cos(a)*8,Math.sin(a)*8);
@@ -449,22 +459,28 @@ function create(container,status,api){
    }
    mesh.root.position.set(x,.016+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?t.spin*age*.46*t.spinSign:0);
-   mesh.root.rotation.x=Math.cos(t.heading*.38)*Math.min(.12,t.wobble*.07);
-   mesh.root.rotation.z=Math.sin(t.heading*.38)*Math.min(.12,t.wobble*.07);
+   // Engine drives the full lean: launcher tilt, wall impact and collision wobble.
+   const lean=Number(t.tilt)||0,dir=Number(t.tiltDir)||0;
+   mesh.root.rotation.x=Math.cos(dir)*lean+Math.cos(t.heading*.38)*Math.min(.20,t.wobble*.11);
+   mesh.root.rotation.z=Math.sin(dir)*lean+Math.sin(t.heading*.38)*Math.min(.20,t.wobble*.11);
    if(loser&&finish==='spin'){
     mesh.root.rotation.z+=Math.min(1.2,age*1.0);
     mesh.root.position.y=Math.max(-.004,.016-age*.012);
    }
    if(loser&&(finish==='over'||finish==='extreme')){
-    mesh.root.rotation.z+=age*1.7;
-    mesh.root.position.y+=age*.11;
+    mesh.root.rotation.z+=age*2.3;
+    mesh.root.position.y+=age*.22;
    }
    if(loser&&finish==='burst'){
-    mesh.blade.position.set(age*.32,age*.21,age*.18);
-    mesh.ratchet.position.set(-age*.20,age*.02,age*.27);
-    mesh.bit.position.set(age*.05,-age*.07,-age*.20);
+    mesh.blade.position.set(age*.53,age*.32,age*.24);
+    mesh.ratchet.position.set(-age*.43,age*.11,age*.34);
+    mesh.bit.position.set(age*.16,-age*.07,-age*.40);
+    mesh.blade.rotation.set(age*4,age*3,age*2);
+    mesh.ratchet.rotation.set(age*3,-age*4,age*3);
+    mesh.bit.rotation.set(-age*2,age*2,age*5);
    }else{
     mesh.blade.position.set(0,0,0);mesh.ratchet.position.set(0,0,0);mesh.bit.position.set(0,0,0);
+    mesh.blade.rotation.set(0,0,0);mesh.ratchet.rotation.set(0,0,0);mesh.bit.rotation.set(0,0,0);
    }
   }
   if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.45:.84);
@@ -485,7 +501,7 @@ function create(container,status,api){
    if(!remaining){sprite.visible=false;continue}
    sprite.visible=true;
    sprite.position.set(burst.x,.29,burst.y);
-   const size=(burst.kind==='dash'?.32:burst.kind==='land'?.19:burst.kind==='finish'?.67:.48)*(1+age*3);
+   const size=(burst.kind==='dash'?.36:burst.kind==='land'?.20:burst.kind==='finish'?.72:.46)*(1+age*(3+Math.min(2,burst.strength*.8)))*(burst.kind==='hit'?Math.max(.8,burst.strength*.95):1);
    sprite.scale.set(size,size,1);
    sprite.material.opacity=remaining*.97;
    sprite.material.color.setHex(burst.kind==='dash'?0x79ffff:burst.kind==='land'?0x8ddff3:burst.kind==='finish'?0xf7ffdc:0xffd686);
@@ -494,7 +510,8 @@ function create(container,status,api){
   if(recent){
    // Small camera tremor on impact; synchronized to the collision event.
    const t=Math.max(0,1-(now-recent.t)/.2);
-   camera.position.set(.018*t*Math.sin(recent.t*83),3.5,.018*t*Math.cos(recent.t*95)+2.45);
+   const shake=(.016+.034*Math.min(2,Number(recent.strength)||.7))*t;
+   camera.position.set(shake*Math.sin(now*83),3.5+shake*.45*Math.sin(now*123),shake*Math.cos(now*95)+2.45);
   }else camera.position.set(0,3.5,2.45);
   camera.lookAt(0,0,0);
   renderer.render(world,camera);
