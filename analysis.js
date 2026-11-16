@@ -429,49 +429,139 @@ function runAuto(){
  lastAuto=picked;
  $('autoResults').innerHTML=resultMarkup(picked,roles[style]+'推薦配置',style,null);
 }
-function option(value,title){return '<option value="'+html(value)+'">'+html(title)+'</option>';}
-function renderOpponentOptions(){
- const list=rows(),select=$('oppBlade');
- if(!select)return;
- select.innerHTML=list.map(b=>option(b.id,b.name+' ['+b.system+']')).join('')+option('CX-CUSTOM','自訂 CX 紋章／主刃／輔助刃');
- for(const kind of ['ratchet','bit']){
-  const node=$('opp'+(kind==='ratchet'?'Ratchet':'Bit'));
-  node.innerHTML=allUnits(kind).map(u=>option(u.owner,u.code+' — '+u.name)).join('');
- }
- const cxRows=list.filter(b=>b.system==='CX');
- for(const [key,field] of [['Chip','lockChip'],['Main','mainBlade'],['Assist','assistBlade']]){
-  $('opp'+key).innerHTML=cxRows.map(b=>option(b.id,b[field]+' — '+b.name)).join('');
- }
- $('oppBlade').addEventListener('change',()=>{
-  $('oppCX').hidden=$('oppBlade').value!=='CX-CUSTOM';
- });
- $('oppCX').hidden=true;
+function option(value,title,selected){
+ return '<option value="'+html(value)+'"'+(value===selected?' selected':'')+'>'+html(title)+'</option>';
 }
-function opponent(){
- const bladeId=$('oppBlade')?.value,ratchetId=$('oppRatchet')?.value,bitId=$('oppBit')?.value;
- const ratchet=allUnits('ratchet').find(x=>x.owner===ratchetId);
- const bit=allUnits('bit').find(x=>x.owner===bitId);
+const opponentChoices=[0,1,2].map(i=>{
+ const b=rows()[i%rows().length];
+ const cx=rows().find(x=>x.system==='CX');
+ return {blade:b?.id||'',ratchet:b?.id||'',bit:b?.id||'',chip:cx?.id||'',main:cx?.id||'',assist:cx?.id||''};
+});
+function opponentSelect(field,label,items,selected){
+ return '<label>'+html(label)+'<select data-opp-field="'+field+'" aria-label="'+html(label)+'">'+
+  items.map(x=>option(x.id,x.label,selected)).join('')+'</select></label>';
+}
+function opponentEntryHtml(index){
+ const choice=opponentChoices[index];
+ const beyItems=rows().map(b=>({id:b.id,label:b.name+' ['+b.system+']'}));
+ beyItems.push({id:'CX-CUSTOM',label:'CX 模組自訂（紋章＋主刃＋輔助刃）'});
+ const ratchetItems=ratchets().map(x=>({id:x.owner,label:x.code+' ／ '+x.name}));
+ const bitItems=bits().map(x=>({id:x.owner,label:x.code+' ／ '+x.name}));
+ const cx=rows().filter(b=>b.system==='CX');
+ const cxItems=field=>cx.map(b=>({id:b.id,label:b[field]+' ／ '+b.name}));
+ const isCustom=choice.blade==='CX-CUSTOM';
+ return '<article class="counter-opponent-card" data-opp-index="'+index+'">'+
+  '<div class="counter-opponent-heading"><strong>對手 '+String(index+1).padStart(2,'0')+'</strong><span>選擇完整的實際零件</span></div>'+
+  '<div class="analysis-controls">'+
+  opponentSelect('blade','戰刃',beyItems,choice.blade)+
+  opponentSelect('ratchet','固鎖',ratchetItems,choice.ratchet)+
+  opponentSelect('bit','軸心',bitItems,choice.bit)+'</div>'+
+  '<div class="analysis-controls opp-cx"'+(isCustom?'':' hidden')+'>'+
+  opponentSelect('chip','CX 鎖定紋章',cxItems('lockChip'),choice.chip)+
+  opponentSelect('main','CX 主刃',cxItems('mainBlade'),choice.main)+
+  opponentSelect('assist','CX 輔助刃',cxItems('assistBlade'),choice.assist)+
+  '</div></article>';
+}
+function renderOpponentEntries(){
+ const count=Number($('opponentCount')?.value||3);
+ $('opponentEntries').innerHTML=Array.from({length:count},(_,i)=>opponentEntryHtml(i)).join('');
+}
+$('opponentCount')?.addEventListener('change',()=>{
+ lastCounter=[];
+ renderOpponentEntries();
+ $('counterResults').textContent='已變更對手數量，請重新執行能力壓制分析。';
+});
+$('counterCount')?.addEventListener('change',()=>{
+ lastCounter=[];
+ $('counterResults').textContent='已變更我方推薦數量，請重新執行分析。';
+});
+$('opponentEntries')?.addEventListener('change',event=>{
+ const input=event.target.closest('select[data-opp-field]');
+ const card=input?.closest('[data-opp-index]');
+ if(!input||!card)return;
+ const index=Number(card.dataset.oppIndex),field=input.dataset.oppField;
+ if(!Number.isInteger(index)||index<0||index>2||!Object.hasOwn(opponentChoices[index],field))return;
+ opponentChoices[index][field]=input.value;
+ lastCounter=[];
+ if(field==='blade')renderOpponentEntries();
+ $('counterResults').textContent='對手配置已變更，請重新分析。';
+});
+function selectedOpponent(index){
+ const c=opponentChoices[index];
+ const ratchet=ratchets().find(x=>x.owner===c.ratchet);
+ const bit=bits().find(x=>x.owner===c.bit);
  if(!ratchet||!bit)return null;
- let bl;
- if(bladeId==='CX-CUSTOM'){
-  const chip=$('oppChip').value, main=$('oppMain').value,assist=$('oppAssist').value;
-  bl={stats:add(stats(chip,'lockChip'),stats(main,'mainBlade'),stats(assist,'assistBlade'))};
+ let blade;
+ let label;
+ if(c.blade==='CX-CUSTOM'){
+  if(!info(c.chip,'lockChip')||!info(c.main,'mainBlade')||!info(c.assist,'assistBlade'))return null;
+  blade={stats:add(stats(c.chip,'lockChip'),stats(c.main,'mainBlade'),stats(c.assist,'assistBlade'))};
+  label='CX '+(getBey(c.chip)?.lockChip||'')+' / '+(getBey(c.main)?.mainBlade||'')+' / '+(getBey(c.assist)?.assistBlade||'');
  }else{
-  const b=getBey(bladeId);
+  const b=getBey(c.blade);
   if(!b||!info(b.id,'blade'))return null;
-  bl={stats:s3(stats(b.id,'blade'))};
+  blade={stats:s3(stats(b.id,'blade'))};
+  label=b.name;
  }
- return {type:roleOf(bit.data),vector:combatVector(bl,ratchet,bit),ratchet,bit};
+ const vector=combatVector(blade,ratchet,bit);
+ return {label:label+' '+ratchet.code+bit.code,vector,ratchet,bit};
+}
+function opponentSet(){
+ const count=Number($('opponentCount')?.value||3);
+ const result=[];
+ for(let i=0;i<count;i++){
+  const enemy=selectedOpponent(i);
+  if(!enemy)return null;
+  result.push(enemy);
+ }
+ return result;
+}
+function counterResultMarkup(team,enemies){
+ if(!team.length)return '<div class="analysis-fail">目前沒有可同時符合能力資料與實體零件限制的配置。請改用 1 顆模式，或檢查收藏資料。</div>';
+ const enemyCards=enemies.map((e,i)=>'<div class="counter-target">'+
+  '<strong>對手 '+(i+1)+'：'+html(e.label)+'</strong>'+
+  '<div class="analysis-vector"><span>攻 '+fmt(e.vector.attack)+'</span><span>防 '+fmt(e.vector.defense)+'</span><span>持 '+fmt(e.vector.stamina)+'</span><span>衝 '+fmt(e.vector.dash)+'</span><span>抗爆 '+fmt(e.vector.burst)+'</span></div></div>').join('');
+ const coverage=enemies.map((e,j)=>{
+  let bestIndex=0,bestValue=-Infinity;
+  team.forEach((c,i)=>{if(c.matchups[j].score>bestValue){bestValue=c.matchups[j].score;bestIndex=i}});
+  return '<div class="counter-coverage"><strong>對手 '+(j+1)+'</strong><span>配置 '+(bestIndex+1)+' 最有利 · 相對壓制 '+fmt(bestValue)+' 分</span></div>';
+ }).join('');
+ const cards=team.map((c,i)=>{
+  const v=c.vec;
+  const why=c.matchups.map((result,j)=>'<li>'+html(counterReason(result,enemies[j],j))+'<br><small>相對壓制分 '+fmt(result.score)+'；高於 50 表示模型有利，低於 50 表示模型不利。</small></li>').join('');
+  return '<article class="analysis-result-card">'+
+   '<div class="analysis-result-heading"><span>我方配置 '+(i+1)+'</span><strong>'+fmt(c.score)+' <small>相對評分</small></strong></div>'+
+   recommendationPictures(c)+
+   '<h4>'+html(buildName(c))+'</h4>'+
+   (c.blade.mode==='cx'?'<p class="analysis-cx">CX：紋章 '+html(getBey(c.blade.chip)?.lockChip)+'／主刃 '+html(getBey(c.blade.main)?.mainBlade)+'／輔助刃 '+html(getBey(c.blade.assist)?.assistBlade)+'</p>':'')+
+   '<p class="analysis-origin">固鎖 '+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心 '+html(c.bit.code)+'（'+html(c.bit.name)+'）</p>'+
+   '<div class="analysis-vector"><span>攻 '+fmt(v.attack)+'</span><span>防 '+fmt(v.defense)+'</span><span>持 '+fmt(v.stamina)+'</span><span>衝 '+fmt(v.dash)+'</span><span>抗爆 '+fmt(v.burst)+'</span></div>'+
+   '<h5 class="counter-why-title">針對各對手的能力差距</h5>'+
+   '<ul class="counter-reasons">'+why+'</ul></article>';
+ }).join('');
+ const total=counterTeamScore(team,enemies);
+ return '<div class="analysis-result-summary"><h3>能力壓制推薦：'+team.length+' 顆對 '+enemies.length+' 顆</h3>'+
+  '<p>依雙方完整數值比較，不依對手的攻擊／防禦／持久類型直接決定推薦。'+(team.length===3?'已檢查三顆不重複使用實體戰刃、固鎖、軸心及 CX 模組。':'')+'</p>'+
+  '<p>整隊相對模型分 '+fmt(total)+'。分數只用於比較，非勝率；對戰結果還受發射、競技盤、重心及機械相容性影響。</p>'+
+  '<button type="button" class="analysis-load" data-analysis-load="1">將 '+team.length+' 顆配置套用至組裝器</button></div>'+
+  '<div class="counter-enemy-overview"><h4>對手完整能力</h4>'+enemyCards+'</div>'+
+  '<div class="counter-team-coverage"><h4>我方壓制覆蓋</h4>'+coverage+'</div>'+
+  '<div class="analysis-result-grid">'+cards+'</div>';
 }
 function runCounter(){
- const enemy=opponent();
- if(!enemy){$('counterResults').textContent='請先選齊對方戰刃、固鎖與軸心。';return;}
- const style=matchupStyle(enemy.type),count=Number($('counterCount')?.value||1);
- $('counterResults').textContent='計算克制配置中…';
- const picked=pickDeck(candidateList(style,enemy),count);
- lastCounter=picked;
- $('counterResults').innerHTML=resultMarkup(picked,'針對'+roles[enemy.type]+'型的克制推薦',style,enemy);
+ const enemies=opponentSet();
+ if(!enemies||!enemies.length){
+  $('counterResults').textContent='請選齊每顆對手的戰刃、固鎖與軸心。';
+  return;
+ }
+ const count=Number($('counterCount')?.value||3);
+ $('counterResults').textContent='正在比較雙方完整能力與隊伍壓制覆蓋…';
+ const pool=counterCandidates(enemies);
+ const team=pickCounterDeck(pool,count,enemies);
+ lastCounter=team;
+ $('counterResults').innerHTML=counterResultMarkup(team,enemies);
 }
+
 $('runAuto')?.addEventListener('click',runAuto);
 $('runCounter')?.addEventListener('click',runCounter);
 $('autoResults')?.addEventListener('click',e=>{
@@ -480,7 +570,7 @@ $('autoResults')?.addEventListener('click',e=>{
 });
 $('counterResults')?.addEventListener('click',e=>{
  if(!e.target.closest('[data-analysis-load]')||!lastCounter.length)return;
- api.useSuggestion(lastCounter.map(toSlots),'克制 '+(roles[opponent()?.type]||'')+'配置');
+ api.useSuggestion(lastCounter.map(toSlots),'能力壓制 '+lastCounter.length+' 顆配置');
 });
 renderOpponentOptions();
 if($('autoResults'))$('autoResults').textContent='可從 19 顆已登錄陀螺的零件庫，挑選攻擊、防禦、持久、平衡配置。';
