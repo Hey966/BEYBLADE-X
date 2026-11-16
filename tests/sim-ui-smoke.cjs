@@ -17,7 +17,7 @@ const nodes={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  const id=match[1];
  const value=id==='simMatchType'?'1':id==='simArenaType'?'xtreme':id==='simSpeed'?'4':id==='simSeed'?'966':
- id.startsWith('simPower')?'75':id.startsWith('simAngle')?'0':'';
+ id.startsWith('simPower')?'10500':id.startsWith('simAngle')?'0':'';
  nodes[id]={id,value,innerHTML:'',textContent:'',disabled:false,hidden:true,style:{},
   events:{},classList:{toggle(){}},addEventListener(type,handler){(this.events[type]??=[]).push(handler)}};
 }
@@ -48,7 +48,15 @@ fire('simArenaType','change','plain');
 assert.equal(arenaCalls.at(-1),'plain');
 fire('simSettingsReset');
 assert.equal(nodes.simArenaType.value,'xtreme');
-assert.equal(nodes.simPower0.value,'75');
+assert.equal(nodes.simPower0.value,'10500');
+assert.equal(nodes.simPower0Number.value,'10500');
+fire('simPower0','input','14000');
+assert.equal(nodes.simPower0Number.value,'14000');
+assert.equal(nodes.simPower0Display.textContent,'14,000 SP');
+fire('simPower0Number','change','12345');
+assert.equal(nodes.simPower0.value,'12345');
+fire('simSettingsReset');
+assert.equal(nodes.simPower0Number.value,'10500');
 assert.equal(nodes.simAngle1.value,'0');
 assert.equal(nodes.simLauncher1.value,'winder');
 assert.equal(nodes.simMatchType.value,'1');
