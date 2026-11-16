@@ -8,6 +8,7 @@ on:
       - 'data/collection.json'
       - 'data/part-abilities.json'
       - 'tests/sim-smoke.cjs'
+      - 'tests/sim-ui-smoke.cjs'
       - '.github/workflows/simulator-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -28,3 +29,5 @@ jobs:
           node --check sim-view.js
       - name: Validate model and 3on3 restrictions
         run: node tests/sim-smoke.cjs
+      - name: Verify arena / selected parts / scoring UI synchronization
+        run: node tests/sim-ui-smoke.cjs
