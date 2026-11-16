@@ -572,6 +572,6 @@ $('counterResults')?.addEventListener('click',e=>{
  if(!e.target.closest('[data-analysis-load]')||!lastCounter.length)return;
  api.useSuggestion(lastCounter.map(toSlots),'能力壓制 '+lastCounter.length+' 顆配置');
 });
-renderOpponentOptions();
+renderOpponentEntries();
 if($('autoResults'))$('autoResults').textContent='可從 19 顆已登錄陀螺的零件庫，挑選攻擊、防禦、持久、平衡配置。';
 })();
