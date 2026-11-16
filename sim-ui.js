@@ -57,7 +57,7 @@ function buildVisualPreview(specs,preview=true){
  viewer.setArena($('simArenaType').value);
  viewer.setBuilds(specs);
  const statNames=[['攻擊','attack'],['防禦','defense'],['持久','stamina'],['衝刺','dash'],['爆裂抗性','burst']];
- const partNames={blade:'戰刃',lockChip:'紋章',mainBlade:'主刃',assistBlade:'輔助刃',ratchet:'固鎖',bit:'軸心'};
+ const partNames={blade:'戰刃',factoryBlade:'完整戰刃（採用）',lockChip:'紋章',mainBlade:'主刃',assistBlade:'輔助刃',ratchet:'固鎖',bit:'軸心'};
  const statNum=value=>Number(value||0).toFixed(1);
  const content=specs.map((spec,i)=>{
   if(!spec)return '';
@@ -72,7 +72,7 @@ function buildVisualPreview(specs,preview=true){
    '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
     (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
     '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div>'+
-    effective+source+'</div>';
+    effective+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
  if(preview)renderLaunchPreview();
