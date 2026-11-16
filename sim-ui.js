@@ -13,7 +13,7 @@ const second=["OWN-G3393-01","OWN-G3393-02","OWN-G3393-03"];
 const buildDefault=id=>({mode:'whole',blade:id,chip:cx[0]?.id||'',main:cx[0]?.id||'',assist:cx[0]?.id||'',ratchet:id,bit:id});
 const selections=[first.map(buildDefault),second.map(buildDefault)];
 let runtime=null,showed=null,frameToken=0,frameRequest=0,batchCancel=false,latestBatch=null;
-const viewer=V.create($('simArena'),$('simRenderStatus'));
+const viewer=V.create($('simArena'),$('simRenderStatus'),api);
 function options(ids,selected,part){
  return ids.map(b=>{
   const disabled=!abilities.beys?.[b.id]?.parts?.[part]?.available;
@@ -42,8 +42,50 @@ for(const team of [0,1])$('simTeam'+team).addEventListener('change',e=>{
  const b=selections[side]?.[i];if(!b||!Object.prototype.hasOwnProperty.call(b,field))return;
  b[field]=node.value;
  if(field==='mode')renderTeams();
- clearMatch('配置已變更。請重新開始模擬。');
+ clearMatch('零件已更改。畫面將顯示所選戰刃與配件，請重新開始。');
 });
+function buildVisualPreview(specs,preview=true){
+ viewer.setArena($('simArenaType').value);
+ viewer.setBuilds(specs);
+ const content=specs.map((spec,i)=>{
+  if(!spec)return '';
+  const images=viewer.getVisuals(spec);
+  return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name)+'</strong>'+
+   '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
+    (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
+    '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div></div>';
+ }).join('');
+ $('simActiveParts').innerHTML=content;
+ if(preview){
+  const state={done:false,terminal:null,tops:specs.map((b,i)=>b?({
+   x:i===0?-.42:.42,y:i===0?-.05:.05,heading:0,spin:0,wobble:0,railCooldown:0,model:b,side:i
+  }):null)};
+  viewer.render(state);
+ }
+}
+function previewCurrent(){
+ try{
+  const db={beys:api.getBeys()},specs=[0,1].map(i=>C.makeBuild(selections[i][0],db,abilities));
+  buildVisualPreview(specs,true);
+ }catch(error){
+  viewer.setArena($('simArenaType').value);
+  viewer.setBuilds([null,null]);
+  $('simActiveParts').textContent='目前配置尚未完成，請檢查零件。';
+  viewer.render(null);
+ }
+}
+function showTerminalStatus(battle){
+ const label=battle.finish==='spin'?'停轉':battle.finish==='burst'?'爆裂':
+  battle.finish==='over'?'出界':battle.finish==='extreme'?'進入極限區':'平手';
+ const loser=battle.terminal?.loser;
+ const winner=battle.winner;
+ const side=winner===0?'我方':winner===1?'對手':'雙方';
+ const loserSide=loser===0?'我方':loser===1?'對手':'雙方';
+ $('simFinishOverlay').textContent=side+(winner===null?'平手':'勝利')+' · '+loserSide+label;
+ $('simFinishOverlay').hidden=false;
+ $('simTime').textContent=fmt(battle.elapsed)+'s / 33.0s（模型時間）';
+}
+
 function settings(){
  return {
   seed:(Math.trunc(Number($('simSeed').value))||966)>>>0,
@@ -75,9 +117,11 @@ function stopAnimation(){
 function clearMatch(message){
  stopAnimation();runtime=null;showed=null;updateScore();
  $('simNext').disabled=true;$('simPause').disabled=true;$('simPause').textContent='暫停';
+ $('simFinishOverlay').hidden=true;
  $('simEvents').innerHTML='';
+ $('simTime').textContent='0.0s / 33.0s（模型時間）';
  if(message)report(message);
- viewer.render(null);
+ previewCurrent();
 }
 function renderEvents(events){
  $('simEvents').innerHTML=(events||[]).slice(-7).reverse().map(e=>'<li><span>'+fmt(e.t)+'s</span> '+clean(e.message)+'</li>').join('');
@@ -111,11 +155,20 @@ function playFrame(token,lastTime){
    runtime.accumulator+=elapsed;
    const steps=Math.min(55,Math.floor(runtime.accumulator/C.DT));
    if(steps){b.step(steps);runtime.accumulator-=steps*C.DT;}
-   if(b.done){viewer.render(b);showFinal(b);return}
   }
-  viewer.render(b);
   $('simTime').textContent=fmt(b.elapsed)+'s / 33.0s（模型時間）';
   if(b.events.length!==runtime.logged){runtime.logged=b.events.length;renderEvents(b.events)}
+  if(b.done){
+   if(runtime.finishStarted===null){
+    runtime.finishStarted=now;
+    showTerminalStatus(b);
+    report('已判定'+(b.winner===0?'我方':b.winner===1?'對手':'雙方')+
+     (b.finish==='spin'?'停轉結束':b.finish==='over'?'出界結束':b.finish==='extreme'?'極限出界':b.finish==='burst'?'爆裂結束':'平手')+'。正在呈現終結動作，再更新分數。');
+   }
+   const age=Math.min(1.2,(now-runtime.finishStarted)/1000);
+   viewer.render(b,{finalAge:age});
+   if(age>=1.2){showFinal(b);return}
+  }else viewer.render(b);
   playFrame(token,now);
  });
 }
@@ -126,7 +179,9 @@ function beginRound(){
  runtime.battle=C.createBattle(runtime.teams[0][idx],runtime.teams[1][idx],{
   seed,arena:conf.arena,rail:conf.rail,launch:conf.launch,record:true
  });
- runtime.paused=false;runtime.accumulator=0;runtime.logged=0;
+ runtime.paused=false;runtime.accumulator=0;runtime.logged=0;runtime.finishStarted=null;
+ $('simFinishOverlay').hidden=true;
+ buildVisualPreview([runtime.teams[0][idx],runtime.teams[1][idx]],false);
  $('simNext').disabled=true;$('simPause').disabled=false;$('simPause').textContent='暫停';
  viewer.render(runtime.battle);updateScore();
  report((idx+1)+' 號陀螺進場。物理演算進行中。');
@@ -153,8 +208,31 @@ $('simReset').addEventListener('click',()=>clearMatch('已清空。種子與設�
 $('simMatchType').addEventListener('change',()=>{
  renderTeams();clearMatch('已切換'+$('simMatchType').value+'對'+$('simMatchType').value+'模式。');
 });
+$('simArenaType').addEventListener('change',()=>{
+ viewer.setArena($('simArenaType').value);
+ clearMatch('場地已切換。畫面及物理參數已同步，請重新開始。');
+});
+for(const id of ['simSeed','simLauncher0','simLauncher1'])$(id).addEventListener('change',()=>{
+ clearMatch('發射設定已變更，請重新開始。');
+});
 for(const id of ['simPower0','simPower1','simAngle0','simAngle1'])$(id).addEventListener('input',()=>{
  $(id+'Display').textContent=$(id).value+(id.includes('Angle')?'°':'%');
+ if(runtime)clearMatch('拉力或角度已變更，請重新開始。');
+});
+$('simSettingsReset').addEventListener('click',()=>{
+ $('simMatchType').value='1';
+ $('simArenaType').value='xtreme';
+ $('simSeed').value='966';
+ $('simSpeed').value='1';
+ for(const i of [0,1]){
+  $('simLauncher'+i).value='winder';
+  $('simPower'+i).value='75';
+  $('simAngle'+i).value='0';
+  $('simPower'+i+'Display').textContent='75%';
+  $('simAngle'+i+'Display').textContent='0°';
+ }
+ renderTeams();
+ clearMatch('已重置對戰形式、場地、發射器、拉力、角度、種子與播放速度。自訂零件保留。');
 });
 let runStamp=0;
 function renderBatch(result){
@@ -208,5 +286,5 @@ $('simBatchDownload').addEventListener('click',()=>{
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BEYBLADE-X_simulation_'+latestBatch.seed+'.json';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
-renderTeams();clearMatch('第一版採能力數值推估。請選擇兩隊配件、發射力與場地。');
+renderTeams();clearMatch('請選兩隊配件與發射設定。模擬器將使用相同物理狀態驅動畫面與計分。');
 })(typeof window!=='undefined'?window:this);
