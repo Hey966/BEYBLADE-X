@@ -98,13 +98,15 @@ function create(){
     tone(145,.33,.15*scale,'sawtooth',{end:520});
     tone(68,.28,.09*scale,'triangle',{end:180});break;
    case 'hit':
-    noise(.14,.18*scale,4800,{high:true});
-    tone(240,.18,.19*scale,'square',{end:95});
-    tone(550,.13,.075*scale,'triangle',{end:240});break;
+    // Layer a brief metallic snap, low-frequency body impact and bright noise.
+    noise(.16,.20*scale,3900,{high:true});
+    tone(215,.23,.20*scale,'square',{end:78});
+    tone(83,.20,.105*scale,'triangle',{end:49});
+    tone(610,.095,.085*scale,'triangle',{end:280});break;
    case 'dash':
-    noise(.38,.11*scale,1300,{high:true});
-    tone(180,.45,.11*scale,'sawtooth',{end:1050});
-    tone(320,.30,.08*scale,'sine',{end:650});break;
+    noise(.42,.13*scale,1550,{high:true});
+    tone(145,.47,.135*scale,'sawtooth',{end:1140});
+    tone(325,.32,.090*scale,'sine',{end:830});break;
    case 'burst':
     noise(.46,.18*scale,2100,{high:true});
     tone(410,.43,.21*scale,'square',{end:68});

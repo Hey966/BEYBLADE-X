@@ -87,4 +87,28 @@ for(let i=0;i<130;i++){
 }
 assert(kinds.has('spin'));
 assert(kinds.size>=2,'engine should produce more than one finish type in varied seeds');
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount},null,2));
+// Regression against almost contact-free battles and first-hit-only bursts.
+// The thresholds constrain the prototype's own stylized behavior, not real match rates.
+let activeContacts=0,activeRails=0,activeBursts=0,activeSpins=0,activeExtremes=0,activeOver=0;
+for(let i=1;i<=120;i++){
+ const left=owned(db.beys[i%db.beys.length].id);
+ const right=owned(db.beys[(i*7+4)%db.beys.length].id);
+ const result=E.runBattle(left,right,{seed:i*397,arena:'xtreme',
+  launch:[{power:10500,angle:0},{power:10500,angle:0}],record:false});
+ activeContacts+=result.collisions;
+ activeRails+=result.rails;
+ activeBursts+=result.finish==='burst';
+ activeSpins+=result.finish==='spin';
+ activeExtremes+=result.finish==='extreme';
+ activeOver+=result.finish==='over';
+}
+assert(activeContacts/120>1.85,'typical battles must contain repeated contact, not just one impact');
+assert(activeRails/120>.40,'Xtreme dash should visibly contribute to typical battles');
+assert(activeBursts>0&&activeBursts<90,'burst finish should be possible but not automatic');
+assert(activeSpins>0,'spin finish must remain possible');
+assert(activeExtremes+activeOver>0,'pocket ring-outs must remain reachable with Xtreme rail enabled');
+const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
+ {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
+assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
+
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver},null,2));

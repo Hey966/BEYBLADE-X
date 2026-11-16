@@ -148,6 +148,11 @@ function create(container,status,api){
   ctx.strokeStyle='rgba(124,174,229,.12)';ctx.lineWidth=1;
   for(let x=0;x<width;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,height);ctx.stroke()}
   for(let y=0;y<height;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(width,y);ctx.stroke()}
+  const stamp=Number(state?.elapsed)||0;
+  const lastImpact=fx.slice().reverse().find(e=>(e.kind==='hit'||e.kind==='wall')&&stamp-e.t>=0&&stamp-e.t<.27);
+  const shake=lastImpact?Math.min(4.4,1.1+(lastImpact.strength||.7)*2.4)*(1-(stamp-lastImpact.t)/.27):0;
+  ctx.save();
+  if(shake)ctx.translate(Math.sin(stamp*103)*shake,Math.cos(stamp*127)*shake);
   ctx.fillStyle='#aabdc9';
   ctx.beginPath();ctx.ellipse(cx,cy+radius*.13,radius*1.13,radius*1.02,0,0,TAU);ctx.fill();
   ctx.fillStyle='#fafcff';
@@ -194,7 +199,7 @@ function create(container,status,api){
    const px=cx+(t.x+t.x/dist*escape)/1.32*radius*.95;
    const py=cy+(t.y+t.y/dist*escape)/1.32*radius*.95;
    const rise=Math.max(0,Number(t.height)||0);
-   const r=Math.max(15,radius*(spec?.radius||.13)/1.32*1.65)*(1+rise*.22);
+   const r=Math.max(15,radius*(spec?.radius||.13)/1.32*1.21)*(1+rise*.22);
    // Ground shadow stays on the launch point while the top descends.
    if(rise>0){
     ctx.save();ctx.globalAlpha=Math.max(.10,.30-rise*.18);ctx.fillStyle='#284e69';
@@ -240,19 +245,20 @@ function create(container,status,api){
    if(age>.65)continue;
    const px=cx+effect.x/1.32*radius*.95,py=cy+effect.y/1.32*radius*.95;
    const strength=Math.max(.4,Number(effect.strength)||.7);
-   const scale=1+age*(3.2+strength*.9),opacity=Math.max(0,1-age/.65);
+   const scale=1+age*(3.8+strength*1.4),opacity=Math.max(0,1-age/.65);
    ctx.save();ctx.translate(px,py);ctx.globalAlpha=opacity;
    ctx.strokeStyle=effect.kind==='dash'?'#4af5fa':effect.kind==='land'?'#8ddff3':'#fff5ad';
    ctx.lineWidth=2.3+strength*.6;ctx.shadowBlur=12+strength*7;
    ctx.shadowColor=effect.kind==='dash'?'#2cf6ff':effect.kind==='land'?'#8ddff3':'#ffc441';
    ctx.beginPath();ctx.arc(0,0,Math.min(42,(10+strength*3)*scale),0,TAU);ctx.stroke();
-   for(let k=0;k<12;k++){
-    const a=k*TAU/12+effect.t*.8,d=18*scale*(k%3===0?1.3:.7);
+   for(let k=0;k<16;k++){
+    const a=k*TAU/16+effect.t*.8,d=(18+strength*8)*scale*(k%3===0?1.3:.7);
     ctx.beginPath();ctx.moveTo(Math.cos(a)*8,Math.sin(a)*8);
     ctx.lineTo(Math.cos(a)*d,Math.sin(a)*d);ctx.stroke();
    }
    ctx.restore();
   }
+  ctx.restore();
   ctx.font='11px system-ui';ctx.fillStyle='#bcd7e9';
   ctx.fillText(currentArena==='xtreme'?'Xtreme 模擬盤｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
   if(state?.done){
@@ -293,6 +299,8 @@ function create(container,status,api){
   const bitBody=new THREE.Mesh(new THREE.CylinderGeometry(.035,.015,.06,8),under);
   bitBody.position.y=.034;bit.add(bitBody);
   g.add(body,ratchet,bit);
+  // Keep the rendered blade footprint consistent with the impact radius proxy.
+  g.scale.setScalar(1.24);
   const centers={blade:.169,mainBlade:.172,assistBlade:.185,lockChip:.202,ratchet:.109,bit:.045};
   const dimensions={blade:.328,mainBlade:.326,assistBlade:.276,lockChip:.12,ratchet:.10,bit:.059};
   const textureKinds=parts.filter(p=>['blade','mainBlade','assistBlade','lockChip'].includes(p.kind));
@@ -414,7 +422,7 @@ function create(container,status,api){
     sparkCtx.stroke();
    }
    const sparkTexture=new T.CanvasTexture(sparkCanvas);
-   for(let i=0;i<14;i++){
+   for(let i=0;i<32;i++){
     const material=new T.SpriteMaterial({map:sparkTexture,
       color:0xffe9ae,blending:T.AdditiveBlending,transparent:true,depthWrite:false});
     const sprite=new T.Sprite(material);
@@ -493,25 +501,38 @@ function create(container,status,api){
    }
   }
   const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
-  const bursts=fx.slice(-fxSprites.length);
-  for(let i=0;i<fxSprites.length;i++){
-   const sprite=fxSprites[i],burst=bursts[i];
-   if(!burst){sprite.visible=false;continue}
-   const age=Math.max(0,now-burst.t),remaining=Math.max(0,1-age/.65);
-   if(!remaining){sprite.visible=false;continue}
-   sprite.visible=true;
-   sprite.position.set(burst.x,.29,burst.y);
-   const size=(burst.kind==='dash'?.36:burst.kind==='land'?.20:burst.kind==='finish'?.72:.46)*(1+age*(3+Math.min(2,burst.strength*.8)))*(burst.kind==='hit'?Math.max(.8,burst.strength*.95):1);
-   sprite.scale.set(size,size,1);
-   sprite.material.opacity=remaining*.97;
-   sprite.material.color.setHex(burst.kind==='dash'?0x79ffff:burst.kind==='land'?0x8ddff3:burst.kind==='wall'?0xffbd82:burst.kind==='finish'?0xf7ffdc:0xffd686);
+  // Each physics event generates a short cluster of real spatial particles,
+  // instead of a single nearly static flash at the collision point.
+  const particles=[];
+  for(const event of fx.slice(-5)){
+   const count=event.kind==='hit'?8:event.kind==='dash'?6:event.kind==='finish'?10:event.kind==='wall'?5:3;
+   for(let k=0;k<count;k++)particles.push({event,k,count});
   }
-  const recent=fx.slice().reverse().find(e=>(e.kind==='hit'||e.kind==='wall')&&now-e.t<.2);
+  const visible=particles.slice(-fxSprites.length);
+  for(let i=0;i<fxSprites.length;i++){
+   const sprite=fxSprites[i],part=visible[i];
+   if(!part){sprite.visible=false;continue}
+   const {event,k,count}=part;
+   const age=Math.max(0,now-event.t),remaining=Math.max(0,1-age/.65);
+   if(!remaining){sprite.visible=false;continue}
+   const theta=k*TAU/count+event.t*3.2;
+   const strength=Math.max(.3,Math.min(2.2,Number(event.strength)||.7));
+   const scatter=(event.kind==='hit'?.12:event.kind==='finish'?.18:.07)+age*(.6+strength*.55)*(k%3===0?1:.63);
+   sprite.visible=true;
+   sprite.position.set(event.x+Math.cos(theta)*scatter,.20+Math.sin(theta*2)*.08+age*(.25+strength*.15),event.y+Math.sin(theta)*scatter);
+   const size=(event.kind==='dash'?.16:event.kind==='land'?.11:event.kind==='finish'?.22:.12)*(1+age*1.7+strength*.28);
+   sprite.scale.set(size,size,1);
+   sprite.material.opacity=remaining*(k%3===0?.95:.8);
+   sprite.material.color.setHex(event.kind==='dash'?0x79ffff:event.kind==='land'?0x8ddff3:event.kind==='wall'?0xffbd82:event.kind==='finish'?0xf7ffdc:0xffd686);
+  }
+  const recent=fx.slice().reverse().find(e=>(e.kind==='hit'||e.kind==='wall'||e.kind==='dash')&&now-e.t<.34);
   if(recent){
-   // Small camera tremor on impact; synchronized to the collision event.
-   const t=Math.max(0,1-(now-recent.t)/.2);
-   const shake=(.016+.034*Math.min(2,Number(recent.strength)||.7))*t;
-   camera.position.set(shake*Math.sin(now*83),3.5+shake*.45*Math.sin(now*123),shake*Math.cos(now*95)+2.45);
+   const t=Math.max(0,1-(now-recent.t)/.34);
+   const impact=recent.kind==='hit';
+   const power=Math.max(.35,Math.min(2.2,Number(recent.strength)||.7));
+   const shake=(impact?.035:.012)*power*t;
+   const zoom=(impact?.22:.11)*t;
+   camera.position.set(shake*Math.sin(now*93),3.5-zoom+shake*Math.sin(now*123),2.45-zoom+shake*Math.cos(now*107));
   }else camera.position.set(0,3.5,2.45);
   camera.lookAt(0,0,0);
   renderer.render(world,camera);
