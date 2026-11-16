@@ -5,9 +5,15 @@
 (function(root){
 'use strict';
 const THREE_CDN='https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-const TAU=2*Math.PI;
+const TAU=2*Math.PI, COAST_DURATION=4.5;
+function coastRotation(top,age){
+ if(!top)return 0;
+ const t=Math.max(0,Math.min(COAST_DURATION,Number(age)||0));
+ // Linear post-finish spin decay integrated into a smooth final angle.
+ return top.spinSign*top.spin*.46*(t-t*t/(2*COAST_DURATION));
+}
 function create(container,status,api){
- let currentArena='xtreme',lastState=null,lastFinishAge=0;
+ let currentArena='xtreme',lastState=null,lastFinishAge=0,lastCoastAge=0;
  let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null;
  let rendered=[null,null],visualBuilds=[null,null],renderVersion=0;
  const imageCache=new Map();
@@ -72,7 +78,7 @@ function create(container,status,api){
   image.crossOrigin='anonymous';
   image.onload=()=>{
    entry.image=image;entry.ready=true;
-   if(!renderer)draw2D(lastState,lastFinishAge);
+   if(!renderer)draw2D(lastState,lastFinishAge,lastCoastAge);
   };
   image.onerror=()=>{entry.error=true};
   image.src=src;
@@ -131,7 +137,7 @@ function create(container,status,api){
    return true;
   }catch(e){return false}
  }
- function draw2D(state,finalAge=0){
+ function draw2D(state,finalAge=0,coastAge=finalAge){
   if(!ctx)return;
   const rect=container.getBoundingClientRect(),width=Math.max(270,Math.round(rect.width)),height=Math.max(260,Math.round(rect.height));
   const dpr=Math.min(2,root.devicePixelRatio||1);
@@ -217,7 +223,7 @@ function create(container,status,api){
    ctx.translate(px+Math.sin(leanDir)*lean*r*.16,py-rise*radius*.53);
    ctx.rotate(leanDir);
    ctx.scale(1,Math.max(.34,Math.cos(Math.abs(lean)))*collapsed);
-   ctx.rotate(t.heading-leanDir+(state.done&&outcome?.winner===i?t.spin*age*.46*t.spinSign:0)+(loser&&finished==='spin'?age*1.5:0));
+   ctx.rotate(t.heading-leanDir+(state.done&&outcome?.winner===i?coastRotation(t,coastAge):0)+(loser&&finished==='spin'?age*1.5:0));
    if(loser&&finished==='burst'&&age>.1){
     // Detach components instead of leaving a fully assembled Bey at the centre.
     for(let k=0;k<3;k++){
@@ -453,8 +459,9 @@ function create(container,status,api){
  function renderState(state,opts={}){
   lastState=state||null;
   lastFinishAge=Math.max(0,Math.min(1.3,Number(opts.finalAge)||0));
+  lastCoastAge=Math.max(0,Math.min(COAST_DURATION,Number(opts.coastAge??opts.finalAge)||0));
   updateEffects(lastState,lastFinishAge);
-  if(!renderer||!THREE||!world){draw2D(lastState,lastFinishAge);return}
+  if(!renderer||!THREE||!world){draw2D(lastState,lastFinishAge,lastCoastAge);return}
   const rect=container.getBoundingClientRect(),w=Math.max(1,Math.round(rect.width)),h=Math.max(1,Math.round(rect.height));
   if(w<30)return;
   const pixelRatio=renderer.getPixelRatio();
@@ -474,7 +481,7 @@ function create(container,status,api){
     x+=t.x/dist*age*.7;z+=t.y/dist*age*.7;
    }
    mesh.root.position.set(x,.016+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
-   mesh.root.rotation.y=t.heading+(terminal?.winner===i?t.spin*age*.46*t.spinSign:0);
+   mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
    // Engine drives the full lean: launcher tilt, wall impact and collision wobble.
    const lean=Number(t.tilt)||0,dir=Number(t.tiltDir)||0;
    mesh.root.rotation.x=Math.cos(dir)*lean+Math.cos(t.heading*.38)*Math.min(.20,t.wobble*.11);
@@ -565,5 +572,5 @@ function create(container,status,api){
   }
  };
 }
-root.BBX_SIM_VIEW={create};
+root.BBX_SIM_VIEW={create,COAST_DURATION};
 })(typeof window!=='undefined'?window:this);
