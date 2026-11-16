@@ -482,10 +482,11 @@ function create(container,status,api){
    }
    mesh.root.position.set(x,.016+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
-   // Engine drives the full lean: launcher tilt, wall impact and collision wobble.
+   // Tilt direction comes from impact recoil and axial precession. Blade
+   // heading only spins the top; it must not create unrelated body shaking.
    const lean=Number(t.tilt)||0,dir=Number(t.tiltDir)||0;
-   mesh.root.rotation.x=Math.cos(dir)*lean+Math.cos(t.heading*.38)*Math.min(.20,t.wobble*.11);
-   mesh.root.rotation.z=Math.sin(dir)*lean+Math.sin(t.heading*.38)*Math.min(.20,t.wobble*.11);
+   mesh.root.rotation.x=Math.cos(dir)*lean;
+   mesh.root.rotation.z=Math.sin(dir)*lean;
    if(loser&&finish==='spin'){
     mesh.root.rotation.z+=Math.min(1.2,age*1.0);
     mesh.root.position.y=Math.max(-.004,.016-age*.012);

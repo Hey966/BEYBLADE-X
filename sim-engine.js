@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.7";
+const VERSION="sim-v1.8";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -161,12 +161,17 @@ function createBattle(left,right,settings={}){
     t.height=Math.max(0,t.height+t.verticalVelocity*dt);
     if(t.height===0){t.verticalVelocity=0;t.wobble+=.04;}
    }
-   // Preserve a substantial spin reserve after attacks. Near the end the top
-   // progressively wobbles and leans instead of abruptly dropping to zero.
+   // Impact response is a brief deflection followed by gyroscopic precession.
+   // At high spin the axis re-centres quickly. At low spin, slow conical
+   // precession develops as stability fades. Avoid shake tied to blade RPM.
    const lowSpin=cap((12-t.spin)/12,0,1);
-   const lateLean=lowSpin*.38*Math.sin(state.elapsed*(3.2+t.spin*.12)+t.phase);
-   t.tiltVelocity+=dt*(-5.8*(t.tilt-lateLean)-3.1*t.tiltVelocity);
-   t.tilt=cap(t.tilt+t.tiltVelocity*dt,-1.18,1.18);
+   const lateLean=lowSpin*(.07+.22*lowSpin+Math.min(.04,t.wobble*.02));
+   const restoring=24-14*lowSpin,settling=11-5*lowSpin;
+   t.tiltVelocity+=dt*(-restoring*(t.tilt-lateLean)-settling*t.tiltVelocity);
+   t.tilt=cap(t.tilt+t.tiltVelocity*dt,-.72,.72);
+   // Orientation of the tilted axle walks around its contact point, but
+   // it is independent of the high-frequency spinning texture.
+   t.tiltDir+=dt*t.spinSign*(2.6+2.2*cap(t.spin/50,0,1));
    t.wobble=Math.max(t.wobble,lowSpin*.8);
    t.impact=Math.max(0,t.impact-dt*2.5);
    t.burstLoad=Math.max(0,t.burstLoad-dt*.008);
@@ -244,7 +249,11 @@ function createBattle(left,right,settings={}){
     t.vx-=1.72*vn*nx;t.vy-=1.72*vn*ny;
     t.spin=Math.max(0,t.spin-(0.25+vn*0.80));
     t.wobble+=.08+vn*.12;
-    t.tiltVelocity+=Math.min(.85,vn*.8)*(rng()<.5?-1:1);
+    // The wall knocks the axle inward, not randomly left and right.
+    const wallLean=Math.min(.13,vn*.08)/(1+.003*v.defense)*(.94+.12*rng());
+    t.tiltDir=theta+Math.PI;
+    t.tilt=cap(Math.abs(t.tilt)*.40+wallLean,0,.38);
+    t.tiltVelocity=cap(t.tiltVelocity*.25+wallLean*2.2,-.8,.8);
     if(vn>.40){
      t.verticalVelocity=Math.max(t.verticalVelocity,Math.min(.68,vn*.32));
      t.height=Math.max(t.height,.006);
@@ -292,10 +301,13 @@ function createBattle(left,right,settings={}){
      t.burstLoad+=hitStrength*(.40+.43*attackerAttack)/(0.83+.40*t.model.vector.burst/100);
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
-     const leanSign=t.side===0?-1:1;
+     // Lean away from the contact normal. A rapidly spinning, defensive
+     // top only dips briefly; it does not randomly rock like a pendulum.
+     const stability=cap(t.spin/50,0,1);
+     const leanKick=Math.min(.27,hitStrength*.18/(.72+defense*.55+stability*.35))*(.94+.12*rng());
      t.tiltDir=Math.atan2(ny,nx)+(t.side===0?Math.PI:0);
-     t.tiltVelocity+=leanSign*(.9+hitStrength*2.1)*(rng()<.5?-1:1);
-     t.tilt=cap(t.tilt+leanSign*hitStrength*.11,-1.18,1.18);
+     t.tilt=cap(Math.abs(t.tilt)*.38+leanKick,0,.45);
+     t.tiltVelocity=cap(t.tiltVelocity*.25+leanKick*2.0,-.95,.95);
      t.impact=Math.max(t.impact,Math.min(1.8,hitStrength));
      if(hitStrength>.43){
       t.verticalVelocity=Math.max(t.verticalVelocity,Math.min(1.62,.18+hitStrength*.86/(.70+defense*.60)));

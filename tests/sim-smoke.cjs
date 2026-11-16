@@ -139,6 +139,35 @@ assert(staminaContacts/staminaRounds>5,
  'the 1x battle motion should remain energetic');
 assert(staminaSpinFinishes>25,
  'spin finishes should remain common after the longer deceleration phase');
+// Realistic post-hit orientation: sharp short recoil, axial precession,
+// and fast recovery at high spin. Low spin should develop a slower wobble.
+const recoil=E.createBattle(a[0],b[0],{seed:917,arena:'plain',rail:false,
+ launch:[{power:10500},{power:10500}]});
+recoil.tops.forEach((t,i)=>{
+ t.landed=true;t.height=0;t.x=i===0?-.16:.16;t.y=0;
+ t.vx=i===0?1:-1;t.vy=0;t.spin=48;
+ t.tilt=0;t.tiltVelocity=0;t.tiltDir=0;
+});
+recoil.step();
+assert.equal(recoil.collisionCount,1,'forced contact should register');
+const recoilPeak=recoil.tops[0].tilt;
+assert(recoilPeak>.06&&recoilPeak<.42,
+ 'a collision should cause a brief lean, not a huge random sideways roll');
+const beforePrecession=recoil.tops[0].tiltDir;
+recoil.tops.forEach((t,i)=>{t.x=i===0?-.9:.9;t.y=0;t.vx=0;t.vy=0;});
+for(let frame=0;frame<110&&!recoil.done;frame++)recoil.step();
+assert(recoil.tops[0].tilt<recoilPeak*.25,
+ 'high-spin contact should settle quickly toward upright');
+assert(Math.abs(recoil.tops[0].tiltDir-beforePrecession)>1,
+ 'post-hit tilt axis should precess independently of blade heading');
+const slowPrecession=E.createBattle(a[0],b[0],{seed:911,arena:'plain',rail:false});
+slowPrecession.tops.forEach((t,i)=>{
+ t.landed=true;t.height=0;t.x=i===0?-.9:.9;t.y=0;t.vx=0;t.vy=0;
+ t.tilt=0;t.tiltVelocity=0;t.spin=i===0?5:45;
+});
+for(let frame=0;frame<120&&!slowPrecession.done;frame++)slowPrecession.step();
+assert(slowPrecession.tops[0].tilt>slowPrecession.tops[1].tilt+.06,
+ 'late-stage low spin should tilt more than a stable high-spin opponent');
 const three=E.simulateMatch(a,b,{seed:966});
 assert.equal(three.mode,'3v3');
 assert(three.rounds.length>0);
@@ -185,4 +214,4 @@ const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
  {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
 assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
 
-console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames,meanStaminaSeconds:+(staminaSeconds/staminaRounds).toFixed(2),meanStaminaContacts:+(staminaContacts/staminaRounds).toFixed(2)},null,2));
+console.log(JSON.stringify({passed:true,collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames,meanStaminaSeconds:+(staminaSeconds/staminaRounds).toFixed(2),meanStaminaContacts:+(staminaContacts/staminaRounds).toFixed(2),postHitLean:+recoilPeak.toFixed(3),recoveredLean:+recoil.tops[0].tilt.toFixed(3)},null,2));
