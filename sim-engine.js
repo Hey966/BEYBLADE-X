@@ -75,11 +75,11 @@ function makeBuild(config,db,attributes){
   inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
   // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
   // Calibrated for an observable slowdown, not real measured revolutions.
-  staminaDrag:.70+(100-x.stamina)*.011,
+  staminaDrag:.65+(100-x.stamina)*.010,
   lateralDrag:.32+(100-x.stamina)*.002+x.dash*.001,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
   // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
-  burstThreshold:4.90+.022*x.burst+.004*x.defense-.34*heightExposure,
+  burstThreshold:6.30+.022*x.burst+.004*x.defense-.34*heightExposure,
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
   railEfficiency:.20+.014*x.dash,
   launchTransfer:.75+.0011*x.stamina+.0005*x.defense,
@@ -257,7 +257,7 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    const escapeThreshold=.90+0.002*v.defense;
+    const escapeThreshold=1.23+0.002*v.defense;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
