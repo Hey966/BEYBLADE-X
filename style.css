@@ -643,3 +643,81 @@ button.analysis-reference-hero .analysis-result-image{
   .counter-opponent-heading{align-items:flex-start}
   .counter-enemy-overview,.counter-team-coverage{padding:10px}
 }
+
+
+/* Prototype V1: physics-driven battle stadium. No real physical parameter calibration. */
+#sim .section-header{margin-bottom:15px}
+.sim-disclaimer{font-size:12px;line-height:1.8;color:#afc8d5;border:1px solid #566c73;background:#183039;padding:12px 15px;border-radius:9px;margin-bottom:18px}
+.sim-disclaimer strong{color:#e9f2f5}
+.sim-topgrid{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(370px,1.1fr);gap:15px;align-items:start}
+.sim-panel{background:linear-gradient(145deg,#172738,#101924 76%);border:1px solid #34475a;border-radius:12px;padding:17px;margin:0 0 17px;min-width:0}
+.sim-panel h3{margin:0 0 14px;color:#ecf7fb;font-size:17px}
+.sim-panel label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#a9becf;font-weight:700;min-width:0}
+.sim-panel select,.sim-panel input[type=number]{border:1px solid #40566d;border-radius:7px;background:#101c2a;color:#eaf3f9;min-height:41px;padding:8px 9px;width:100%;font:inherit}
+.sim-panel input[type=range]{width:100%;accent-color:#eb8454;min-height:28px;cursor:pointer}
+.sim-panel output{font-variant-numeric:tabular-nums;color:#f7cb88}
+.sim-panel button{border-radius:7px;border:1px solid #4e6c7f;background:#294155;color:#e6f4fa;padding:9px 10px;font-weight:750;font-size:12px;min-height:40px;cursor:pointer}
+.sim-panel button.primary{background:#e97d49;color:#17222b;border-color:#ed8c55}
+.sim-panel button:disabled{opacity:.4;cursor:not-allowed}
+.sim-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.sim-launch-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.sim-launch-row>div{background:#172c3b;border:1px solid #3a566b;border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:11px}
+.sim-launch-row strong{color:#b8eaf4;font-size:13px}
+.sim-score-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.sim-score-row strong{color:#f3e7c5;font-size:18px;font-variant-numeric:tabular-nums}
+.sim-score-row span{font-size:12px;color:#93baca}
+.sim-arena{position:relative;height:clamp(270px,35vw,470px);width:100%;overflow:hidden;border:1px solid #48667c;border-radius:11px;background:radial-gradient(circle,#354f63,#0d1d2c 77%)}
+.sim-arena canvas{display:block;width:100%;height:100%}
+.sim-technical-status{font-size:11px;color:#94aaba;line-height:1.6;margin:8px 0}
+.sim-playback-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:13px}
+.sim-message{color:#cbebf5;background:#18313f;border:1px solid #456a7a;border-radius:6px;padding:11px;line-height:1.6;font-size:12px}
+.sim-message.sim-error{background:#421f26;border-color:#8e4451;color:#ffc9d4}
+.sim-events{margin:10px 0 0;padding-left:19px;font-size:11px;color:#a7bfd1;line-height:1.8;max-height:132px;overflow:auto}
+.sim-events span{color:#d7e8fa;font-variant-numeric:tabular-nums}
+.sim-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.sim-section-heading h3{margin:0}
+.sim-section-heading>span{color:#9fb6c7;font-size:11px;line-height:1.5}
+.sim-teams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.sim-team{min-width:0}
+.sim-team>h4{color:#b8e8ef;margin:0 0 9px;font-size:14px}
+.sim-build-card{background:#172a39;border:1px solid #37546b;border-radius:9px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.sim-build-title{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:3px}
+.sim-build-title strong{font-size:13px;color:#f0f6fb}
+.sim-build-title span{font-size:10px;color:#94aec1}
+.sim-batch-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end}
+.sim-batch-controls label{min-width:160px;flex:1 1 170px}
+.sim-batch-controls button{min-width:90px}
+.sim-progress{height:8px;background:#293e4d;border-radius:7px;overflow:hidden;margin:10px 0}
+.sim-progress>i{display:block;background:#69b8c5;height:100%;transition:width .16s;border-radius:7px}
+.sim-progress>i.friendly{background:#7bd3c8}
+.sim-progress>i.hostile{background:#ed855f}
+.sim-progress>i.neutral{background:#899ba8}
+.sim-batch-output{color:#bfd1df;font-size:12px;line-height:1.7}
+.sim-batch-bars>div{margin:13px 0}
+.sim-batch-bars span{display:block;font-weight:750;color:#e5f2f8;margin-bottom:4px}
+.sim-batch-bars .sim-progress{margin:0}
+@media(max-width:1000px){
+  .sim-topgrid{grid-template-columns:1fr}
+  .sim-arena{height:clamp(270px,52vw,480px)}
+  .tabs{overflow-x:auto;scrollbar-width:thin;white-space:nowrap}
+  .tabs button{flex:0 0 auto}
+}
+@media(max-width:720px){
+  .sim-panel{padding:12px;margin-bottom:13px}
+  .sim-arena{height:clamp(260px,77vw,390px)}
+  .sim-control-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .sim-launch-row{gap:8px}
+  .sim-launch-row>div{padding:9px}
+  .sim-playback-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sim-teams{grid-template-columns:1fr}
+  .sim-batch-controls button{flex:1 1 35%}
+  .sim-section-heading{align-items:flex-start;flex-direction:column}
+  .sim-score-row strong{font-size:15px}
+  .mobile-nav{justify-content:space-between;padding:7px 4px calc(8px + env(safe-area-inset-bottom))}
+  .mobile-nav button{flex:1 1 0;min-width:0;padding:6px 1px;font-size:9px;gap:2px}
+  .mobile-nav button span{font-size:18px}
+}
+@media(max-width:360px){
+  .sim-control-grid{grid-template-columns:1fr}
+  .sim-launch-row{grid-template-columns:1fr}
+}
