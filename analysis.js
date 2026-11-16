@@ -67,7 +67,7 @@ function showSource(owner,kind){
  }
  const pkg=api.getPackage?.(owner);
  const market=pkg?.market==='US'?'美版':pkg?.market==='JP'?'日版':'未登記';
- const photo=bey.displayImagePath||bey.partImages?.blade||'';
+ const photo=versionedPhoto(bey.displayImagePath||bey.partImages?.blade||'');
  const part=info(owner,kind);
  const label=partNames[kind]||kind;
  const specs=[
@@ -360,6 +360,10 @@ function toSlots(c){
 }
 function fmt(n){return Number(n||0).toFixed(1)}
 function buildName(c){return c.blade.name+' '+c.ratchet.code+c.bit.code}
+function versionedPhoto(url){
+ if(!url)return '';
+ return url.includes('own-g3393-01.png')?url+(url.includes('?')?'&':'?')+'v=rudder-clean-20261116':url;
+}
 function recommendationPictures(c){
  const cell=(label,src,owner,kind)=>{
   const origin=getBey(owner);
@@ -377,7 +381,7 @@ function recommendationPictures(c){
   ].join('');
   return '<div class="analysis-component-gallery analysis-mixed-gallery">'+parts+'</div><div class="analysis-visual-caption">點擊零件可查看其來源陀螺。混搭圖片不是完成品照片。</div>';
  }
- const ref=c.blade.preview||partPicture(c.blade.source,'blade');
+ const ref=versionedPhoto(c.blade.preview||partPicture(c.blade.source,'blade'));
  const main=ref?'<img class="analysis-result-image" src="'+html(ref)+'" alt="'+html(c.blade.name)+' 原廠戰刃來源圖" loading="lazy" onerror="this.replaceWith(document.createTextNode(\'圖片缺失\'))">':'<div class="analysis-part-missing">缺少戰刃圖片</div>';
  return '<button type="button" class="analysis-reference-hero source-photo" data-source-owner="'+html(c.blade.source)+'" data-source-kind="blade" aria-label="查看戰刃來源陀螺 '+html(getBey(c.blade.source)?.name||'')+'">'+main+'<span class="analysis-hero-source">點擊查看來源陀螺</span></button>'+
   '<div class="analysis-component-gallery analysis-secondary-gallery">'+ratchet+bit+'</div>'+
