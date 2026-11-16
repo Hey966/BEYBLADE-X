@@ -22,6 +22,74 @@ assert.equal(E.validateDeck(b),true);
 assert.throws(()=>E.validateDeck([a[0],a[0],a[1]]),/重複/);
 const wolf1=owned('OWN-G3084-04'),wolf2=owned('OWN-UX-08-01');
 assert.throws(()=>E.validateDeck([wolf1,wolf2,a[0]]),/重複/); // 3-80/FB duplicate models
+// Every stat must originate from the physical selected Blade/Ratchet/Bit.
+const fox=owned('OWN-CX-06-01');
+const foxSource=stats.beys['OWN-CX-06-01'].parts;
+const expectedAttack=foxSource.blade.stats.attack*.62+
+ foxSource.ratchet.stats.attack*.12+foxSource.bit.stats.attack*.26;
+const expectedDefense=foxSource.blade.stats.defense*.62+
+ foxSource.ratchet.stats.defense*.15+foxSource.bit.stats.defense*.23;
+const expectedStamina=foxSource.blade.stats.stamina*.62+
+ foxSource.ratchet.stats.stamina*.13+foxSource.bit.stats.stamina*.25;
+assert(Math.abs(fox.vector.attack-expectedAttack)<1e-9,'Blade/Ratchet/Bit attack source');
+assert(Math.abs(fox.vector.defense-expectedDefense)<1e-9,'Blade/Ratchet/Bit defense source');
+assert(Math.abs(fox.vector.stamina-expectedStamina)<1e-9,'Blade/Ratchet/Bit stamina source');
+assert.equal(fox.vector.dash,foxSource.bit.stats.dash,'Dash must come from selected Bit');
+assert.equal(fox.vector.burst,foxSource.bit.stats.burst,'Burst must come from selected Bit');
+assert.equal(fox.partStats.length,6,'Factory CX includes complete Blade and physical modules');
+const foxFb=E.makeBuild({mode:'whole',blade:'OWN-CX-06-01',
+ ratchet:'OWN-CX-06-01',bit:'OWN-UX-08-01'},db,stats);
+assert(foxFb.vector.stamina>fox.vector.stamina,'Bit swap must change Stamina');
+assert(foxFb.vector.dash<fox.vector.dash,'Bit swap must change Dash');
+assert(foxFb.vector.burst<fox.vector.burst,'Bit swap must change Burst resistance');
+assert(foxFb.staminaDrag<fox.staminaDrag,'higher Stamina should last longer');
+assert(foxFb.railEfficiency<fox.railEfficiency,'higher Dash should rail faster');
+assert(foxFb.burstThreshold<fox.burstThreshold,'higher burst resistance strengthens lock');
+const foxLaunch=E.createBattle(fox,a[0],{seed:19});
+const fbLaunch=E.createBattle(foxFb,a[0],{seed:19});
+const speed=t=>Math.hypot(t.vx,t.vy);
+assert(speed(foxLaunch.tops[0])>speed(fbLaunch.tops[0]),
+ 'higher Attack/Dash from the chosen Bit increases actual launch movement');
+const lowRatchet=E.makeBuild({mode:'whole',blade:'OWN-CX-06-01',
+ ratchet:'OWN-G2734-01',bit:'OWN-CX-06-01'},db,stats);
+const highRatchet=E.makeBuild({mode:'whole',blade:'OWN-CX-06-01',
+ ratchet:'OWN-G3084-04',bit:'OWN-CX-06-01'},db,stats);
+assert(lowRatchet.burstThreshold>highRatchet.burstThreshold,
+ 'higher Ratchet exposure should change burst susceptibility');
+const factoryTiga=owned('OWN-BXG-70-01');
+assert(factoryTiga.flags.some(s=>s.includes('加總不同')),
+ 'special CX factory Blade mismatches must be disclosed, never silently guessed');
+assert.equal(factoryTiga.partStats[0].part,'factoryBlade');
+const badStats=structuredClone(stats);
+delete badStats.beys['OWN-CX-06-01'].parts.bit.stats.burst;
+assert.throws(()=>E.makeBuild({mode:'whole',blade:'OWN-CX-06-01',
+ ratchet:'OWN-CX-06-01',bit:'OWN-CX-06-01'},db,badStats),/不完整|無效/);
+// Same geometry, seed and launch: isolate one rating at a time.
+const vary=(build,key,value)=>({...build,vector:{...build.vector,[key]:value}});
+function singleContact(attacker,defender){
+ const battle=E.createBattle(attacker,defender,{seed:511,arena:'plain',rail:false,
+  launch:[{power:10500},{power:10500}]});
+ battle.tops.forEach((t,i)=>{
+  t.landed=true;t.height=0;t.verticalVelocity=0;
+  t.x=i===0?-.16:.16;t.y=0;t.vx=i===0?1:-1;t.vy=0;
+  t.spin=48;t.tilt=0;t.tiltVelocity=0;t.tiltDir=0;
+ });
+ battle.step();assert.equal(battle.collisionCount,1,'forced contact');
+ return battle.tops[1];
+}
+const victim=owned('OWN-G3084-02');
+const attackHigh=singleContact(vary(fox,'attack',85),victim);
+const attackLow=singleContact(vary(fox,'attack',10),victim);
+assert(attackHigh.spin<attackLow.spin,'Attack must cause more opposing spin loss');
+assert(attackHigh.vx>attackLow.vx,'Attack must cause more opposing knockback');
+assert(attackHigh.burstLoad>attackLow.burstLoad,'Attack must cause more lock damage');
+const defenseHigh=singleContact(fox,vary(victim,'defense',85));
+const defenseLow=singleContact(fox,vary(victim,'defense',5));
+assert(defenseHigh.spin>defenseLow.spin,'Defense must absorb spinning impact');
+assert(defenseHigh.vx<defenseLow.vx,'Defense must reduce knockback');
+const burstHigh=singleContact(fox,vary(victim,'burst',85));
+const burstLow=singleContact(fox,vary(victim,'burst',5));
+assert(burstHigh.burstLoad<burstLow.burstLoad,'Burst resistance must reduce lock load');
 const one=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:11200,type:'string',angle:8},{power:10920,type:'winder',angle:-8}]});
 const again=E.simulateMatch([a[0]],[b[0]],{seed:966,arena:'xtreme',launch:[{power:11200,type:'string',angle:8},{power:10920,type:'winder',angle:-8}]});
 assert.equal(JSON.stringify(one),JSON.stringify(again),'same seed reproducible');
