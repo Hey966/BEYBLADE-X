@@ -89,6 +89,7 @@ function showFinal(battle){
  if(winner!==null)runtime.points[winner]+=battle.points;
  runtime.history.push({round:runtime.round+1,winner,finish:battle.finish,points:battle.points,
   collisions:battle.collisionCount,railEvents:battle.railCount,seed:battle.seed,seconds:battle.elapsed});
+ if(winner!==null)runtime.deckIndex++;
  runtime.complete=Math.max(...runtime.points)>=4||runtime.round>=23;
  if(runtime.complete){
   const finalWinner=runtime.points[0]>runtime.points[1]?'我方':runtime.points[1]>runtime.points[0]?'對手':'平手';
@@ -120,7 +121,7 @@ function playFrame(token,lastTime){
 }
 function beginRound(){
  if(!runtime||runtime.complete)return;
- const idx=runtime.round%runtime.teams[0].length,conf=runtime.opts;
+ const idx=runtime.deckIndex%runtime.teams[0].length,conf=runtime.opts;
  const seed=(conf.seed+Math.imul(runtime.round+1,0x9E3779B1))>>>0;
  runtime.battle=C.createBattle(runtime.teams[0][idx],runtime.teams[1][idx],{
   seed,arena:conf.arena,rail:conf.rail,launch:conf.launch,record:true
@@ -135,7 +136,7 @@ function start(){
  try{
   const teams=toDecks(),opts=settings();
   clearMatch();
-  runtime={teams,opts,points:[0,0],round:0,history:[],complete:false};
+  runtime={teams,opts,points:[0,0],round:0,deckIndex:0,history:[],complete:false};
   beginRound();
  }catch(error){report(error.message,true)}
 }
