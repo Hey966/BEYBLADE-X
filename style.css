@@ -922,3 +922,8 @@ button.analysis-reference-hero .analysis-result-image{
  .sim-audio-controls input[type=range]{grid-column:2 / 3;grid-row:2}
  .sim-audio-controls .sim-sound-button{grid-column:1 / 3}
 }
+
+.sim-seed-setting{display:flex;flex-direction:column;gap:5px;min-width:0}
+.sim-seed-setting>label:first-child{display:flex;flex-direction:column}
+.sim-seed-auto{display:flex!important;align-items:center;gap:6px;flex-direction:row!important;font-size:10px;line-height:1.4;color:#b6d8df;cursor:pointer}
+.sim-seed-auto input{width:15px;height:15px;flex:0 0 auto;margin:0;accent-color:#a8e9cb}

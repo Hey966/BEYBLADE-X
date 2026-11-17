@@ -25,6 +25,18 @@ assert(sceneCode.includes("paintImage(ctx,texture,0,0,r*2)"),
  '2D blade image must not extend beyond its collision-sized painted disc');
 assert(!sceneCode.includes("r*2.24"),'legacy oversized 2D sprite causes clipping');
 assert(sceneCode.includes("const topOrder="),'airborne tops must use correct depth order');
+assert(sceneCode.includes("new THREE.ExtrudeGeometry(section"),
+ '3D Ratchet must have hollow profile geometry');
+assert(sceneCode.includes("ratchetTeeth=Math.max(0"),
+ '3D Ratchet must use chosen protrusion count');
+assert(sceneCode.includes("getRatchetCanvas(img)"),
+ '3D Ratchet must display real selected part imagery');
+assert(sceneCode.includes("fragments.find(p=>p.kind==='ratchet')"),
+ '2D burst must separate selected Ratchet image');
+assert(!sceneCode.includes("ctx.fillRect(-r*.45,-r*.17,r*.9,r*.34)"),
+ '2D burst must not use generic rectangular fragments');
+assert(html.includes('id="simSeedAuto" checked'),
+ 'new battles should default to new initial conditions');
 assert(sceneCode.includes("const bladeLow="),'tilted blades must be lifted clear of the floor');
 assert(sceneCode.includes('mesh.root.rotation.x=Math.cos(dir)*lean;'),
  '3D recoil must follow the impact-axis lean');
@@ -43,7 +55,7 @@ for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  const id=match[1];
  const value=id==='simMatchType'?'1':id==='simArenaType'?'xtreme':id==='simSpeed'?'4':id==='simSeed'?'966':
  id.startsWith('simPower')?'10500':id.startsWith('simAngle')?'0':'';
- nodes[id]={id,value,innerHTML:'',textContent:'',disabled:false,hidden:true,style:{},
+ nodes[id]={id,value,checked:id==='simSeedAuto',innerHTML:'',textContent:'',disabled:false,hidden:true,style:{},
   events:{},classList:{toggle(){}},addEventListener(type,handler){(this.events[type]??=[]).push(handler)}};
 }
 const renderEvents=[],arenaCalls=[],modelCalls=[];
@@ -69,6 +81,12 @@ function fire(id,type='click',value){
 }
 assert(modelCalls.length>0);
 assert(nodes.simActiveParts.innerHTML.includes('戰刃'));
+assert(nodes.simSeedAuto.checked,'default new-match seed should be automatic');
+fire('simSeed','change','123456');
+assert.equal(nodes.simSeedAuto.checked,false,'manual seed input must enable deterministic replay');
+assert.equal(nodes.simSeed.value,'123456');
+fire('simSettingsReset');
+assert.equal(nodes.simSeedAuto.checked,true,'reset should re-enable fresh seeds');
 assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
  'visible five-metric ratings must be shown for each current build');
 assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
@@ -113,6 +131,7 @@ for(const handler of nodes.simTeam0.events.change||[])handler({target:changed});
 assert(modelCalls.length>beforeModels,'change selected blade updates scene');
 assert(nodes.simActiveParts.innerHTML.includes('Crest Leon'));
 fire('simStart');
+assert(Number(nodes.simSeed.value)>=1,'starting an auto-seeded match records its seed');
 const scoreAtStart=nodes.simScore.textContent;
 let visualFrame=-1,scoredFrame=-1,scoreBefore=null;
 for(let i=0;i<2500&&frames.length;i++){
