@@ -16,7 +16,9 @@
     "wikiMetalRage": "https://beybladewiki.com/toys/part/metal-blade-rage",
     "wikiOverFlow": "https://beybladewiki.com/toys/part/over-blade-flow",
     "wikiMetalOver": "https://beybladewiki.com/toys/parts/x/metal-blade",
-    "tigaWeightCrossCheck": "https://beybladexx.com/weight/"
+    "tigaWeightCrossCheck": "https://beybladexx.com/weight/",
+    "fortHasbroBack": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Beyblade_20X_20Fort_20Hornet_20R_207-60T_20CX_20Starter_20Pack_20Set_20_4.jpg?v=1774312705&width=2048",
+    "wriggleHasbroBack": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Wriggle_20Kraken_20_4.jpg?v=1774312663&width=2048"
   },
   "notes": [
     "Reference mass is not an official measured mass of the user's individual copy.",
@@ -27,7 +29,7 @@
     "TigaRage FT mainBlade mass 30.9 g is derived from Rage 27.2 g plus Flow 3.7 g reference parts; entire blade 38.4 g includes Lock Chip 1.7 g and Turn 5.8 g. This is NOT a directly weighed BXG-70 physical unit.",
     "TigaRage FT nominal total 47.0 g derived from module references matches an independently published estimated BXG-70 total of 47.0 g; both are estimates, not copies individually weighed.",
     "Two still-unverified weights are the licensed Hasbro Mister Fantastic and Doctor Doom original Blade masses. Do not invent a value; use fallback when selected.",
-    "Three currently unresolved printed rating comparisons remain for Fort G3084, Wriggle G3084, and EvaBrush BXG-57-03. Hasbro G3393 Rudder Phoenix is resolved as a version-specific 15/40/60, not a discrepancy."
+    "Fort/Wriggle G3084 printed scores were corrected using Hasbro G1682/G1683 package backs, confirmed same moulds. Only EvaBrush BXG-57-03 rating discrepancy remains unresolved."
   ],
   "bitTraits": {
     "U": {
@@ -48,7 +50,7 @@
     "FB": {
       "tip": "round",
       "freeRotate": true,
-      "description": "independently rotating ball; reduced floor drag"
+      "description": "shaft rotates independently of the Ratchet and reduces dash spin loss; does not assert that the plastic ball is separately free spinning"
     },
     "T": {
       "tip": "hybrid",
@@ -636,46 +638,12 @@
     "ownedBeys": 19,
     "recordedWeightEntries": 76,
     "unverifiedEntries": 2,
-    "unresolvedStatConflicts": 3,
-    "resolvedVersionDifferences": 1
+    "unresolvedStatConflicts": 1,
+    "resolvedVersionDifferences": 1,
+    "verifiedPrintedCorrections": 4,
+    "verifiedProductModels": 2
   },
   "statConflicts": [
-    {
-      "owner": "OWN-G3084-05",
-      "part": "mainBlade",
-      "name": "Fort",
-      "status": "unresolved",
-      "releaseCatalog": {
-        "attack": 29,
-        "defense": 17,
-        "stamina": 29
-      },
-      "independentReference": {
-        "attack": 24,
-        "defense": 12,
-        "stamina": 24
-      },
-      "source": "https://beybladewiki.com/toys/part/main-blade-fort",
-      "note": "Hasbro G3084 標示與跨版本公開資料相差 5 點。保留目錄值，未擅自改寫。"
-    },
-    {
-      "owner": "OWN-G3084-06",
-      "part": "mainBlade",
-      "name": "Wriggle",
-      "status": "unresolved",
-      "releaseCatalog": {
-        "attack": 13,
-        "defense": 17,
-        "stamina": 45
-      },
-      "independentReference": {
-        "attack": 8,
-        "defense": 12,
-        "stamina": 40
-      },
-      "source": "https://beybladewiki.com/toys/parts/x/main-blade",
-      "note": "Hasbro G3084 目錄與跨版本公開資料相差 5 點，仍待確認。"
-    },
     {
       "owner": "OWN-BXG-57-03",
       "part": "mainBlade",
@@ -714,6 +682,70 @@
       },
       "source": "https://beybladewiki.com/zh/toys/part/blade-phoenixrudder",
       "note": "Independent release-specific colorway table lists G3393-01 with 15/40/60 matching Hasbro catalog; prior conflict was caused by comparing a recolour to the standard edition."
+    }
+  ],
+  "verifiedCorrections": [
+    {
+      "owner": "OWN-G3084-05",
+      "name": "Fort Hornet R",
+      "product": "G1682; G3084-05 repack",
+      "from": {
+        "mainBlade": [
+          29,
+          17,
+          29
+        ],
+        "blade": [
+          39,
+          27,
+          49
+        ]
+      },
+      "to": {
+        "mainBlade": [
+          24,
+          12,
+          24
+        ],
+        "blade": [
+          34,
+          22,
+          44
+        ]
+      },
+      "sourceId": "fortHasbroBack",
+      "status": "verified-retail-package"
+    },
+    {
+      "owner": "OWN-G3084-06",
+      "name": "Wriggle Kraken S",
+      "product": "G1683; G3084-06 repack",
+      "from": {
+        "mainBlade": [
+          13,
+          17,
+          45
+        ],
+        "blade": [
+          33,
+          27,
+          55
+        ]
+      },
+      "to": {
+        "mainBlade": [
+          8,
+          12,
+          40
+        ],
+        "blade": [
+          28,
+          22,
+          50
+        ]
+      },
+      "sourceId": "wriggleHasbroBack",
+      "status": "verified-retail-package"
     }
   ]
 }
