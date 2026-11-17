@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-17",
+  "description": "Catalogued model-reference weights in grams, NOT measurements of the user's own pieces. Fan sources may vary with batches. Exact unit weights and contact friction are unknown.",
+  "sources": {
+    "wikiBlade": "https://beybladewiki.com/toys/parts/x/blade",
+    "wikiRatchet": "https://beybladewiki.com/toys/parts/x/ratchet",
+    "wikiBit": "https://beybladewiki.com/toys/parts/x/bit",
+    "wikiChip": "https://beybladewiki.com/toys/parts/x/lock-chip",
+    "wikiMain": "https://beybladewiki.com/toys/parts/x/main-blade",
+    "wikiAssist": "https://beybladewiki.com/toys/parts/x/assist-blade",
+    "beybaseScale": "https://beybase.com/beyblade-part-weights-database/",
+    "foxFull": "https://beybladexwiki.com/en/beys/foxbrush-j9-70gr",
+    "fortFull": "https://beybladewiki.com/toys/beyblade/fort-hornet-r-7-60t",
+    "tigaSpecial": "https://beyblade.phstudy.org/p/zh-TW/Series/SR-PRD-700700-11.html"
+  },
+  "notes": [
+    "Reference mass is not an official measured mass of the user's individual copy.",
+    "Catalogued weights carry variation across factories, versions, color, coatings, and scale tolerance.",
+    "CX whole-blade mass is a sum of separate chip/main/assist reference masses and may not equal a direct factory unit measurement.",
+    "All tip behavior flags describe source-backed qualitative construction. Numeric dynamics multipliers are explicit uncalibrated simulation hypotheses.",
+    "Missing entries remain missing, and must not be synthesized to look measured. The tool uses its old model-based proxy if all selected weights are unavailable."
+  ],
+  "bitTraits": {
+    "U": {
+      "tip": "hybrid",
+      "tiltSwitch": true,
+      "description": "round/flat mixed contact"
+    },
+    "O": {
+      "tip": "round",
+      "compactContact": true,
+      "description": "small ball; center stability"
+    },
+    "GN": {
+      "tip": "sharp",
+      "tiltGear": true,
+      "description": "sharp point, lowered gear activates when leaning"
+    },
+    "FB": {
+      "tip": "round",
+      "freeRotate": true,
+      "description": "independently rotating ball; reduced floor drag"
+    },
+    "T": {
+      "tip": "hybrid",
+      "tiltSwitch": true,
+      "description": "taper; changes contact with launch tilt"
+    },
+    "G": {
+      "tip": "round",
+      "lowFriction": true,
+      "antiTilt": true,
+      "description": "POM ball with lateral anti-lean contact"
+    },
+    "GP": {
+      "tip": "hybrid",
+      "tiltSwitch": true,
+      "extendedGear": true,
+      "description": "point with gear rim; can switch mode when tilted"
+    },
+    "A": {
+      "tip": "flat",
+      "fastGear": true,
+      "description": "Accel with 16 gear teeth; rapid Dash, energy cost"
+    },
+    "LO": {
+      "tip": "round",
+      "lowProfile": true,
+      "compactContact": true,
+      "description": "low Orb ball contact"
+    },
+    "W": {
+      "tip": "sharp",
+      "antiTilt": true,
+      "softGear": true,
+      "description": "blunt wedge, low-tooth gear"
+    },
+    "WB": {
+      "tip": "round",
+      "antiTilt": true,
+      "description": "Wall Ball has cylindrical anti-lean ring"
+    },
+    "E": {
+      "tip": "hybrid",
+      "antiTilt": true,
+      "dashLift": true,
+      "enduranceRim": true,
+      "description": "Elevate lifts during Dash and supports late spin"
+    },
+    "V": {
+      "tip": "flat",
+      "spiralGrip": true,
+      "description": "Vortex spiralled wide flat attack"
+    },
+    "GR": {
+      "tip": "flat",
+      "extendedGear": true,
+      "description": "Gear Rush has gear teeth extending to bottom"
+    }
+  },
+  "byOwner": {
+    "OWN-G3084-01": {
+      "blade": {
+        "weightG": 34.6,
+        "model": "WeissTiger",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 6.4,
+        "model": "3-60",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.1,
+        "model": "Unite",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3084-02": {
+      "blade": {
+        "weightG": 29.6,
+        "model": "Gill Shark",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 6.4,
+        "model": "4-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2,
+        "model": "Orb",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3084-03": {
+      "blade": {
+        "weightG": 35,
+        "model": "LeonCrest",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 7.1,
+        "model": "7-60",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2,
+        "model": "Gear Needle",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3084-04": {
+      "blade": {
+        "weightG": 36.8,
+        "model": "SilverWolf",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 7.1,
+        "model": "3-80",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 1.9,
+        "model": "Free Ball",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3084-05": {
+      "ratchet": {
+        "weightG": 7.1,
+        "model": "7-60",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.2,
+        "model": "Taper",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Hornet",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 29,
+        "model": "Fort",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 4.7,
+        "model": "Round",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 35.4,
+        "model": "Fort Hornet R (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-G3084-06": {
+      "ratchet": {
+        "weightG": 4.7,
+        "model": "3-85",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2,
+        "model": "Orb",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Kraken",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 29.3,
+        "model": "Wriggle",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 4.7,
+        "model": "Slash",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 35.7,
+        "model": "Wriggle Kraken S (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-G3393-01": {
+      "blade": {
+        "weightG": 34.5,
+        "model": "PhoenixRudder",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 6.3,
+        "model": "9-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.5,
+        "model": "Glide",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3393-02": {
+      "blade": {
+        "weightG": 33.4,
+        "model": "UnicornSting",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 6.6,
+        "model": "5-60",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.3,
+        "model": "Gear Point",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3393-03": {
+      "blade": {
+        "weightG": 32.7,
+        "model": "SphinxCowl",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 6.9,
+        "model": "9-80",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2,
+        "model": "Gear Needle",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3063-01": {
+      "ratchet": {
+        "weightG": 4.5,
+        "model": "9-65",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.6,
+        "model": "Accel",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G3063-02": {
+      "ratchet": {
+        "weightG": 7.6,
+        "model": "0-80",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 1.9,
+        "model": "Low Orb",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-G2734-01": {
+      "blade": {
+        "weightG": 37.5,
+        "model": "MummyCurse",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 5.2,
+        "model": "7-55",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 1.8,
+        "model": "Wedge",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-CX-08-06": {
+      "blade": {
+        "weightG": 37.8,
+        "model": "CobaltDragoon",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 4.8,
+        "model": "4-55",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.2,
+        "model": "Wall Ball",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-BXG-70-01": {
+      "ratchet": {
+        "weightG": 6.4,
+        "model": "3-60",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.2,
+        "model": "Taper",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Tiga",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 5.8,
+        "model": "Turn",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      }
+    },
+    "OWN-BXG-57-01": {
+      "ratchet": {
+        "weightG": 7,
+        "model": "0-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 3.2,
+        "model": "Elevate",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Eva",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 29.2,
+        "model": "Arc",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 5.3,
+        "model": "Bumper",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 36.2,
+        "model": "EvaArc B (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-BXG-57-02": {
+      "ratchet": {
+        "weightG": 6.1,
+        "model": "1-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.2,
+        "model": "Vortex",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Eva",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 31.2,
+        "model": "Brave",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 5,
+        "model": "Assault",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 37.9,
+        "model": "EvaBrave A (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-BXG-57-03": {
+      "ratchet": {
+        "weightG": 6.3,
+        "model": "2-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.6,
+        "model": "Accel",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Eva",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 30.3,
+        "model": "Brush",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 5.8,
+        "model": "Turn",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 37.8,
+        "model": "EvaBrush T (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-CX-06-01": {
+      "ratchet": {
+        "weightG": 6.3,
+        "model": "9-70",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 2.1,
+        "model": "Gear Rush",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      },
+      "lockChip": {
+        "weightG": 1.7,
+        "model": "Fox",
+        "sourceId": "wikiChip",
+        "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 30.3,
+        "model": "Brush",
+        "sourceId": "wikiMain",
+        "method": "catalogue-reference"
+      },
+      "assistBlade": {
+        "weightG": 4.9,
+        "model": "Jaggy",
+        "sourceId": "wikiAssist",
+        "method": "catalogue-reference"
+      },
+      "blade": {
+        "weightG": 36.9,
+        "model": "FoxBrush J (chip+main+assist)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-reference-masses"
+      }
+    },
+    "OWN-UX-08-01": {
+      "blade": {
+        "weightG": 36.8,
+        "model": "SilverWolf",
+        "sourceId": "wikiBlade",
+        "method": "catalogue-reference"
+      },
+      "ratchet": {
+        "weightG": 7.1,
+        "model": "3-80",
+        "sourceId": "wikiRatchet",
+        "method": "catalogue-reference"
+      },
+      "bit": {
+        "weightG": 1.9,
+        "model": "Free Ball",
+        "sourceId": "wikiBit",
+        "method": "catalogue-reference"
+      }
+    }
+  },
+  "unverified": [
+    {
+      "owner": "OWN-G3063-01",
+      "name": "Mister Fantastic",
+      "part": "blade"
+    },
+    {
+      "owner": "OWN-G3063-02",
+      "name": "Doctor Doom",
+      "part": "blade"
+    },
+    {
+      "owner": "OWN-BXG-70-01",
+      "name": "TigaRage FT",
+      "part": "blade"
+    },
+    {
+      "owner": "OWN-BXG-70-01",
+      "name": "TigaRage FT",
+      "part": "mainBlade"
+    }
+  ],
+  "summary": {
+    "ownedBeys": 19,
+    "recordedWeightEntries": 74,
+    "unverifiedEntries": 4
+  }
+}
