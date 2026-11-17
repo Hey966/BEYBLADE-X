@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "verifiedOn": "2026-11-17",
-  "description": "Catalogued model-reference weights in grams, NOT measurements of the user's own pieces. Fan sources may vary with batches. Exact unit weights and contact friction are unknown.",
+  "description": "Cross-source audited model-reference weights and explicit status of release-specific data. Derived figures are not original-unit weighings.",
   "sources": {
     "wikiBlade": "https://beybladewiki.com/toys/parts/x/blade",
     "wikiRatchet": "https://beybladewiki.com/toys/parts/x/ratchet",
@@ -12,16 +12,22 @@
     "beybaseScale": "https://beybase.com/beyblade-part-weights-database/",
     "foxFull": "https://beybladexwiki.com/en/beys/foxbrush-j9-70gr",
     "fortFull": "https://beybladewiki.com/toys/beyblade/fort-hornet-r-7-60t",
-    "tigaSpecial": "https://beyblade.phstudy.org/p/zh-TW/Series/SR-PRD-700700-11.html"
+    "tigaSpecial": "https://beyblade.phstudy.org/p/zh-TW/Series/SR-PRD-700700-11.html",
+    "wikiMetalRage": "https://beybladewiki.com/toys/part/metal-blade-rage",
+    "wikiOverFlow": "https://beybladewiki.com/toys/part/over-blade-flow",
+    "wikiMetalOver": "https://beybladewiki.com/toys/parts/x/metal-blade",
+    "tigaWeightCrossCheck": "https://beybladexx.com/weight/"
   },
   "notes": [
     "Reference mass is not an official measured mass of the user's individual copy.",
     "Catalogued weights carry variation across factories, versions, color, coatings, and scale tolerance.",
     "CX whole-blade mass is a sum of separate chip/main/assist reference masses and may not equal a direct factory unit measurement.",
     "All tip behavior flags describe source-backed qualitative construction. Numeric dynamics multipliers are explicit uncalibrated simulation hypotheses.",
-    "Missing entries remain missing, and must not be synthesized to look measured. The tool uses its old model-based proxy if all selected weights are unavailable.",
-    "Three unresolved discrepancies between release-specific catalog and independent sources are documented under statConflicts; the simulator continues using the original release-recorded ability figures.",
-    "Recolored Hasbro/Takara Tomy editions can differ in actual mass; mapped reference masses are for nominal matching designs and may not equal a specific collector edition."
+    "Recolored Hasbro/Takara Tomy editions can differ in actual mass; mapped reference masses are for nominal matching designs and may not equal a specific collector edition.",
+    "TigaRage FT mainBlade mass 30.9 g is derived from Rage 27.2 g plus Flow 3.7 g reference parts; entire blade 38.4 g includes Lock Chip 1.7 g and Turn 5.8 g. This is NOT a directly weighed BXG-70 physical unit.",
+    "TigaRage FT nominal total 47.0 g derived from module references matches an independently published estimated BXG-70 total of 47.0 g; both are estimates, not copies individually weighed.",
+    "Two still-unverified weights are the licensed Hasbro Mister Fantastic and Doctor Doom original Blade masses. Do not invent a value; use fallback when selected.",
+    "Three currently unresolved printed rating comparisons remain for Fort G3084, Wriggle G3084, and EvaBrush BXG-57-03. Hasbro G3393 Rudder Phoenix is resolved as a version-specific 15/40/60, not a discrepancy."
   ],
   "bitTraits": {
     "U": {
@@ -410,6 +416,35 @@
         "model": "Turn",
         "sourceId": "wikiAssist",
         "method": "catalogue-reference"
+      },
+      "mainBlade": {
+        "weightG": 30.9,
+        "model": "Rage Metal Blade + Flow Over Blade (TigaRage FT Multi configuration)",
+        "sourceId": "wikiMetalOver",
+        "method": "derived-sum-of-generic-component-model-weights",
+        "components": [
+          {
+            "name": "Rage Metal Blade",
+            "weightG": 27.2,
+            "sourceId": "wikiMetalRage"
+          },
+          {
+            "name": "Flow Over Blade",
+            "weightG": 3.7,
+            "sourceId": "wikiOverFlow"
+          }
+        ]
+      },
+      "blade": {
+        "weightG": 38.4,
+        "model": "Tiga + Rage + Flow + Turn (TigaRage FT Multi)",
+        "sourceId": "module-sum",
+        "method": "sum-of-three-model-references",
+        "derivedFrom": [
+          "lockChip",
+          "mainBlade",
+          "assistBlade"
+        ]
       }
     },
     "OWN-BXG-57-01": {
@@ -595,43 +630,16 @@
       "owner": "OWN-G3063-02",
       "name": "Doctor Doom",
       "part": "blade"
-    },
-    {
-      "owner": "OWN-BXG-70-01",
-      "name": "TigaRage FT",
-      "part": "blade"
-    },
-    {
-      "owner": "OWN-BXG-70-01",
-      "name": "TigaRage FT",
-      "part": "mainBlade"
     }
   ],
   "summary": {
     "ownedBeys": 19,
-    "recordedWeightEntries": 74,
-    "unverifiedEntries": 4,
-    "unresolvedStatConflicts": 3
+    "recordedWeightEntries": 76,
+    "unverifiedEntries": 2,
+    "unresolvedStatConflicts": 3,
+    "resolvedVersionDifferences": 1
   },
   "statConflicts": [
-    {
-      "owner": "OWN-G3393-01",
-      "part": "blade",
-      "name": "Rudder Phoenix",
-      "status": "unresolved",
-      "releaseCatalog": {
-        "attack": 15,
-        "defense": 40,
-        "stamina": 60
-      },
-      "independentReference": {
-        "attack": 10,
-        "defense": 35,
-        "stamina": 55
-      },
-      "source": "https://beybladexwiki.com/en/blades/phoenixrudder",
-      "note": "原始 Hasbro G3393 單品目錄與另一份採日版標示的資料不同；尚未核對實際包裝。模型暫保留型號專屬目錄數值。"
-    },
     {
       "owner": "OWN-G3084-05",
       "part": "mainBlade",
@@ -667,6 +675,45 @@
       },
       "source": "https://beybladewiki.com/toys/parts/x/main-blade",
       "note": "Hasbro G3084 目錄與跨版本公開資料相差 5 點，仍待確認。"
+    },
+    {
+      "owner": "OWN-BXG-57-03",
+      "part": "mainBlade",
+      "name": "Brush Metallic Coat Red EVA-02 BXG-57-03",
+      "status": "unresolved",
+      "releaseCatalog": {
+        "attack": 50,
+        "defense": 15,
+        "stamina": 10
+      },
+      "independentReference": {
+        "attack": 40,
+        "defense": 25,
+        "stamina": 10
+      },
+      "source": "https://beybladewiki.com/toys/part/main-blade-brush",
+      "independentReleaseUrl": "https://beyblade.phstudy.org/p/en-US/Series/SR-PRD-085683-03.html",
+      "note": "Both public sources explicitly name BXG-57-03 red EVA-02 main blade but print different Attack and Defense values; no package photo independently resolves it. Keep edition-specific phstudy numeric values without substituting generic Brush."
+    }
+  ],
+  "resolvedDifferences": [
+    {
+      "owner": "OWN-G3393-01",
+      "part": "blade",
+      "name": "Rudder Phoenix G3393-01 red/pink variant",
+      "status": "confirmed-version-specific",
+      "standardVariant": {
+        "attack": 10,
+        "defense": 35,
+        "stamina": 55
+      },
+      "ownedVariant": {
+        "attack": 15,
+        "defense": 40,
+        "stamina": 60
+      },
+      "source": "https://beybladewiki.com/zh/toys/part/blade-phoenixrudder",
+      "note": "Independent release-specific colorway table lists G3393-01 with 15/40/60 matching Hasbro catalog; prior conflict was caused by comparing a recolour to the standard edition."
     }
   ]
 }
