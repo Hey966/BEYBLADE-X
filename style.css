@@ -838,6 +838,7 @@ button.analysis-reference-hero .analysis-result-image{
 }
 .sim-stat-grid span{min-width:0;white-space:nowrap}
 .sim-stat-grid b{font-variant-numeric:tabular-nums;color:#dbf3fb}
+.sim-weight-line{margin-top:7px;color:#c3d4ec;font-size:10px;line-height:1.6;font-variant-numeric:tabular-nums}
 .sim-part-stats{margin-top:7px;color:#aec8d8;font-size:10px}
 .sim-part-stats summary{cursor:pointer;color:#aee5d2}
 .sim-part-stat-row{line-height:1.65;margin-top:4px;overflow-wrap:anywhere}
