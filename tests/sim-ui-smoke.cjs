@@ -109,6 +109,9 @@ assert(nodes.simActiveParts.innerHTML.includes('同型號重量:'),
  'raw selected-part model masses must be auditable');
 assert(nodes.simActiveParts.innerHTML.includes('非本顆實秤'),
  'catalogue references must not claim to be measured owned objects');
+assert(nodes.simActiveParts.innerHTML.includes('參考資料：')&&
+ nodes.simActiveParts.innerHTML.includes('beybladewiki.com'),
+ 'each preview should link to source weight reference tables');
 const firstStatHtml=nodes.simActiveParts.innerHTML;
 const changeBit={value:'OWN-UX-08-01',dataset:{team:'0',index:'0',part:'bit'}};
 changeBit.closest=()=>changeBit;
