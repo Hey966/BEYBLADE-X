@@ -177,6 +177,55 @@ rimTop.tops[1].x=-.50;rimTop.tops[1].y=0;
 rimTop.step();
 assert(Math.hypot(rimTop.tops[0].x,rimTop.tops[0].y)<=
  1.32-rimTop.tops[0].model.radius+1e-6,'full visual blade must remain inside stadium rim');
+// Raised rim: flat high-speed attack movement must rebound instead of
+// ghosting through a pocket. An airborne or recently hit top can still exit.
+assert.equal(E.RIM_LIP_HEIGHT,.065,'rim height must use the displayed 3D lip');
+function lipScenario(mode){
+ const play=E.createBattle(owned('OWN-BXG-57-02'),owned('OWN-UX-08-01'),
+  {seed:2026,arena:'xtreme',rail:false,
+   launch:[{power:14000},{power:14000}],record:false});
+ const [attack,other]=play.tops,theta=-.70,dist=1.13;
+ for(const top of [attack,other]){
+  top.landed=true;top.height=0;top.verticalVelocity=0;
+  top.vx=0;top.vy=0;
+ }
+ attack.x=dist*Math.cos(theta);attack.y=dist*Math.sin(theta);
+ attack.vx=2.1*Math.cos(theta);attack.vy=2.1*Math.sin(theta);
+ other.x=-.85;other.y=.70;
+ if(mode==='airborne')attack.height=E.RIM_LIP_HEIGHT*1.4;
+ if(mode==='knockback'){attack.lastHitAt=0;attack.lastHitStrength=1.2;}
+ play.step();
+ return play;
+}
+const groundedLip=lipScenario('grounded');
+assert.equal(groundedLip.done,false,'grounded fast Dash must not pass through raised pocket rim');
+assert(Math.hypot(groundedLip.tops[0].x,groundedLip.tops[0].y)<=
+  1.32-groundedLip.tops[0].model.radius+1e-6,'grounded top rebounds inside rim');
+assert.equal(lipScenario('airborne').finish,'extreme','airborne top can clear a true pocket');
+assert.equal(lipScenario('knockback').finish,'extreme',
+ 'strong recent collision impulse can carry a top over the lip');
+const cooldownClock=E.createBattle(owned('OWN-BXG-57-02'),owned('OWN-UX-08-01'),
+ {seed:321,arena:'xtreme',rail:false});
+cooldownClock.tops.forEach((top,i)=>{
+ top.landed=true;top.height=0;top.verticalVelocity=0;
+ top.x=i===0?-.8:.8;top.y=0;top.vx=0;top.vy=0;
+});
+cooldownClock.tops[0].railCooldown=.7;
+for(let i=0;i<60&&!cooldownClock.done;i++)cooldownClock.step();
+assert(Math.abs(cooldownClock.tops[0].railCooldown-.2)<.04,
+ 'Dash cooldown should run in model seconds, not accelerated planar seconds');
+let attackSelfKOs=0,attackKnockouts=0;
+for(let power of [10500,14000]){
+ for(let seed=1;seed<=60;seed++){
+  const result=E.runBattle(owned('OWN-BXG-57-02'),owned('OWN-UX-08-01'),
+   {seed:seed*397,arena:'xtreme',launch:[{power,angle:0},{power,angle:0}],record:false});
+  if(result.finish!=='over'&&result.finish!=='extreme')continue;
+  if(result.winner===1)attackSelfKOs++;
+  else attackKnockouts++;
+ }
+}
+assert(attackSelfKOs<14,'strong attack Bits should not routinely self-KO');
+assert(attackKnockouts>=10,'raised lip must still allow opponent knockouts');
 let clippingFrames=0,checkedFrames=0;
 for(let seed=1;seed<=24;seed++){
  const left=owned(db.beys[seed%db.beys.length].id);
@@ -306,4 +355,4 @@ const noRail=E.runBattle(owned('OWN-G3084-01'),owned('OWN-G3084-02'),
  {seed:345,arena:'plain',rail:false,launch:[{power:10500},{power:10500}],record:false});
 assert.equal(noRail.rails,0,'plain training stadium cannot use an Xtreme dash');
 
-console.log(JSON.stringify({passed:true,burstMatchup:{burst:matchupBursts,spin:matchupSpins},collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,checkedClippingFrames:checkedFrames,clippingFrames,meanStaminaSeconds:+(staminaSeconds/staminaRounds).toFixed(2),meanStaminaContacts:+(staminaContacts/staminaRounds).toFixed(2),postHitLean:+recoilPeak.toFixed(3),recoveredLean:+recoil.tops[0].tilt.toFixed(3)},null,2));
+console.log(JSON.stringify({passed:true,burstMatchup:{burst:matchupBursts,spin:matchupSpins},collection:db.beys.length,partRecords:stats.summary.partRecords,threeRounds:three.rounds.length,finishTypes:[...kinds],highEnergyBursts:burstCount,impactSeen,highContactCount,replayMeanContacts:+(activeContacts/120).toFixed(2),replayMeanRails:+(activeRails/120).toFixed(2),replayBursts:activeBursts,replaySpins:activeSpins,replayRingouts:activeExtremes+activeOver,attackSelfKOs,attackKnockouts,checkedClippingFrames:checkedFrames,clippingFrames,meanStaminaSeconds:+(staminaSeconds/staminaRounds).toFixed(2),meanStaminaContacts:+(staminaContacts/staminaRounds).toFixed(2),postHitLean:+recoilPeak.toFixed(3),recoveredLean:+recoil.tops[0].tilt.toFixed(3)},null,2));
