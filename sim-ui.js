@@ -76,6 +76,11 @@ function buildVisualPreview(specs,preview=true){
     ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':
      Number(p.weightG).toFixed(1)+' g'+
      ((p.weightMethod||'').includes('derived')||(p.weightMethod||'').includes('sum')?'（組件推算）':''))+
+    (p.verification?'<div class="sim-source-links">數值已核對 Hasbro 包裝：'+
+     '<a href="'+clean(p.verification.sourceImage)+'" target="_blank" rel="noopener noreferrer">查看包裝背面</a>'+
+     '（原目錄攻'+statNum(p.verification.originalCatalog.attack)+
+     '／防'+statNum(p.verification.originalCatalog.defense)+
+     '／持'+statNum(p.verification.originalCatalog.stamina)+'）</div>':'')+
     '</div>').join('')+'</details>';
   const measured=spec.totalWeightG!==null&&Number.isFinite(spec.totalWeightG);
   const derived=(spec.massParts||[]).some(p=>(p.method||'').includes('derived')||

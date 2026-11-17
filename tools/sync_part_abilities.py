@@ -39,6 +39,46 @@ def lang(value):
 def numeric(value):
  return float(value) if isinstance(value,(int,float)) and not isinstance(value,bool) else None
 
+def apply_verified_overrides(result):
+ """Prioritise visible Hasbro box specifications over conflicting fan catalog mirrors.
+
+ Release-specific corrections are a separate reviewed data file. Never
+ silently overwrite a changed upstream record without re-verification.
+ """
+ source=json.loads((ROOT/"data/part-stat-overrides.json").read_text(encoding="utf-8"))
+ changed=0
+ for owner,record in source["records"].items():
+  bey=result["beys"].get(owner)
+  if not bey:
+   raise RuntimeError(f"Verified override owner is missing: {owner}")
+  for kind,corrected in record["parts"].items():
+   part=bey["parts"].get(kind)
+   if not part or not part.get("available"):
+    raise RuntimeError(f"Verified override part is not present: {owner}/{kind}")
+   original=record["originalCatalog"][kind]
+   for stat,value in corrected.items():
+    current=part["stats"].get(stat)
+    if current not in (original[stat],value):
+     raise RuntimeError(
+      f"Unexpected catalog change in {owner}/{kind}/{stat}: "
+      f"{current}, expected {original[stat]} or {value}. Re-audit first."
+     )
+    part["stats"][stat]=value
+   part["verification"]={
+    "status":"verified-from-product-packaging",
+    "evidenceGrade":record["evidenceGrade"],
+    "sourcePage":record["packagePage"],
+    "sourceImage":record["packageBackImage"],
+    "crossReference":record["independentStats"],
+    "reissueOf":record["reissueOf"],
+    "originalCatalog":original,
+    "reason":record["reason"],
+   }
+   changed+=1
+ result["summary"]["verifiedPartCorrections"]=changed
+ result["verifiedOverridesSource"]="data/part-stat-overrides.json"
+ return changed
+
 def main():
  db=json.loads((ROOT/"data/collection.json").read_text(encoding="utf-8"))
  sources=json.loads((ROOT/"data/image-sources.json").read_text(encoding="utf-8"))
@@ -90,11 +130,15 @@ def main():
   else:
    entry["missingSource"]=True
   result["beys"][bid]=entry
+ # Validate the upstream extract BEFORE writing. Keep last known-good files
+ # intact when the remote catalog cannot be read or its structure changes.
+ if result["summary"]["numericRecords"]<45:
+  raise RuntimeError("Too few numeric records: verify catalog schema before publishing")
+ count=apply_verified_overrides(result)
+ print(f"Applied {count} Hasbro packaging-backed part corrections")
  (ROOT/"data/part-abilities.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf8")
  (ROOT/"data/part-abilities.js").write_text("window.BBX_PART_STATS = "+json.dumps(result,ensure_ascii=False,separators=(",",":"))+";\n",encoding="utf8")
  print(json.dumps(result["summary"],ensure_ascii=False))
- if result["summary"]["numericRecords"]<45:
-  raise RuntimeError("Too few numeric records: verify catalog schema before publishing")
 
 if __name__=="__main__":
  main()

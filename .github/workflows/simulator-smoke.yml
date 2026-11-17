@@ -8,6 +8,11 @@ on:
       - 'sim-view.js'
       - 'data/collection.json'
       - 'data/part-abilities.json'
+      - 'data/part-abilities.js'
+      - 'data/part-stat-overrides.json'
+      - 'data/part-physics.json'
+      - 'tools/sync_part_abilities.py'
+      - 'tests/test_part_sync_overrides.py'
       - 'tests/sim-smoke.cjs'
       - 'tests/sim-ui-smoke.cjs'
       - 'tests/sim-audio-smoke.cjs'
@@ -30,6 +35,11 @@ jobs:
           node --check sim-ui.js
           node --check sim-view.js
           node --check sim-audio.js
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify offline Hasbro packaging corrections and sync guards
+        run: python tests/test_part_sync_overrides.py
       - name: Validate model and 3on3 restrictions
         run: node tests/sim-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization

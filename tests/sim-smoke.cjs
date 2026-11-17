@@ -27,8 +27,10 @@ assert(physics.statConflicts.some(v=>v.owner==='OWN-BXG-57-03'),
  'exact BXG-57-03 Brush edition source conflict must stay visible');
 assert(!physics.statConflicts.some(v=>v.owner==='OWN-G3393-01'),
  'Phoenix Rudder G3393 should not remain falsely unresolved');
-assert.equal(physics.summary.unresolvedStatConflicts,3);
-assert.equal(physics.statConflicts.length,3);
+assert.equal(physics.summary.unresolvedStatConflicts,1);
+assert.equal(physics.statConflicts.length,1);
+assert.equal(physics.summary.verifiedPrintedCorrections,4);
+assert.equal(stats.summary.verifiedPartCorrections,4);
 assert(physics.statConflicts.every(c=>c.status==='unresolved'),'conflicts must not be claimed verified');
 const owned=id=>E.makeBuild({mode:'whole',blade:id,ratchet:id,bit:id},db,stats);
 for(const bey of db.beys){
@@ -71,8 +73,50 @@ assert.equal(owned('OWN-G3393-01').sourceConflicts.length,0,
  'G3393-01 red/pink 15/40/60 is confirmed by the exact version table');
 assert.equal(owned('OWN-BXG-57-03').sourceConflicts.length,1,
  'BXG-57-03 EVA Brush mismatch must be retained as genuinely unresolved');
-assert(owned('OWN-G3084-05').flags.some(text=>text.includes('其他資料庫不同')),
- 'Fort Hornet Main Blade release stat conflict must be visible');
+assert.equal(owned('OWN-G3084-05').sourceConflicts.length,0,
+ 'corrected Fort must no longer be reported as unresolved');
+assert.equal(owned('OWN-G3084-06').sourceConflicts.length,0,
+ 'corrected Wriggle must no longer be reported as unresolved');
+const verified=JSON.parse(fs.readFileSync(path.join(root,'data/part-stat-overrides.json'),'utf8'));
+let correctedCount=0;
+for(const [owner,record] of Object.entries(verified.records)){
+ for(const [part,fields] of Object.entries(record.parts)){
+  const actual=stats.beys[owner].parts[part];
+  for(const [key,val] of Object.entries(fields)){
+   assert.equal(actual.stats[key],val,'box-verified '+owner+'/'+part+'/'+key);
+   assert.equal(actual.verification.originalCatalog[key],record.originalCatalog[part][key]);
+  }
+  assert.equal(actual.verification.status,'verified-from-product-packaging');
+  assert(actual.verification.sourceImage.startsWith('https://'));
+  correctedCount++;
+ }
+ const spec=owned(owner);
+ assert(spec.flags.some(msg=>msg.includes('Hasbro 原裝包裝')),
+  'the selected corrected build must disclose verified source');
+ assert(spec.partStats.some(part=>part.verification?.sourceImage),
+  'the UI-facing built part must expose the original box image');
+}
+assert.equal(correctedCount,4);
+const browserAbilities={};
+vm.runInNewContext(fs.readFileSync(path.join(root,'data/part-abilities.js'),'utf8'),
+ {window:browserAbilities});
+assert.deepEqual(JSON.parse(JSON.stringify(browserAbilities.BBX_PART_STATS)),stats,
+ 'browser release-specific stats must exactly match corrected JSON');
+const syncSource=fs.readFileSync(path.join(root,'tools/sync_part_abilities.py'),'utf8');
+assert(syncSource.includes('count=apply_verified_overrides(result)'),
+ 'automatic source sync must apply independently verified box corrections');
+assert(syncSource.includes('if current not in (original[stat],value)'),
+ 'source sync must refuse unexpected upstream changes');
+const fort=owned('OWN-G3084-05');
+const wriggle=owned('OWN-G3084-06');
+assert.equal(fort.partStats.find(p=>p.part==='factoryBlade').attack,34);
+assert.equal(wriggle.partStats.find(p=>p.part==='factoryBlade').stamina,50);
+const score=(b,k)=>b.vector[k];
+assert(Math.abs(score(fort,'attack')-(34*.62+8*.12+35*.26))<1e-9,
+ 'factory Fort Blade 34 must enter actual attack score');
+assert(Math.abs(score(wriggle,'stamina')-(50*.62+10*.13+50*.25))<1e-9,
+ 'factory Wriggle Blade 50 must enter actual stamina score');
+
 const gnBuild=owned('OWN-G3084-03');
 function oneGearContact(tilt){
  const play=E.createBattle(gnBuild,physicalMass,{seed:614,arena:'xtreme',rail:true});

@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v2.3";
+const VERSION="sim-v2.4";
 const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -89,8 +89,11 @@ function makeBuild(config,db,attributes){
   burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
   sourceUrl:p.rec.sourceUrl||"",
   weightG:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.weightG??null,
-  weightMethod:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.method??null
+  weightMethod:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.method??null,
+  verification:p.rec.verification||null
  }));
+ if(parts.some(([,p])=>p.rec.verification))
+  flags.push("部分能力已依 Hasbro 原裝包裝標示修正；可展開檢查修正來源。");
  if(config.mode!=="cx"&&bladeOwner.system==="CX"){
   // Factory-built CX uses its own complete Blade rating. Sub-component
   // listings are informative only; they must not silently override it.
@@ -100,7 +103,8 @@ function makeBuild(config,db,attributes){
    stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
    sourceUrl:factory.sourceUrl||"",weightG:bladeWeightG,
    weightMethod:massParts.some(row=>row.method?.includes('sum')||row.method?.includes('derived'))?
-    'derived-reference-components':'model-reference'});
+    'derived-reference-components':'model-reference',
+   verification:factory.verification||null});
   if(["attack","defense","stamina"].some(key=>
    Math.abs(n(factory.stats,key)-parts.filter(([key])=>
     ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
