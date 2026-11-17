@@ -310,3 +310,31 @@ V1 只顯示通用 3D 陀螺，不是逐顆真實 3D 模型；也還不能匯出
 - 不同重量確實反映到質量代理值；缺少重量時不填補未知值。Free Ball、Gear Rush、Gear Needle 的特殊結構具可測試的差異。
 - 維持固定種子的完全可重現性、原始 1× 攻擊速度、長持久轉動、盤緣防自行出界、四種終結判定與零件配置唯一性。
 - **局限：** 仍缺少實測的每顆陀螺質量、質心位置、碰撞彈性、扭矩、真實轉速、接觸摩擦、各型號 Xtreme Stadium 詳細 3D 曲率及實際對戰結果。因此「加入更多可追溯數據」改善了模型的相對依據，**並不能證明模型勝率更接近真實賽事**。
+
+## V2.4 Hasbro 包裝照片修正與真實對戰影片查核（2026-11-17）
+
+**本節修正先前 V2.2／V2.3 中「Fort／Wriggle 資料衝突待確認」的歷史結論。** 現有資料以 `data/part-stat-overrides.json` 的商品包裝證據優先。零件重量 76 筆來源（含推算）、2 筆 Marvel 戰刃缺漏維持不變。
+
+### 查證來源與四筆修正
+
+- [Hasbro Fort Hornet R G1682 零售原盒](https://www.toyworld.co.nz/products/beyblade-x-fort-hornet-r-7-60t-cx-starter-pack-set)：盒背完整戰刃標示 **攻 34、防 22、持 44**，Round 輔助刃 10／10／20，對應 Fort 主刃 24／12／24。原 phstudy 商品目錄 G1682 和再版 G3084-05 記為完整 39／27／49、主刃 29／17／29。主刃另有 [獨立資料](https://beybladewiki.com/toys/part/main-blade-fort) 核對。
+- [Hasbro Wriggle Kraken S G1683 零售原盒](https://www.toyworld.co.nz/products/beyblade-x-wriggle-kraken-s-3-85o-cx-starter-pack-set)：盒背完整戰刃標示 **攻 28、防 22、持 50**，Slash 輔助刃 20／10／10，對應 Wriggle 主刃 8／12／40。原鏡像 G1683 和再版 G3084-06 記為完整 33／27／55、主刃 13／17／45。獨立 [Wriggle 主刃資料](https://beybladewiki.com/toys/part/main-blade-wriggle) 可交叉核對。
+- [G3084 Rival Rumble 套組](https://beybladewiki.com/zh/wiki/products/rival-rumble-pack) 為同型號模具再版。這是**前一款單盒實際包裝**比對，不是已拿到使用者 G3084 六入盒的包裝照片。若再版實體印刷不同，須重新核查。
+- 僅更動四筆能力記錄中各三個欄位：`attack`／`defense`／`stamina`，保留 Lock Chip、Assist Blade、Ratchet、Bit、全部重量資料及擁有數量。
+
+### 自動同步與核對
+
+- `data/part-stat-overrides.json` 保留原始鏡像數值、修正值及包裝背面圖片網址；`tools/sync_part_abilities.py` 產生資料時，必須先檢查來源值是否為舊值或已修正值，否則拒絕不明更新。再將來源照片寫入各筆 `verification`，使網站能顯示核對依據。加上計數保護，避免遠端目錄暫時無法取得卻清空現有能力資料。
+- `data/part-abilities.json` 和 `data/part-abilities.js` 必須一致；HTML 更新靜態快取版號。測試確認原裝 Fort 和 Wriggle 的完整戰刃得分、CX 拆組得分、標示來源及不同戰況仍可計算。
+- 先前 Fort、Wriggle 兩筆待確認項移到 `verifiedCorrections`。目前只剩 **EVA 二號機 Brush BXG-57-03 同版本值衝突**，仍待包裝照片，不擅自修正。
+
+### 參考真實對戰影片（不作數值量測）
+
+- [Fort Hornet vs Wriggle Kraken 實戰](https://www.youtube.com/watch?v=DwBSis5zmAQ)
+- [Silver Wolf 3-80FB 實戰與 Cobalt Dragoon 對戰](https://www.youtube.com/watch?v=C_B6Ec1hJdw)
+- [Silver Wolf 不同固鎖／軸心組合對戰](https://www.youtube.com/watch?v=F--vBYEYoQQ)
+- [Leon Crest vs Weiss Tiger](https://www.youtube.com/watch?v=z0uoIR0UlaQ)，影片的 Bit 不等於本收藏的原裝 Bit
+- [Xtreme Dash 慢動作短片](https://www.youtube.com/watch?v=Tj0V008RqOY)
+- [Takara Tomy 官方教學影片及場地](https://beyblade.takaratomy.co.jp/english/beyblade-x/movie/)
+
+這些只用來確認場地形狀、軸心運動與碰撞現象，並未逐幀取得衝擊速度／旋轉轉速／完賽時間。因此不從影片自行推算摩擦係數，也不任意更改衝刺、爆裂、停轉或出界的相對物理參數。
