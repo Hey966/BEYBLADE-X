@@ -161,7 +161,11 @@ function initTop(spec,side,opts,rng){
  // This is an empirical animation proxy rather than measured launch velocity.
  // Mobility comes from the selected Attack and Dash scores, not a fixed
  // multiplier decided only by the Bit's categorical type.
- const motionBoost=.78+.009*spec.vector.attack+.013*spec.vector.dash;
+ // Bit geometry affects the way launch energy turns into planar movement.
+ const tip=spec.tipProfile||{};
+ const shapeBoost=tip.tip==="flat"?1.05:tip.tip==="round"?.94:tip.tip==="sharp"?.97:1;
+ const tiltSwitch=tip.tiltSwitch?1+.09*cap(Math.abs(angle)/.55,0,1):1;
+ const motionBoost=(.78+.009*spec.vector.attack+.013*spec.vector.dash)*shapeBoost*tiltSwitch;
  const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(.96+.08*rng());
  const headingJitter=(rng()-.5)*.12;
  const spin=(19+launching*48*spec.launchTransfer*launcherProxy+2*(rng()-.5))*Math.min(1,launching/.20);
@@ -230,7 +234,9 @@ function createBattle(left,right,settings={}){
    // precession develops as stability fades. Avoid shake tied to blade RPM.
    const lowSpin=cap((12-t.spin)/12,0,1);
    const lateLean=lowSpin*(.07+.22*lowSpin+Math.min(.04,t.wobble*.02));
-   const restoring=24-14*lowSpin,settling=11-5*lowSpin;
+   const tip=t.model.tipProfile||{};
+   const restoring=(24-14*lowSpin)*(tip.antiTilt?1.17:1);
+   const settling=(11-5*lowSpin)*(tip.antiTilt?1.12:1);
    t.tiltVelocity+=dt*(-restoring*(t.tilt-lateLean)-settling*t.tiltVelocity);
    t.tilt=cap(t.tilt+t.tiltVelocity*dt,-.72,.72);
    // Orientation of the tilted axle walks around its contact point, but
@@ -270,7 +276,11 @@ function createBattle(left,right,settings={}){
     // Attack-oriented tips sweep or 'flower' around the dish. Stamina tips
     // hold a quieter center path; balance and defense are intermediate.
     // The small radial oscillation is a stylized movement approximation.
-    const activity=cap((v.attack*.60+v.dash*.80-v.stamina*.20)/65,.12,1);
+    const tip=m.tipProfile||{};
+    const tipMotion=tip.tip==="flat"?1.08:tip.tip==="round"?.88:tip.tip==="sharp"?.84:1;
+    const tiltDrive=tip.tiltSwitch?.83+.35*cap(Math.abs(t.tilt)/.32,0,1):1;
+    const activity=cap((v.attack*.60+v.dash*.80-v.stamina*.20)/65,.12,1)*
+     tipMotion*tiltDrive;
     const motion=Math.max(0,Math.min(1,t.spin/40))*Math.max(0,1-state.elapsed/24);
     const pattern=Math.sin(state.elapsed*(3.5+.018*v.dash)+t.phase);
     const radialPulse=activity*.24*motion*pattern;
@@ -288,14 +298,20 @@ function createBattle(left,right,settings={}){
    // already committed outward pocket entry in the same physics step.
    const speedBeforeRail=Math.hypot(t.vx,t.vy);
    const outwardBeforeRail=r>.001?(t.vx*t.x+t.vy*t.y)/r:0;
-   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12){
+   // Low-gear Needle engages mainly on a tilted contact.
+   const railTip=t.model.tipProfile||{};
+   const tipCanEngage=!railTip.tiltGear||Math.abs(t.tilt)>.08||t.wobble>.28;
+   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12&&tipCanEngage){
     const theta=Math.atan2(t.y,t.x);
     // Xtreme rail contact creates a sudden inward-and-tangential sprint.
     // Unlike the older formula, the dash carries the top across the dish.
-    const push=Math.min(1.4,m.railEfficiency*1.35)*(0.55+t.spin/130);
+    const push=Math.min(1.4,m.railEfficiency*1.35)*
+     (0.55+t.spin/130)*(railTip.extendedGear?1.06:1);
     t.vx+=-Math.sin(theta)*t.spinSign*push-Math.cos(theta)*push*1.15;
     t.vy+= Math.cos(theta)*t.spinSign*push-Math.sin(theta)*push*1.15;
-    t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
+    const dashSpinLoss=(.85+.025*v.dash)*(railTip.dashLift?.78:
+     railTip.freeRotate?.94:1);
+    t.spin=Math.max(0,t.spin-dashSpinLoss);
     t.railCooldown=1.10-.010*v.dash;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
