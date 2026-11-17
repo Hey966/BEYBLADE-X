@@ -7,14 +7,64 @@ const vm=require('node:vm');
 const root=path.join(__dirname,'..');
 const db=JSON.parse(fs.readFileSync(path.join(root,'data/collection.json'),'utf8'));
 const stats=JSON.parse(fs.readFileSync(path.join(root,'data/part-abilities.json'),'utf8'));
-const browser={};
+const physics=JSON.parse(fs.readFileSync(path.join(root,'data/part-physics.json'),'utf8'));
+const browser={BBX_PART_PHYSICS:physics};
+const separate={};
+vm.runInNewContext(fs.readFileSync(path.join(root,'data/part-physics.js'),'utf8'),{window:separate});
+assert.deepEqual(JSON.parse(JSON.stringify(separate.BBX_PART_PHYSICS)),physics,
+ 'browser and JSON part-physics references must remain identical');
 vm.runInNewContext(fs.readFileSync(path.join(root,'sim-engine.js'),'utf8'),{window:browser,console},{filename:'sim-engine.js'});
 const E=browser.BBX_SIM_CORE;
 assert(E,'core export');
 assert.equal(db.beys.length,19);
 assert.equal(stats.summary.partRecords,78);
+assert.equal(physics.summary.recordedWeightEntries,74);
+assert.equal(physics.summary.unverifiedEntries,4);
+assert.equal(physics.summary.unresolvedStatConflicts,3);
+assert.equal(physics.statConflicts.length,3);
+assert(physics.statConflicts.every(c=>c.status==='unresolved'),'conflicts must not be claimed verified');
 const owned=id=>E.makeBuild({mode:'whole',blade:id,ratchet:id,bit:id},db,stats);
-for(const bey of db.beys)assert.equal(typeof owned(bey.id).vector.attack,'number');
+for(const bey of db.beys){
+ const spec=owned(bey.id);
+ assert.equal(typeof spec.vector.attack,'number');
+ assert(spec.tipProfile.code===bey.bit,'selected Bit must retain actual model code');
+ assert(spec.massParts.length===Object.keys(physics.byOwner[bey.id]).filter(k=>!k.startsWith('blade')).length
+   ||spec.massParts.length===3 ||spec.massParts.length===5,
+   'mass references must match selected physical modules');
+}
+const physicalMass=owned('OWN-G3084-01');
+assert.equal(physicalMass.totalWeightG,43.1,
+ 'Pearl Tiger reference mass must add sourced Blade, Ratchet and Bit');
+assert.equal(physicalMass.massBasis,'catalogue-model-reference');
+assert(Math.abs(physicalMass.massProxy-43.1/44)<1e-9,
+ 'collision mass must depend on source-weighted total mass, not rating');
+const unsignedMass=owned('OWN-G3063-01');
+assert.equal(unsignedMass.totalWeightG,null,
+ 'unverified special blade weight cannot be silently invented');
+assert.equal(unsignedMass.massBasis,'unmeasured-proxy');
+assert(unsignedMass.flags.some(x=>x.includes('重量未取得')));
+assert(owned('OWN-UX-08-01').tipProfile.freeRotate,
+ 'SilverWolf must use Free Ball independent rotation');
+assert(owned('OWN-CX-06-01').tipProfile.extendedGear,
+ 'FoxBrush uses Gear Rush extended gear profile');
+assert(owned('OWN-G3084-03').tipProfile.tiltGear,
+ 'Crest Leon Gear Needle should engage lower gear when tilted');
+assert.equal(physicalMass.partStats.find(p=>p.part==='blade').weightG,34.6);
+const gnBuild=owned('OWN-G3084-03');
+function oneGearContact(tilt){
+ const play=E.createBattle(gnBuild,physicalMass,{seed:614,arena:'xtreme',rail:true});
+ play.tops.forEach((t,i)=>{
+  t.landed=true;t.height=0;t.verticalVelocity=0;
+  t.x=i===0?1.14:-.85;t.y=0;t.vx=0;t.vy=0;
+  t.wobble=0;t.spin=45;t.tilt=0;t.tiltVelocity=0;t.railCooldown=0;
+ });
+ play.tops[0].tilt=tilt;
+ play.step();
+ return play.railCount;
+}
+assert.equal(oneGearContact(0),0,'level Gear Needle should not catch the rail every time');
+assert(oneGearContact(.2)>0,'leaning Gear Needle must be able to engage rail');
+
 const a=['OWN-G3084-01','OWN-G3084-02','OWN-G3084-03'].map(owned);
 const b=['OWN-G3393-01','OWN-G3393-02','OWN-G3393-03'].map(owned);
 assert.equal(E.validateDeck(a),true);
