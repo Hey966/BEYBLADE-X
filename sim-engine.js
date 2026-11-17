@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v2.1";
+const VERSION="sim-v2.2";
 const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -55,6 +55,21 @@ function makeBuild(config,db,attributes){
  const unique=new Set(signatures);
  if(unique.size!==signatures.length)flags.push("同顆配置存在重複同類名稱，請檢查相容性");
  const partPhysical=names.map(p=>p.key+":"+p.owner);
+ // Source-linked model reference masses, not measurements of owned copies.
+ const physics=root.BBX_PART_PHYSICS||null;
+ const massParts=parts.map(([kind,p])=>{
+  const ref=physics?.byOwner?.[p.b.id]?.[kind];
+  const grams=Number.isFinite(ref?.weightG)&&ref.weightG>0?ref.weightG:null;
+  return{kind,owner:p.b.id,weightG:grams,sourceId:ref?.sourceId||null,method:ref?.method||null};
+ });
+ const totalWeightG=massParts.every(p=>p.weightG!==null)?
+  Math.round(massParts.reduce((v,p)=>v+p.weightG,0)*100)/100:null;
+ const upperParts=massParts.filter(p=>["blade","lockChip","mainBlade","assistBlade"].includes(p.kind));
+ const bladeWeightG=upperParts.every(p=>p.weightG!==null)?
+  Math.round(upperParts.reduce((v,p)=>v+p.weightG,0)*100)/100:null;
+ const tipReference=physics?.bitTraits?.[bt.b.bit]||{};
+ const tipProfile={...tipReference,code:bt.b.bit,tip:tipReference.tip||"unknown"};
+ if(totalWeightG===null)flags.push("部分零件參考重量未取得；本配置使用舊版質量代理值。");
  const height=n(rc.rec.stats,"height");
  const ratchetName=String(rc.b.ratchet||"");
  const ratchetTeeth=Number(ratchetName.match(/^(\d+)-/)?.[1]??0);
@@ -69,7 +84,8 @@ function makeBuild(config,db,attributes){
   attack:n(p.rec.stats,"attack"),defense:n(p.rec.stats,"defense"),
   stamina:n(p.rec.stats,"stamina"),dash:n(p.rec.stats,"dash"),
   burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
-  sourceUrl:p.rec.sourceUrl||""
+  sourceUrl:p.rec.sourceUrl||"",
+  weightG:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.weightG??null
  }));
  if(config.mode!=="cx"&&bladeOwner.system==="CX"){
   // Factory-built CX uses its own complete Blade rating. Sub-component
@@ -78,7 +94,7 @@ function makeBuild(config,db,attributes){
   partStats.unshift({part:"factoryBlade",owner:bladeOwner.id,code:factory.id,
    attack:n(factory.stats,"attack"),defense:n(factory.stats,"defense"),
    stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
-   sourceUrl:factory.sourceUrl||""});
+   sourceUrl:factory.sourceUrl||"",weightG:bladeWeightG});
   if(["attack","defense","stamina"].some(key=>
    Math.abs(n(factory.stats,key)-parts.filter(([key])=>
     ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
@@ -89,14 +105,20 @@ function makeBuild(config,db,attributes){
   config:{...config},name:bladeOwner.name+" "+rc.b.ratchet+bt.b.bit,
   spin:bladeOwner.spinDirection==="L"?-1:1,vector:x,
   partPhysical,partModel:signatures,partStats,parts:names,flags,
+  totalWeightG,bladeWeightG,massParts,tipProfile,
+  massBasis:totalWeightG!==null?"catalogue-model-reference":"unmeasured-proxy",
   // Unmeasured dynamics proxies; these are NOT grams, kg*m^2, N or RPM.
   // Approximate collision footprint sized relative to the dish; not a real diameter.
   radius:0.168+0.00023*(x.defense+x.attack),
-  massProxy:1+0.0024*x.defense+0.0013*x.attack,
-  inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
+  massProxy:totalWeightG===null?(1+0.0024*x.defense+0.0013*x.attack):
+   Math.max(.72,Math.min(1.34,totalWeightG/44)),
+  inertiaProxy:(0.8+0.004*x.stamina+0.002*x.defense)*
+   (bladeWeightG===null?1:Math.max(.91,Math.min(1.09,bladeWeightG/35))),
   // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
   // Calibrated for an observable slowdown, not real measured revolutions.
-  staminaDrag:.65+(100-x.stamina)*.010,
+  staminaDrag:(.65+(100-x.stamina)*.010)*
+   (bladeWeightG===null?1:Math.max(.92,Math.min(1.08,35/bladeWeightG)))*
+   (tipProfile.freeRotate?.93:1)*(tipProfile.lowFriction?.96:1),
   lateralDrag:.32+(100-x.stamina)*.002+x.dash*.001,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
   // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
