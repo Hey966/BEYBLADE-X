@@ -82,6 +82,11 @@ function fire(id,type='click',value){
 assert(modelCalls.length>0);
 assert(nodes.simActiveParts.innerHTML.includes('戰刃'));
 assert(nodes.simSeedAuto.checked,'default new-match seed should be automatic');
+fire('simSeed','change','123456');
+assert.equal(nodes.simSeedAuto.checked,false,'manual seed input must enable deterministic replay');
+assert.equal(nodes.simSeed.value,'123456');
+fire('simSettingsReset');
+assert.equal(nodes.simSeedAuto.checked,true,'reset should re-enable fresh seeds');
 assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
  'visible five-metric ratings must be shown for each current build');
 assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
