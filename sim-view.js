@@ -109,11 +109,12 @@ function create(container,status,api){
  }
  function getRatchetCanvas(image){
   const canvas=getImageCanvas(image),c=canvas.getContext('2d');
+  const cx=canvas.width/2,cy=canvas.height/2,radius=Math.min(cx,cy);
   // Use the chosen part photo, clipped to the ring rather than a square.
   c.globalCompositeOperation='destination-in';
-  c.beginPath();c.arc(256,256,244,0,TAU);c.fill();
+  c.beginPath();c.arc(cx,cy,radius*.95,0,TAU);c.fill();
   c.globalCompositeOperation='destination-out';
-  c.beginPath();c.arc(256,256,72,0,TAU);c.fill();
+  c.beginPath();c.arc(cx,cy,radius*.28,0,TAU);c.fill();
   c.globalCompositeOperation='source-over';
   return canvas;
  }
