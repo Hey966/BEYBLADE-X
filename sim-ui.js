@@ -60,6 +60,8 @@ function buildVisualPreview(specs,preview=true){
  const partNames={blade:'戰刃',factoryBlade:'完整戰刃（採用）',lockChip:'紋章',mainBlade:'主刃',assistBlade:'輔助刃',ratchet:'固鎖',bit:'軸心'};
  const statNum=value=>Number(value||0).toFixed(1);
  const tipNames={flat:'平底',round:'球底',sharp:'針底',hybrid:'混合接觸',unknown:'未核對'};
+ const sourceNames={wikiBlade:'戰刃',wikiRatchet:'固鎖',wikiBit:'軸心',
+  wikiChip:'紋章',wikiMain:'主刃',wikiAssist:'輔助刃'};
  const content=specs.map((spec,i)=>{
   if(!spec)return '';
   const images=viewer.getVisuals(spec);
@@ -77,11 +79,16 @@ function buildVisualPreview(specs,preview=true){
     '參考整顆重量：尚缺資料，採既有質量代理值')+
    '；軸心：'+clean(spec.tipProfile?.code||'?')+'（'+clean(tipNames[spec.tipProfile?.tip]||'未知')+'）'+
    '</div>';
+  const sourceIds=[...new Set((spec.massParts||[]).map(row=>row.sourceId).filter(Boolean))];
+  const sourceLinks=sourceIds.filter(id=>root.BBX_PART_PHYSICS?.sources?.[id]&&sourceNames[id])
+   .map(id=>'<a href="'+clean(root.BBX_PART_PHYSICS.sources[id])+'" target="_blank" rel="noopener noreferrer">'+
+    clean(sourceNames[id])+'</a>');
+  const citations=sourceLinks.length?'<div class="sim-source-links">參考資料：'+sourceLinks.join(' / ')+'</div>':'';
   return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name)+'</strong>'+
    '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
     (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
     '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div>'+
-    effective+weight+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
+    effective+weight+citations+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
  if(preview)renderLaunchPreview();
