@@ -38,6 +38,14 @@ assert(!sceneCode.includes("ctx.fillRect(-r*.45,-r*.17,r*.9,r*.34)"),
 assert(html.includes('id="simSeedAuto" checked'),
  'new battles should default to new initial conditions');
 assert(sceneCode.includes("const bladeLow="),'tilted blades must be lifted clear of the floor');
+assert(sceneCode.includes("rimFull.visible=currentArena!=='xtreme'"),
+ 'plain practice arena retains a complete elevated rim');
+assert(sceneCode.includes("rimOpen.visible=currentArena==='xtreme'"),
+ 'Xtreme rim must use pocket openings rather than a full circular wall');
+assert(sceneCode.includes("new T.TorusGeometry(1.37,.073,14"),
+ 'raised physical rim should remain visible in 3D');
+assert(sceneCode.includes("for(const [from,to] of [[-Math.PI,-1.16]"),
+ '2D and 3D should draw matching pocket openings');
 assert(sceneCode.includes('mesh.root.rotation.x=Math.cos(dir)*lean;'),
  '3D recoil must follow the impact-axis lean');
 assert(sceneCode.includes('mesh.root.rotation.z=Math.sin(dir)*lean;'),

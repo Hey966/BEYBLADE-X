@@ -14,7 +14,7 @@ function coastRotation(top,age){
 }
 function create(container,status,api){
  let currentArena='xtreme',lastState=null,lastFinishAge=0,lastCoastAge=0;
- let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null;
+ let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null,rimFull=null,rimOpen=null;
  let rendered=[null,null],visualBuilds=[null,null],renderVersion=0;
  const imageCache=new Map();
  let activeBattle=null,eventCursor=0,fx=[],trails=[[],[]],fx3D=null,fxSprites=[],trailLines=[];
@@ -137,6 +137,8 @@ function create(container,status,api){
   if(THREE&&world){
    if(rail)rail.visible=currentArena==='xtreme';
    if(pockets)pockets.visible=currentArena==='xtreme';
+   if(rimFull)rimFull.visible=currentArena!=='xtreme';
+   if(rimOpen)rimOpen.visible=currentArena==='xtreme';
    if(floorMaterial)floorMaterial.color.setHex(currentArena==='xtreme'?0xeaf0f4:0xa4beca);
   }
   drawOrRender();
@@ -188,6 +190,13 @@ function create(container,status,api){
     ctx.arc(cx,cy,radius*.95,angle-.19,angle+.19);ctx.closePath();
     ctx.fillStyle=i===0?'rgba(161,244,63,.20)':'rgba(69,107,139,.20)';ctx.fill();
    }
+   // Brighter raised wall segments; leave physical gaps at the pocket mouths.
+   ctx.strokeStyle='#fefefe';ctx.lineWidth=5;
+   ctx.shadowColor='rgba(55,81,104,.42)';ctx.shadowBlur=4;
+   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
+    ctx.beginPath();ctx.arc(cx,cy,radius*1.025,from,to);ctx.stroke();
+   }
+   ctx.shadowBlur=0;
   }else{
    ctx.strokeStyle='#5b829b';ctx.lineWidth=4;
    ctx.beginPath();ctx.arc(cx,cy,radius*.94,0,TAU);ctx.stroke();
@@ -436,9 +445,22 @@ function create(container,status,api){
    const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.014,112),mat);
    floor.position.y=.011;group.add(floor);
    // The launch halves are simulation-only. Keep the physical stadium visually continuous.
-   const rim=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),
-    new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24}));
-   rim.rotation.x=Math.PI/2;rim.position.y=.065;group.add(rim);
+   // Raised retaining wall. The full rim is used for the plain practice dish;
+   // the Xtreme dish has three openings aligned with the simulated pockets.
+   // Torus centre is at the same normalized height as RIM_LIP_HEIGHT in physics.
+   const rimMat=new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24});
+   rimFull=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),rimMat);
+   rimFull.rotation.x=Math.PI/2;rimFull.position.y=.065;
+   rimFull.visible=currentArena!=='xtreme';group.add(rimFull);
+   rimOpen=new T.Group();
+   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
+    const rimGeo=new T.TorusGeometry(1.37,.073,14,Math.max(8,Math.ceil((to-from)*32)),to-from);
+    rimGeo.rotateZ(from);
+    const segment=new T.Mesh(rimGeo,rimMat);
+    segment.rotation.x=Math.PI/2;segment.position.y=.065;
+    rimOpen.add(segment);
+   }
+   rimOpen.visible=currentArena==='xtreme';group.add(rimOpen);
    const groove=new T.Mesh(new T.TorusGeometry(1.29,.026,10,112),
     new T.MeshStandardMaterial({color:0x9db3c5,metalness:.38,roughness:.42}));
    groove.rotation.x=Math.PI/2;groove.position.y=.02;group.add(groove);
