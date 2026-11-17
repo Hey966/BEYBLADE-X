@@ -111,7 +111,8 @@ function makeBuild(config,db,attributes){
   // Approximate collision footprint sized relative to the dish; not a real diameter.
   radius:0.168+0.00023*(x.defense+x.attack),
   massProxy:totalWeightG===null?(1+0.0024*x.defense+0.0013*x.attack):
-   Math.max(.72,Math.min(1.34,totalWeightG/44)),
+   // Source-derived relative mass; factor 1.08 preserves normalized collision scale.
+   Math.max(.75,Math.min(1.42,1.08*totalWeightG/44)),
   inertiaProxy:(0.8+0.004*x.stamina+0.002*x.defense)*
    (bladeWeightG===null?1:Math.max(.91,Math.min(1.09,bladeWeightG/35))),
   // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
@@ -407,7 +408,7 @@ function createBattle(left,right,settings={}){
      const directed=cap(.48+.52*impactDirection,.48,1);
      t.burstLoad+=hitStrength*(.55+.006*attackerStats.attack)/
       (.85+.007*defenderStats.burst+.004*defenderStats.defense)*
-      t.model.ratchetCatch*reach*directed*.82;
+      t.model.ratchetCatch*reach*directed*.77; // rebalanced for measured-model mass ratios
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
      // Lean away from the contact normal. A rapidly spinning, defensive
