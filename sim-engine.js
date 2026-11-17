@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v2.2";
+const VERSION="sim-v2.3";
 const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
