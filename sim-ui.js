@@ -59,6 +59,7 @@ function buildVisualPreview(specs,preview=true){
  const statNames=[['攻擊','attack'],['防禦','defense'],['持久','stamina'],['衝刺','dash'],['爆裂抗性','burst']];
  const partNames={blade:'戰刃',factoryBlade:'完整戰刃（採用）',lockChip:'紋章',mainBlade:'主刃',assistBlade:'輔助刃',ratchet:'固鎖',bit:'軸心'};
  const statNum=value=>Number(value||0).toFixed(1);
+ const tipNames={flat:'平底',round:'球底',sharp:'針底',hybrid:'混合接觸',unknown:'未核對'};
  const content=specs.map((spec,i)=>{
   if(!spec)return '';
   const images=viewer.getVisuals(spec);
@@ -67,12 +68,20 @@ function buildVisualPreview(specs,preview=true){
   const source='<details class="sim-part-stats"><summary>查看各零件原始數值</summary>'+
    (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(partNames[p.part]||p.part)+'</b> '+
     statNames.map(([label,key])=>clean(label)+':'+statNum(p[key])).join(' / ')+
-    (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+'</div>').join('')+'</details>';
+    (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+
+    ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':Number(p.weightG).toFixed(1)+' g')+
+    '</div>').join('')+'</details>';
+  const measured=spec.totalWeightG!==null&&Number.isFinite(spec.totalWeightG);
+  const weight='<div class="sim-weight-line">'+
+   (measured?'參考整顆重量：'+Number(spec.totalWeightG).toFixed(1)+' g（非本顆實秤）':
+    '參考整顆重量：尚缺資料，採既有質量代理值')+
+   '；軸心：'+clean(spec.tipProfile?.code||'?')+'（'+clean(tipNames[spec.tipProfile?.tip]||'未知')+'）'+
+   '</div>';
   return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name)+'</strong>'+
    '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
     (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
     '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div>'+
-    effective+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
+    effective+weight+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
  if(preview)renderLaunchPreview();
