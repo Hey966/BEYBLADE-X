@@ -101,6 +101,13 @@ assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
 assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
  'part-level audit must be available in the simulation UI');
 assert(html.includes('data/part-physics.js'), 'physics file must load in the page before the engine');
+assert(html.includes('data/part-abilities.js?v=20261117-hasbro-box-v24'),
+ 'verified corrections must invalidate stale browser-cached part abilities');
+assert(read('sim-ui.js').includes('查看包裝背面'),
+ 'build audit should reveal Hasbro source package instead of opaque revised values');
+assert(abilities.beys['OWN-G3084-05'].parts.mainBlade.stats.attack===24 &&
+ abilities.beys['OWN-G3084-06'].parts.mainBlade.stats.attack===8,
+ 'front-end release source must use corrected Fort and Wriggle part scores');
 assert(html.indexOf('data/part-physics.js')<html.indexOf('sim-engine.js'),
  'reference physics data must be available before creating builds');
 assert(nodes.simActiveParts.innerHTML.includes('參考整顆重量：'),
