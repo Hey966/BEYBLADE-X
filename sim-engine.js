@@ -69,6 +69,9 @@ function makeBuild(config,db,attributes){
   Math.round(upperParts.reduce((v,p)=>v+p.weightG,0)*100)/100:null;
  const tipReference=physics?.bitTraits?.[bt.b.bit]||{};
  const tipProfile={...tipReference,code:bt.b.bit,tip:tipReference.tip||"unknown"};
+ const sourceConflicts=(physics?.statConflicts||[]).filter(conflict=>
+  parts.some(([part,p])=>p.b.id===conflict.owner&&part===conflict.part));
+ if(sourceConflicts.length)flags.push("有 "+sourceConflicts.length+" 項標示能力與其他資料庫不同；暫採原商品目錄數值，未視為實測。");
  if(totalWeightG===null)flags.push("部分零件參考重量未取得；本配置使用舊版質量代理值。");
  const height=n(rc.rec.stats,"height");
  const ratchetName=String(rc.b.ratchet||"");
@@ -106,6 +109,7 @@ function makeBuild(config,db,attributes){
   spin:bladeOwner.spinDirection==="L"?-1:1,vector:x,
   partPhysical,partModel:signatures,partStats,parts:names,flags,
   totalWeightG,bladeWeightG,massParts,tipProfile,
+  sourceConflicts,
   massBasis:totalWeightG!==null?"catalogue-model-reference":"unmeasured-proxy",
   // Unmeasured dynamics proxies; these are NOT grams, kg*m^2, N or RPM.
   // Approximate collision footprint sized relative to the dish; not a real diameter.
