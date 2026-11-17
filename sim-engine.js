@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v1.9";
+const VERSION="sim-v2.0";
 const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -56,7 +56,14 @@ function makeBuild(config,db,attributes){
  if(unique.size!==signatures.length)flags.push("同顆配置存在重複同類名稱，請檢查相容性");
  const partPhysical=names.map(p=>p.key+":"+p.owner);
  const height=n(rc.rec.stats,"height");
+ const ratchetName=String(rc.b.ratchet||"");
+ const ratchetTeeth=Number(ratchetName.match(/^(\d+)-/)?.[1]??0);
+ if(!/^\d+-\d{2}$/.test(ratchetName)||ratchetTeeth<0||ratchetTeeth>9)
+  throw Error("不支援的固鎖型號："+ratchetName);
  const heightExposure=cap((height-55)/30,0,1);
+ // Ratchet protrusions can be struck or caught from below. 0-ratchets are
+ // comparatively round; fewer large lobes present more exposed edges.
+ const ratchetCatch=ratchetTeeth===0?.78:cap(1.12-.037*ratchetTeeth,.80,1.15);
  const partStats=parts.map(([part,p])=>({
   part,owner:p.b.id,code:p.rec.id,
   attack:n(p.rec.stats,"attack"),defense:n(p.rec.stats,"defense"),
@@ -93,11 +100,12 @@ function makeBuild(config,db,attributes){
   lateralDrag:.32+(100-x.stamina)*.002+x.dash*.001,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
   // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
-  burstThreshold:6.30+.022*x.burst+.004*x.defense-.34*heightExposure,
+  burstThreshold:6.35+.022*x.burst+.004*x.defense-.35*heightExposure
+   -.28*(ratchetCatch-1),
   collisionGrip:0.45+0.0042*x.attack+0.0018*x.dash,
   railEfficiency:.20+.014*x.dash,
   launchTransfer:.75+.0011*x.stamina+.0005*x.defense,
-  ratchetHeight:height,
+  ratchetHeight:height,ratchetTeeth,ratchetCatch,ratchetCode:ratchetName,
   type:bt.rec.type||"unknown"
  };
 }
@@ -207,7 +215,9 @@ function createBattle(left,right,settings={}){
    t.tiltDir+=dt*t.spinSign*(2.6+2.2*cap(t.spin/50,0,1));
    t.wobble=Math.max(t.wobble,lowSpin*.8);
    t.impact=Math.max(0,t.impact-dt*2.5);
-   t.burstLoad=Math.max(0,t.burstLoad-dt*.008);
+   // A single light scrape cannot permanently loosen every lock. Damage
+   // relaxes between contacts; repeated strong directed hits remain hazardous.
+   t.burstLoad=Math.max(0,t.burstLoad-dt*.10);
    t.spin=Math.max(0,t.spin-dt*(m.staminaDrag+0.13*t.wobble+Math.abs(t.tilt)*.55));
    // Decouple attack movement from rotational lifetime. At high spin, the
    // horizontal movement clock runs up to 3.5x faster than the spin clock.
@@ -271,7 +281,8 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    const escapeThreshold=1.30+0.002*v.defense;
+    // Pocket exits depend on outward impulse, protective shape and Bit grip.
+    const escapeThreshold=1.18+.003*v.defense-.001*v.dash;
     if(pocket&&outward>0.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
@@ -314,6 +325,7 @@ function createBattle(left,right,settings={}){
    if(approach<-.03&&state.elapsed-state.lastContactAt>0.18){
     state.lastContactAt=state.elapsed;
     state.collisionCount++;
+    const impactDirection=Math.abs(approach)/Math.max(.001,Math.hypot(b.vx-a.vx,b.vy-a.vy));
     const impulse=-(1+0.49)*approach/(1/a.model.massProxy+1/b.model.massProxy);
     const attackA=a.model.vector.attack/100,attackB=b.model.vector.attack/100;
     // Relative speed sets the contact energy; both selected attack ratings
@@ -339,8 +351,11 @@ function createBattle(left,right,settings={}){
      t.wobble+=hitStrength*(.25+.22*attackerAttack)/(.70+.006*defenderStats.defense);
      // Lock damage accumulates across contacts; not every first hit bursts.
      // A lower burst-resistance bit and a stronger attack increase damage.
+     const reach=cap(1+(t.model.ratchetHeight-attacker.model.ratchetHeight)/110,.80,1.25);
+     const directed=cap(.48+.52*impactDirection,.48,1);
      t.burstLoad+=hitStrength*(.55+.006*attackerStats.attack)/
-      (.85+.007*defenderStats.burst+.004*defenderStats.defense);
+      (.85+.007*defenderStats.burst+.004*defenderStats.defense)*
+      t.model.ratchetCatch*reach*directed;
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
      // Lean away from the contact normal. A rapidly spinning, defensive
@@ -360,7 +375,9 @@ function createBattle(left,right,settings={}){
     if(hitStrength>.11)record("hit",null,(hitStrength>.80?"強烈撞擊！":"碰撞反彈 ")+hitStrength.toFixed(2)+"（模型單位）",{x:+((a.x+b.x)/2).toFixed(3),y:+((a.y+b.y)/2).toFixed(3),strength:+hitStrength.toFixed(3),impactSides:[+a.impact.toFixed(2),+b.impact.toFixed(2)]});
     // Latched components do not have a measured mechanical burst threshold.
     const excess=[a,b].map(t=>t.burstLoad-t.model.burstThreshold);
-    if(Math.max(...excess)>0){
+    // A lock may release only during a meaningful impact, never because
+    // tiny taps silently filled an ever-growing lifetime damage counter.
+    if(hitStrength>.65&&Math.max(...excess)>0){
       const loser=excess[0]===excess[1]?(rng()<.5?0:1):(excess[0]>excess[1]?0:1);
       state.tops[loser].burst=true;decide(1-loser,"burst");return;
     }
