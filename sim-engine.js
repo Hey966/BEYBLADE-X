@@ -2,8 +2,8 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v2.0";
-const TAU=Math.PI*2, DT=1/120, R=1.32, MAX_TIME=65;
+const VERSION="sim-v2.1";
+const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
 const sum=(...items)=>items.reduce((o,x)=>{for(const k of ['attack','defense','stamina'])o[k]+=n(x,k);return o},{attack:0,defense:0,stamina:0});
@@ -150,6 +150,7 @@ function initTop(spec,side,opts,rng){
   launchAngle:angle,tilt:angle*.95,tiltDir:side===0?0:Math.PI,
   tiltVelocity:0,impact:0,
   spin:Math.max(0,spin),wobble:0,shock:0,burstLoad:0,railCooldown:0,
+  lastHitAt:-10,lastHitStrength:0,
   exited:false,burst:false,spinSign:spec.spin,side,
   heading:rng()*TAU,phase:rng()*TAU,model:spec
  };
@@ -256,7 +257,9 @@ function createBattle(left,right,settings={}){
     t.vy+=moveDt*(radialPulse*t.y/radius+t.x/radius*t.spinSign*roam);
    }
    t.x+=t.vx*moveDt;t.y+=t.vy*moveDt;
-   t.railCooldown=Math.max(0,t.railCooldown-moveDt);
+   // Dash cooldown uses real model time, not the accelerated planar clock.
+   // Otherwise high-Dash Bits repeatedly reactivate the rail within ~0.4s.
+   t.railCooldown=Math.max(0,t.railCooldown-dt);
    t.wobble=Math.max(0,t.wobble-moveDt*(0.22+v.defense*.002));
    const r=Math.hypot(t.x,t.y);
    // Keep pre-rail velocity for ring-outs: Xtreme assistance cannot undo an
@@ -271,7 +274,7 @@ function createBattle(left,right,settings={}){
     t.vx+=-Math.sin(theta)*t.spinSign*push-Math.cos(theta)*push*1.15;
     t.vy+= Math.cos(theta)*t.spinSign*push-Math.sin(theta)*push*1.15;
     t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
-    t.railCooldown=2.30-.018*v.dash;state.railCount++;
+    t.railCooldown=1.10-.010*v.dash;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
    // Keep the full blade footprint inside the wall, not just its centre.
@@ -281,9 +284,17 @@ function createBattle(left,right,settings={}){
       (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
-    // Pocket exits depend on outward impulse, protective shape and Bit grip.
-    const escapeThreshold=1.18+.003*v.defense-.001*v.dash;
-    if(pocket&&outward>0.12&&momentum>escapeThreshold){
+    // The stadium has a low raised lip. A fast tip skimming the floor should
+    // meet the barrier and rebound instead of slipping through a flat 2D edge.
+    // A top can cross a genuine pocket only when airborne, rising from an
+    // impact, or still carrying a recent significant collision impulse.
+    const recentKnockback=state.elapsed-t.lastHitAt<1.0&&
+     t.lastHitStrength>.55&&outward>.25;
+    const clearsLip=t.height>=RIM_LIP_HEIGHT*.85||
+     (t.height>RIM_LIP_HEIGHT*.22&&t.verticalVelocity>.70)||recentKnockback;
+    // Once over the rim, an actual outward velocity is still necessary.
+    const escapeThreshold=.80+.003*v.defense-.001*v.dash;
+    if(pocket&&clearsLip&&outward>.12&&momentum>escapeThreshold){
       t.exited=true;decide(1-t.side,pocket);return;
     }
     const nx=t.x/r,ny=t.y/r;
@@ -349,6 +360,9 @@ function createBattle(left,right,settings={}){
      t.spin=Math.max(0,t.spin-.45*hitStrength*(1.5+.033*attackerStats.attack)/
       (.74+.008*defenderStats.defense+.002*defenderStats.stamina));
      t.wobble+=hitStrength*(.25+.22*attackerAttack)/(.70+.006*defenderStats.defense);
+     // Track collision-induced momentum independently for each top. No
+     // randomly selected finish or artificial protection for attack Bits.
+     t.lastHitAt=state.elapsed;t.lastHitStrength=hitStrength;
      // Lock damage accumulates across contacts; not every first hit bursts.
      // A lower burst-resistance bit and a stronger attack increase damage.
      const reach=cap(1+(t.model.ratchetHeight-attacker.model.ratchetHeight)/110,.80,1.25);
@@ -442,5 +456,5 @@ function simulateMatch(left,right,options={}){
   finalized:achieved,reason:achieved?"target_reached":"unresolved_round_limit",
   assumptions:"unitless_uncalibrated_model"};
 }
-root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
+root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,RIM_LIP_HEIGHT,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
 })(typeof window!=="undefined"?window:this);
