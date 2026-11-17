@@ -61,7 +61,9 @@ function buildVisualPreview(specs,preview=true){
  const statNum=value=>Number(value||0).toFixed(1);
  const tipNames={flat:'平底',round:'球底',sharp:'針底',hybrid:'混合接觸',unknown:'未核對'};
  const sourceNames={wikiBlade:'戰刃',wikiRatchet:'固鎖',wikiBit:'軸心',
-  wikiChip:'紋章',wikiMain:'主刃',wikiAssist:'輔助刃'};
+  wikiChip:'紋章',wikiMain:'主刃',wikiAssist:'輔助刃',
+  wikiMetalOver:'金屬刃與超越刃',wikiMetalRage:'狂怒金屬刃',
+  wikiOverFlow:'流速超越刃',beybaseScale:'實秤樣本'};
  const content=specs.map((spec,i)=>{
   if(!spec)return '';
   const images=viewer.getVisuals(spec);
@@ -71,11 +73,16 @@ function buildVisualPreview(specs,preview=true){
    (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(partNames[p.part]||p.part)+'</b> '+
     statNames.map(([label,key])=>clean(label)+':'+statNum(p[key])).join(' / ')+
     (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+
-    ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':Number(p.weightG).toFixed(1)+' g')+
+    ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':
+     Number(p.weightG).toFixed(1)+' g'+
+     ((p.weightMethod||'').includes('derived')||(p.weightMethod||'').includes('sum')?'（組件推算）':''))+
     '</div>').join('')+'</details>';
   const measured=spec.totalWeightG!==null&&Number.isFinite(spec.totalWeightG);
+  const derived=(spec.massParts||[]).some(p=>(p.method||'').includes('derived')||
+   (p.method||'').includes('sum'));
   const weight='<div class="sim-weight-line">'+
-   (measured?'參考整顆重量：'+Number(spec.totalWeightG).toFixed(1)+' g（非本顆實秤）':
+   (measured?'參考整顆重量：'+Number(spec.totalWeightG).toFixed(1)+
+     ' g（'+(derived?'含組件推算；':'')+'非本顆實秤）':
     '參考整顆重量：尚缺資料，採既有質量代理值')+
    '；軸心：'+clean(spec.tipProfile?.code||'?')+'（'+clean(tipNames[spec.tipProfile?.tip]||'未知')+'）'+
    '</div>';
