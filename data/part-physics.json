@@ -19,7 +19,9 @@
     "Catalogued weights carry variation across factories, versions, color, coatings, and scale tolerance.",
     "CX whole-blade mass is a sum of separate chip/main/assist reference masses and may not equal a direct factory unit measurement.",
     "All tip behavior flags describe source-backed qualitative construction. Numeric dynamics multipliers are explicit uncalibrated simulation hypotheses.",
-    "Missing entries remain missing, and must not be synthesized to look measured. The tool uses its old model-based proxy if all selected weights are unavailable."
+    "Missing entries remain missing, and must not be synthesized to look measured. The tool uses its old model-based proxy if all selected weights are unavailable.",
+    "Three unresolved discrepancies between release-specific catalog and independent sources are documented under statConflicts; the simulator continues using the original release-recorded ability figures.",
+    "Recolored Hasbro/Takara Tomy editions can differ in actual mass; mapped reference masses are for nominal matching designs and may not equal a specific collector edition."
   ],
   "bitTraits": {
     "U": {
@@ -608,6 +610,63 @@
   "summary": {
     "ownedBeys": 19,
     "recordedWeightEntries": 74,
-    "unverifiedEntries": 4
-  }
+    "unverifiedEntries": 4,
+    "unresolvedStatConflicts": 3
+  },
+  "statConflicts": [
+    {
+      "owner": "OWN-G3393-01",
+      "part": "blade",
+      "name": "Rudder Phoenix",
+      "status": "unresolved",
+      "releaseCatalog": {
+        "attack": 15,
+        "defense": 40,
+        "stamina": 60
+      },
+      "independentReference": {
+        "attack": 10,
+        "defense": 35,
+        "stamina": 55
+      },
+      "source": "https://beybladexwiki.com/en/blades/phoenixrudder",
+      "note": "原始 Hasbro G3393 單品目錄與另一份採日版標示的資料不同；尚未核對實際包裝。模型暫保留型號專屬目錄數值。"
+    },
+    {
+      "owner": "OWN-G3084-05",
+      "part": "mainBlade",
+      "name": "Fort",
+      "status": "unresolved",
+      "releaseCatalog": {
+        "attack": 29,
+        "defense": 17,
+        "stamina": 29
+      },
+      "independentReference": {
+        "attack": 24,
+        "defense": 12,
+        "stamina": 24
+      },
+      "source": "https://beybladewiki.com/toys/part/main-blade-fort",
+      "note": "Hasbro G3084 標示與跨版本公開資料相差 5 點。保留目錄值，未擅自改寫。"
+    },
+    {
+      "owner": "OWN-G3084-06",
+      "part": "mainBlade",
+      "name": "Wriggle",
+      "status": "unresolved",
+      "releaseCatalog": {
+        "attack": 13,
+        "defense": 17,
+        "stamina": 45
+      },
+      "independentReference": {
+        "attack": 8,
+        "defense": 12,
+        "stamina": 40
+      },
+      "source": "https://beybladewiki.com/toys/parts/x/main-blade",
+      "note": "Hasbro G3084 目錄與跨版本公開資料相差 5 點，仍待確認。"
+    }
+  ]
 }
