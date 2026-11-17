@@ -21,13 +21,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 45.0,
-            "defense": 30.0,
-            "stamina": 25.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 45,
+            "defense": 30,
+            "stamina": 25,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-01-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -40,13 +40,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 9.0,
-            "stamina": 6.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 9,
+            "stamina": 6,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-01-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -59,13 +59,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 25.0,
-            "defense": 25.0,
-            "stamina": 30.0,
-            "dash": 20.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 25,
+            "defense": 25,
+            "stamina": 30,
+            "dash": 20,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-01-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -86,13 +86,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 25.0,
-            "stamina": 55.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 25,
+            "stamina": 55,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-02-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -105,13 +105,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 11.0,
-            "defense": 12.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 11,
+            "defense": 12,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-02-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -124,13 +124,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 30.0,
-            "stamina": 50.0,
-            "dash": 10.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 30,
+            "stamina": 50,
+            "dash": 10,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-02-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -151,13 +151,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 70.0,
-            "stamina": 15.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 70,
+            "stamina": 15,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-03-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -170,13 +170,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 8.0,
-            "defense": 14.0,
-            "stamina": 8.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 8,
+            "defense": 14,
+            "stamina": 8,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-03-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -189,13 +189,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 40.0,
-            "stamina": 10.0,
-            "dash": 30.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 40,
+            "stamina": 10,
+            "dash": 30,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-03-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -216,13 +216,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 30.0,
-            "stamina": 65.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 30,
+            "stamina": 65,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-04-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -235,13 +235,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 7.0,
-            "stamina": 8.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 80.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 7,
+            "stamina": 8,
+            "dash": 0,
+            "burst": 0,
+            "height": 80,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-04-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -254,13 +254,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 25.0,
-            "stamina": 60.0,
-            "dash": 5.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 25,
+            "stamina": 60,
+            "dash": 5,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-04-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -281,17 +281,31 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 39.0,
-            "defense": 27.0,
-            "stamina": 49.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 34,
+            "defense": 22,
+            "stamina": 44,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-05-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
-          "catalogRelease": "G3084-05"
+          "catalogRelease": "G3084-05",
+          "verification": {
+            "status": "verified-from-product-packaging",
+            "evidenceGrade": "A-packaging-visible",
+            "sourcePage": "https://www.toyworld.co.nz/products/beyblade-x-fort-hornet-r-7-60t-cx-starter-pack-set",
+            "sourceImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Beyblade_20X_20Fort_20Hornet_20R_207-60T_20CX_20Starter_20Pack_20Set_20_4.jpg?v=1774312705&width=2048",
+            "crossReference": "https://beybladewiki.com/toys/part/main-blade-fort",
+            "reissueOf": "G1682 Fort Hornet R 7-60T",
+            "originalCatalog": {
+              "attack": 39,
+              "defense": 27,
+              "stamina": 49
+            },
+            "reason": "G1682 has the same yellow model reissued in G3084-05. Its retail box back prints the full Blade 34/22/44. Round Assist is 10/10/20; the Fort Main component is thus 24/12/24. phstudy G1682 and G3084 values were each five points too high."
+          }
         },
         "ratchet": {
           "id": "HB-G3084-05-RATCHET",
@@ -300,13 +314,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 8.0,
-            "defense": 14.0,
-            "stamina": 8.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 8,
+            "defense": 14,
+            "stamina": 8,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-05-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -319,13 +333,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 35.0,
-            "defense": 20.0,
-            "stamina": 20.0,
-            "dash": 25.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 35,
+            "defense": 20,
+            "stamina": 20,
+            "dash": 25,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-05-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -338,13 +352,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-05-LOCKCHIP.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -357,17 +371,31 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 29.0,
-            "defense": 17.0,
-            "stamina": 29.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 24,
+            "defense": 12,
+            "stamina": 24,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-05-MAINBLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
-          "catalogRelease": "G3084-05"
+          "catalogRelease": "G3084-05",
+          "verification": {
+            "status": "verified-from-product-packaging",
+            "evidenceGrade": "A-packaging-visible",
+            "sourcePage": "https://www.toyworld.co.nz/products/beyblade-x-fort-hornet-r-7-60t-cx-starter-pack-set",
+            "sourceImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Beyblade_20X_20Fort_20Hornet_20R_207-60T_20CX_20Starter_20Pack_20Set_20_4.jpg?v=1774312705&width=2048",
+            "crossReference": "https://beybladewiki.com/toys/part/main-blade-fort",
+            "reissueOf": "G1682 Fort Hornet R 7-60T",
+            "originalCatalog": {
+              "attack": 29,
+              "defense": 17,
+              "stamina": 29
+            },
+            "reason": "G1682 has the same yellow model reissued in G3084-05. Its retail box back prints the full Blade 34/22/44. Round Assist is 10/10/20; the Fort Main component is thus 24/12/24. phstudy G1682 and G3084 values were each five points too high."
+          }
         },
         "assistBlade": {
           "id": "HB-G3084-05-ASSISTBLADE",
@@ -376,13 +404,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 10.0,
-            "stamina": 20.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 10,
+            "stamina": 20,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-05-ASSISTBLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -403,17 +431,31 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 33.0,
-            "defense": 27.0,
-            "stamina": 55.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 28,
+            "defense": 22,
+            "stamina": 50,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3084-06-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
-          "catalogRelease": "G3084-06"
+          "catalogRelease": "G3084-06",
+          "verification": {
+            "status": "verified-from-product-packaging",
+            "evidenceGrade": "A-packaging-visible",
+            "sourcePage": "https://www.toyworld.co.nz/products/beyblade-x-wriggle-kraken-s-3-85o-cx-starter-pack-set",
+            "sourceImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Wriggle_20Kraken_20_4.jpg?v=1774312663&width=2048",
+            "crossReference": "https://beybladewiki.com/toys/part/main-blade-wriggle",
+            "reissueOf": "G1683 Wriggle Kraken S 3-85O",
+            "originalCatalog": {
+              "attack": 33,
+              "defense": 27,
+              "stamina": 55
+            },
+            "reason": "G1683, reused in G3084-06, has full Blade attack 28 defense 22 stamina 50 visibly printed on Hasbro retail packaging. Slash Assist has 20/10/10; Wriggle Main must be 8/12/40, also matching independent part DB. phstudy G1683 and G3084 values were each five points too high."
+          }
         },
         "ratchet": {
           "id": "HB-G3084-06-RATCHET",
@@ -422,13 +464,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 5.0,
-            "defense": 15.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 30.0,
-            "height": 85.0,
-            "weight": 0.0
+            "attack": 5,
+            "defense": 15,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 30,
+            "height": 85,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3084-06-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -441,13 +483,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 30.0,
-            "stamina": 50.0,
-            "dash": 10.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 30,
+            "stamina": 50,
+            "dash": 10,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3084-06-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -460,13 +502,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/HB-G3084-06-LOCKCHIP.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -479,17 +521,31 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 13.0,
-            "defense": 17.0,
-            "stamina": 45.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 8,
+            "defense": 12,
+            "stamina": 40,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/HB-G3084-06-MAINBLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
-          "catalogRelease": "G3084-06"
+          "catalogRelease": "G3084-06",
+          "verification": {
+            "status": "verified-from-product-packaging",
+            "evidenceGrade": "A-packaging-visible",
+            "sourcePage": "https://www.toyworld.co.nz/products/beyblade-x-wriggle-kraken-s-3-85o-cx-starter-pack-set",
+            "sourceImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Wriggle_20Kraken_20_4.jpg?v=1774312663&width=2048",
+            "crossReference": "https://beybladewiki.com/toys/part/main-blade-wriggle",
+            "reissueOf": "G1683 Wriggle Kraken S 3-85O",
+            "originalCatalog": {
+              "attack": 13,
+              "defense": 17,
+              "stamina": 45
+            },
+            "reason": "G1683, reused in G3084-06, has full Blade attack 28 defense 22 stamina 50 visibly printed on Hasbro retail packaging. Slash Assist has 20/10/10; Wriggle Main must be 8/12/40, also matching independent part DB. phstudy G1683 and G3084 values were each five points too high."
+          }
         },
         "assistBlade": {
           "id": "HB-G3084-06-ASSISTBLADE",
@@ -498,13 +554,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 10.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 50.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 10,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 0,
+            "height": 50,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/HB-G3084-06-ASSISTBLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -525,13 +581,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 40.0,
-            "stamina": 60.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 40,
+            "stamina": 60,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-01-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -544,13 +600,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 13.0,
-            "defense": 10.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 13,
+            "defense": 10,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-01-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -563,13 +619,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 10.0,
-            "stamina": 55.0,
-            "dash": 15.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 10,
+            "stamina": 55,
+            "dash": 15,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-01-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -590,13 +646,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 35.0,
-            "defense": 35.0,
-            "stamina": 30.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 35,
+            "defense": 35,
+            "stamina": 30,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-02-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -609,13 +665,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 12.0,
-            "defense": 9.0,
-            "stamina": 9.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 12,
+            "defense": 9,
+            "stamina": 9,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-02-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -628,13 +684,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 30.0,
-            "defense": 25.0,
-            "stamina": 15.0,
-            "dash": 30.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 30,
+            "defense": 25,
+            "stamina": 15,
+            "dash": 30,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-02-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -655,13 +711,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 35.0,
-            "defense": 55.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 35,
+            "defense": 55,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3393-03-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -674,13 +730,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 13.0,
-            "defense": 10.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 80.0,
-            "weight": 0.0
+            "attack": 13,
+            "defense": 10,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 0,
+            "height": 80,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3393-03-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -693,13 +749,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 40.0,
-            "stamina": 10.0,
-            "dash": 30.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 40,
+            "stamina": 10,
+            "dash": 30,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3393-03-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -720,13 +776,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 31.0,
-            "defense": 55.0,
-            "stamina": 14.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 31,
+            "defense": 55,
+            "stamina": 14,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-01-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -739,13 +795,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 13.0,
-            "defense": 10.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 30.0,
-            "height": 65.0,
-            "weight": 0.0
+            "attack": 13,
+            "defense": 10,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 30,
+            "height": 65,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-01-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -758,13 +814,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 40.0,
-            "defense": 10.0,
-            "stamina": 10.0,
-            "dash": 40.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 40,
+            "defense": 10,
+            "stamina": 10,
+            "dash": 40,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-01-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -785,13 +841,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 19.0,
-            "defense": 55.0,
-            "stamina": 26.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 19,
+            "defense": 55,
+            "stamina": 26,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G3063-02-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -804,13 +860,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 3.0,
-            "defense": 12.0,
-            "stamina": 15.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 80.0,
-            "weight": 0.0
+            "attack": 3,
+            "defense": 12,
+            "stamina": 15,
+            "dash": 0,
+            "burst": 0,
+            "height": 80,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G3063-02-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -823,13 +879,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 5.0,
-            "defense": 25.0,
-            "stamina": 55.0,
-            "dash": 15.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 5,
+            "defense": 25,
+            "stamina": 55,
+            "dash": 15,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G3063-02-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -850,13 +906,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 30.0,
-            "defense": 60.0,
-            "stamina": 20.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 30,
+            "defense": 60,
+            "stamina": 20,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/HB-G2734-BLADE.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -869,13 +925,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 6.0,
-            "defense": 14.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 30.0,
-            "height": 55.0,
-            "weight": 0.0
+            "attack": 6,
+            "defense": 14,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 30,
+            "height": 55,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/HB-G2734-RATCHET.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -888,13 +944,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 5.0,
-            "defense": 55.0,
-            "stamina": 30.0,
-            "dash": 10.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 5,
+            "defense": 55,
+            "stamina": 30,
+            "dash": 10,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/HB-G2734-BIT.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/hasbro.json",
@@ -915,13 +971,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 60.0,
-            "defense": 15.0,
-            "stamina": 25.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 60,
+            "defense": 15,
+            "stamina": 25,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956983-06.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -934,13 +990,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 7.0,
-            "defense": 11.0,
-            "stamina": 12.0,
-            "dash": 0.0,
-            "burst": 30.0,
-            "height": 55.0,
-            "weight": 0.0
+            "attack": 7,
+            "defense": 11,
+            "stamina": 12,
+            "dash": 0,
+            "burst": 30,
+            "height": 55,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956983-06.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -953,13 +1009,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 30.0,
-            "stamina": 45.0,
-            "dash": 10.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 30,
+            "stamina": 45,
+            "dash": 10,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956983-06.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -980,13 +1036,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 30.0,
-            "defense": 25.0,
-            "stamina": 45.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 30,
+            "defense": 25,
+            "stamina": 45,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -999,13 +1055,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 9.0,
-            "stamina": 6.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 9,
+            "stamina": 6,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1018,13 +1074,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 35.0,
-            "defense": 20.0,
-            "stamina": 20.0,
-            "dash": 25.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 35,
+            "defense": 20,
+            "stamina": 20,
+            "dash": 25,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1037,13 +1093,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1056,13 +1112,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 15.0,
-            "stamina": 45.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 15,
+            "stamina": 45,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1075,13 +1131,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 10.0,
-            "stamina": 15.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 10,
+            "stamina": 15,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-080640-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1102,13 +1158,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 35.0,
-            "stamina": 60.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 35,
+            "stamina": 60,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1121,13 +1177,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 3.0,
-            "defense": 13.0,
-            "stamina": 14.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 3,
+            "defense": 13,
+            "stamina": 14,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1140,13 +1196,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 30.0,
-            "defense": 15.0,
-            "stamina": 20.0,
-            "dash": 35.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 30,
+            "defense": 15,
+            "stamina": 20,
+            "dash": 35,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1159,13 +1215,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1178,13 +1234,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 15.0,
-            "stamina": 50.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 15,
+            "stamina": 50,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1197,13 +1253,13 @@
           "type": "defense",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 20.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 20,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1224,13 +1280,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 70.0,
-            "defense": 25.0,
-            "stamina": 20.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 70,
+            "defense": 25,
+            "stamina": 20,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1243,13 +1299,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 17.0,
-            "defense": 6.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 17,
+            "defense": 6,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1262,13 +1318,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 45.0,
-            "defense": 10.0,
-            "stamina": 5.0,
-            "dash": 40.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 45,
+            "defense": 10,
+            "stamina": 5,
+            "dash": 40,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1281,13 +1337,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1300,13 +1356,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 45.0,
-            "defense": 15.0,
-            "stamina": 15.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 45,
+            "defense": 15,
+            "stamina": 15,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1319,13 +1375,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 25.0,
-            "defense": 10.0,
-            "stamina": 5.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 25,
+            "defense": 10,
+            "stamina": 5,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-02.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1346,13 +1402,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 65.0,
-            "defense": 25.0,
-            "stamina": 25.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 65,
+            "defense": 25,
+            "stamina": 25,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1365,13 +1421,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 12.0,
-            "stamina": 8.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 12,
+            "stamina": 8,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1384,13 +1440,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 40.0,
-            "defense": 10.0,
-            "stamina": 10.0,
-            "dash": 40.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 40,
+            "defense": 10,
+            "stamina": 10,
+            "dash": 40,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1403,13 +1459,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1422,13 +1478,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 50.0,
-            "defense": 15.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 50,
+            "defense": 15,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1441,13 +1497,13 @@
           "type": "balance",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 10.0,
-            "stamina": 15.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 60.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 10,
+            "stamina": 15,
+            "dash": 0,
+            "burst": 0,
+            "height": 60,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-085683-03.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1468,13 +1524,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 60.0,
-            "defense": 30.0,
-            "stamina": 10.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 50.0,
-            "weight": 0.0
+            "attack": 60,
+            "defense": 30,
+            "stamina": 10,
+            "dash": 0,
+            "burst": 0,
+            "height": 50,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1487,13 +1543,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 13.0,
-            "defense": 10.0,
-            "stamina": 7.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 70.0,
-            "weight": 0.0
+            "attack": 13,
+            "defense": 10,
+            "stamina": 7,
+            "dash": 0,
+            "burst": 0,
+            "height": 70,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1506,13 +1562,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 45.0,
-            "defense": 10.0,
-            "stamina": 10.0,
-            "dash": 35.0,
-            "burst": 80.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 45,
+            "defense": 10,
+            "stamina": 10,
+            "dash": 35,
+            "burst": 80,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1525,13 +1581,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 0.0,
-            "defense": 0.0,
-            "stamina": 0.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 0,
+            "defense": 0,
+            "stamina": 0,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/LockChip/LC-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1544,13 +1600,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 40.0,
-            "defense": 15.0,
-            "stamina": 5.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 40,
+            "defense": 15,
+            "stamina": 5,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/MainBlade/MB-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1563,13 +1619,13 @@
           "type": "attack",
           "weightG": null,
           "stats": {
-            "attack": 20.0,
-            "defense": 15.0,
-            "stamina": 5.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 50.0,
-            "weight": 0.0
+            "attack": 20,
+            "defense": 15,
+            "stamina": 5,
+            "dash": 0,
+            "burst": 0,
+            "height": 50,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/AssistBlade/AB-PRD-956969-01.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1590,13 +1646,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 30.0,
-            "stamina": 65.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 30,
+            "stamina": 65,
+            "dash": 0,
+            "burst": 0,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Blade/BL-PRD-939498-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1609,13 +1665,13 @@
           "type": null,
           "weightG": null,
           "stats": {
-            "attack": 15.0,
-            "defense": 7.0,
-            "stamina": 8.0,
-            "dash": 0.0,
-            "burst": 0.0,
-            "height": 80.0,
-            "weight": 0.0
+            "attack": 15,
+            "defense": 7,
+            "stamina": 8,
+            "dash": 0,
+            "burst": 0,
+            "height": 80,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Ratchet/RC-PRD-939498-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1628,13 +1684,13 @@
           "type": "stamina",
           "weightG": null,
           "stats": {
-            "attack": 10.0,
-            "defense": 25.0,
-            "stamina": 60.0,
-            "dash": 5.0,
-            "burst": 30.0,
-            "height": 0.0,
-            "weight": 0.0
+            "attack": 10,
+            "defense": 25,
+            "stamina": 60,
+            "dash": 5,
+            "burst": 30,
+            "height": 0,
+            "weight": 0
           },
           "sourceUrl": "https://beyblade.phstudy.org/p/en-US/Bit/BT-PRD-939498-00.html",
           "sourceCatalog": "https://beyblade.phstudy.org/data/main.json",
@@ -1647,6 +1703,8 @@
     "totalBeys": 19,
     "partRecords": 78,
     "numericRecords": 78,
-    "missingRecords": 0
-  }
+    "missingRecords": 0,
+    "verifiedPartCorrections": 4
+  },
+  "verifiedOverridesSource": "data/part-stat-overrides.json"
 }
