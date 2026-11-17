@@ -36,7 +36,7 @@ const physicalMass=owned('OWN-G3084-01');
 assert.equal(physicalMass.totalWeightG,43.1,
  'Pearl Tiger reference mass must add sourced Blade, Ratchet and Bit');
 assert.equal(physicalMass.massBasis,'catalogue-model-reference');
-assert(Math.abs(physicalMass.massProxy-43.1/44)<1e-9,
+assert(Math.abs(physicalMass.massProxy-1.08*43.1/44)<1e-9,
  'collision mass must depend on source-weighted total mass, not rating');
 const unsignedMass=owned('OWN-G3063-01');
 assert.equal(unsignedMass.totalWeightG,null,
@@ -50,6 +50,10 @@ assert(owned('OWN-CX-06-01').tipProfile.extendedGear,
 assert(owned('OWN-G3084-03').tipProfile.tiltGear,
  'Crest Leon Gear Needle should engage lower gear when tilted');
 assert.equal(physicalMass.partStats.find(p=>p.part==='blade').weightG,34.6);
+assert.equal(owned('OWN-G3393-01').sourceConflicts.length,1,
+ 'Rudder Phoenix conflicting source figures must be explicitly flagged');
+assert(owned('OWN-G3084-05').flags.some(text=>text.includes('其他資料庫不同')),
+ 'Fort Hornet Main Blade release stat conflict must be visible');
 const gnBuild=owned('OWN-G3084-03');
 function oneGearContact(tilt){
  const play=E.createBattle(gnBuild,physicalMass,{seed:614,arena:'xtreme',rail:true});
