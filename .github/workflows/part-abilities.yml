@@ -1,6 +1,7 @@
 name: Sync owned Beyblade part abilities
 on:
   push:
+    branches: [main]
     paths:
       - 'data/collection.json'
       - 'data/image-sources.json'
