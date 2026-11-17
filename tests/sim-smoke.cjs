@@ -67,8 +67,10 @@ assert(owned('OWN-CX-06-01').tipProfile.extendedGear,
 assert(owned('OWN-G3084-03').tipProfile.tiltGear,
  'Crest Leon Gear Needle should engage lower gear when tilted');
 assert.equal(physicalMass.partStats.find(p=>p.part==='blade').weightG,34.6);
-assert.equal(owned('OWN-G3393-01').sourceConflicts.length,1,
- 'Rudder Phoenix conflicting source figures must be explicitly flagged');
+assert.equal(owned('OWN-G3393-01').sourceConflicts.length,0,
+ 'G3393-01 red/pink 15/40/60 is confirmed by the exact version table');
+assert.equal(owned('OWN-BXG-57-03').sourceConflicts.length,1,
+ 'BXG-57-03 EVA Brush mismatch must be retained as genuinely unresolved');
 assert(owned('OWN-G3084-05').flags.some(text=>text.includes('其他資料庫不同')),
  'Fort Hornet Main Blade release stat conflict must be visible');
 const gnBuild=owned('OWN-G3084-03');
