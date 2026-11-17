@@ -107,6 +107,16 @@ function create(container,status,api){
    (right-left+1)*482/side,(bottom-top+1)*482/side);
   return out;
  }
+ function getRatchetCanvas(image){
+  const canvas=getImageCanvas(image),c=canvas.getContext('2d');
+  // Use the chosen part photo, clipped to the ring rather than a square.
+  c.globalCompositeOperation='destination-in';
+  c.beginPath();c.arc(256,256,244,0,TAU);c.fill();
+  c.globalCompositeOperation='destination-out';
+  c.beginPath();c.arc(256,256,72,0,TAU);c.fill();
+  c.globalCompositeOperation='source-over';
+  return canvas;
+ }
  function visualNames(spec){
   return getParts(spec).map(p=>({name:p.name,value:spec?.parts?.find(q=>q.key===p.kind)?.code||getBey(p.owner)?.name||'',
    image:p.src,owner:p.owner,kind:p.kind}));
@@ -295,7 +305,8 @@ function create(container,status,api){
   const g=new THREE.Group(),parts=getParts(spec),heightCode=Number(spec.ratchetHeight)||60;
   const metallic=new THREE.MeshStandardMaterial({color:modelColor(spec.name),metalness:.78,roughness:.26});
   const under=new THREE.MeshStandardMaterial({color:modelColor(spec.config.bit),metalness:.34,roughness:.33});
-  const ringMaterial=new THREE.MeshStandardMaterial({color:modelColor(spec.config.ratchet),metalness:.40,roughness:.36});
+  const ringMaterial=new THREE.MeshStandardMaterial({color:modelColor(spec.config.ratchet),
+   metalness:.10,roughness:.44,transparent:true,opacity:.88,side:THREE.DoubleSide});
   const body=new THREE.Group(),ratchet=new THREE.Group(),bit=new THREE.Group();
   const shapeIndex=spec.mode==='cx'?8:10;
   const blade=new THREE.Mesh(new THREE.CylinderGeometry(.142,.113,.042,shapeIndex),metallic);
@@ -306,8 +317,37 @@ function create(container,status,api){
    element.position.set(Math.cos(theta)*.115,.15,Math.sin(theta)*.115);
    element.rotation.y=theta;body.add(element);
   }
-  const ratchetBody=new THREE.Mesh(new THREE.CylinderGeometry(.071,.061,.04,Math.max(6,Math.min(12,Number(String(spec.config?.ratchet||'6').charAt(0))*2))),ringMaterial);
-  ratchetBody.position.y=.085+(heightCode-60)*.0004;ratchet.add(ratchetBody);
+  // The ratchet is a hollow, translucent ring with its correct lobe count.
+  // 0-XX is circular. 3-XX has three protrusions; 7-XX has seven.
+  const ratchetTeeth=Math.max(0,Math.min(9,Number(spec.ratchetTeeth)||0));
+  const section=new THREE.Shape(),slices=ratchetTeeth?Math.max(96,ratchetTeeth*16):96;
+  for(let j=0;j<=slices;j++){
+   const theta=j*TAU/slices;
+   const lobe=ratchetTeeth?Math.pow(Math.max(0,Math.cos(theta*ratchetTeeth)),6):0;
+   const radius=.073+(ratchetTeeth===0?0:.009*lobe);
+   const xx=Math.cos(theta)*radius,zz=Math.sin(theta)*radius;
+   if(j===0)section.moveTo(xx,zz);else section.lineTo(xx,zz);
+  }
+  section.closePath();
+  const opening=new THREE.Path();
+  opening.absarc(0,0,.026,0,TAU,true);
+  section.holes.push(opening);
+  const ratchetGeo=new THREE.ExtrudeGeometry(section,{
+   depth:.023,bevelEnabled:true,bevelSize:.001,bevelThickness:.001,
+   bevelSegments:1,steps:1,curveSegments:32
+  });
+  ratchetGeo.rotateX(-Math.PI/2);
+  const ratchetBody=new THREE.Mesh(ratchetGeo,ringMaterial);
+  ratchetBody.position.y=.069+(heightCode-60)*.0004;ratchet.add(ratchetBody);
+  const socket=new THREE.Mesh(new THREE.TorusGeometry(.033,.006,7,28),ringMaterial);
+  socket.rotation.x=-Math.PI/2;socket.position.y=.099+(heightCode-60)*.0004;
+  ratchet.add(socket);
+  for(let j=0;j<3;j++){
+   const theta=j*TAU/3;
+   const catchPiece=new THREE.Mesh(new THREE.BoxGeometry(.019,.012,.017),ringMaterial);
+   catchPiece.position.set(Math.cos(theta)*.041,.099+(heightCode-60)*.0004,Math.sin(theta)*.041);
+   catchPiece.rotation.y=-theta;ratchet.add(catchPiece);
+  }
   const bitBody=new THREE.Mesh(new THREE.CylinderGeometry(.035,.015,.06,8),under);
   bitBody.position.y=.034;bit.add(bitBody);
   g.add(body,ratchet,bit);
@@ -315,9 +355,9 @@ function create(container,status,api){
   // displayed outer radius to the same per-build radius used for physics.
   // The small inset avoids alpha edges appearing to intersect on contact.
   g.scale.setScalar((spec.radius||.18)/.164*.94);
-  const centers={blade:.169,mainBlade:.172,assistBlade:.185,lockChip:.202,ratchet:.109,bit:.045};
-  const dimensions={blade:.328,mainBlade:.326,assistBlade:.276,lockChip:.12,ratchet:.10,bit:.059};
-  const textureKinds=parts.filter(p=>['blade','mainBlade','assistBlade','lockChip'].includes(p.kind));
+  const centers={blade:.169,mainBlade:.172,assistBlade:.185,lockChip:.202,ratchet:.102+(heightCode-60)*.0004,bit:.045};
+  const dimensions={blade:.328,mainBlade:.326,assistBlade:.276,lockChip:.12,ratchet:.164,bit:.059};
+  const textureKinds=parts.filter(p=>['blade','mainBlade','assistBlade','lockChip','ratchet'].includes(p.kind));
   for(const p of textureKinds){
    if(!p.src)continue;
    const token=version;
@@ -325,12 +365,12 @@ function create(container,status,api){
    img.onload=()=>{
     if(renderVersion!==token||!THREE||!world)return;
     try{
-     const square=getImageCanvas(img),texture=new THREE.CanvasTexture(square);
+     const square=p.kind==='ratchet'?getRatchetCanvas(img):getImageCanvas(img),texture=new THREE.CanvasTexture(square);
      texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(4,renderer?.capabilities?.getMaxAnisotropy?.()||1);
      const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
      const plane=new THREE.Mesh(new THREE.PlaneGeometry(dimensions[p.kind],dimensions[p.kind]),material);
      plane.rotation.x=-Math.PI/2;plane.position.y=centers[p.kind];
-     body.add(plane);
+     (p.kind==='ratchet'?ratchet:body).add(plane);
      // The user may be inspecting a stationary setup before the battle starts.
      // Re-render once the selected part texture actually finishes loading.
      renderState(lastState,{finalAge:lastFinishAge});
