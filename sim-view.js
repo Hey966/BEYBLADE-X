@@ -235,14 +235,40 @@ function create(container,status,api){
    ctx.scale(1,Math.max(.34,Math.cos(Math.abs(lean)))*collapsed);
    ctx.rotate(t.heading-leanDir+(state.done&&outcome?.winner===i?coastRotation(t,coastAge):0)+(loser&&finished==='spin'?age*1.5:0));
    if(loser&&finished==='burst'&&age>.1){
-    // Detach components instead of leaving a fully assembled Bey at the centre.
+    // Split into the actual chosen Blade/Ratchet/Bit images where available.
+    // The ratchet fallback is a hollow ring, not a generic rectangle.
+    const fragments=getParts(spec);
+    const bladePart=fragments.find(p=>p.kind==='blade'||p.kind==='mainBlade')||fragments[0];
+    const ratchetPart=fragments.find(p=>p.kind==='ratchet');
+    const bitPart=fragments.find(p=>p.kind==='bit');
     for(let k=0;k<3;k++){
      const direction=k*TAU/3+.6;
-     ctx.save();ctx.translate(Math.cos(direction)*age*r*2.6,Math.sin(direction)*age*r*2.6);
-     ctx.rotate(direction+age*3.3);
-     ctx.fillStyle=k===0?'#d9eaf2':k===1?'#829cac':'#e2b078';
-     ctx.fillRect(-r*.45,-r*.17,r*.9,r*.34);
-     ctx.strokeStyle='#fff2d2';ctx.lineWidth=2;ctx.strokeRect(-r*.45,-r*.17,r*.9,r*.34);
+     ctx.save();
+     ctx.translate(Math.cos(direction)*age*r*2.55,Math.sin(direction)*age*r*2.55);
+     ctx.rotate(direction+age*(k+1)*1.45);
+     if(k===0){
+      if(!paintImage(ctx,getImage(bladePart?.src),0,0,r*1.8)){
+       ctx.fillStyle='#d9eaf2';ctx.beginPath();ctx.arc(0,0,r*.9,0,TAU);ctx.fill();
+      }
+     }else if(k===1){
+      const size=r*.97,count=Number(spec?.ratchetTeeth)||0;
+      ctx.beginPath();
+      for(let j=0;j<=72;j++){
+       const theta=j*TAU/72,lobe=count?Math.pow(Math.max(0,Math.cos(theta*count)),6)*.10:0;
+       const rad=size*.50*(1+lobe),xx=Math.cos(theta)*rad,yy=Math.sin(theta)*rad;
+       if(!j)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
+      }
+      ctx.closePath();ctx.moveTo(size*.15,0);ctx.arc(0,0,size*.15,0,TAU,true);
+      ctx.save();ctx.clip('evenodd');
+      ctx.fillStyle='#8caabb';ctx.fillRect(-size/2,-size/2,size,size);
+      paintImage(ctx,getImage(ratchetPart?.src),0,0,size);
+      ctx.restore();
+      ctx.strokeStyle='#f5e8c8';ctx.lineWidth=1.5;ctx.stroke();
+     }else{
+      if(!paintImage(ctx,getImage(bitPart?.src),0,0,r*.66)){
+       ctx.fillStyle='#e2b078';ctx.beginPath();ctx.arc(0,0,r*.28,0,TAU);ctx.fill();
+      }
+     }
      ctx.restore();
     }
     ctx.restore();continue;
