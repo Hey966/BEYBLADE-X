@@ -355,7 +355,7 @@ function createBattle(left,right,settings={}){
      const directed=cap(.48+.52*impactDirection,.48,1);
      t.burstLoad+=hitStrength*(.55+.006*attackerStats.attack)/
       (.85+.007*defenderStats.burst+.004*defenderStats.defense)*
-      t.model.ratchetCatch*reach*directed;
+      t.model.ratchetCatch*reach*directed*.82;
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
      // Lean away from the contact normal. A rapidly spinning, defensive
