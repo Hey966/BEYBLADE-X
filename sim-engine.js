@@ -88,7 +88,8 @@ function makeBuild(config,db,attributes){
   stamina:n(p.rec.stats,"stamina"),dash:n(p.rec.stats,"dash"),
   burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
   sourceUrl:p.rec.sourceUrl||"",
-  weightG:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.weightG??null
+  weightG:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.weightG??null,
+  weightMethod:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.method??null
  }));
  if(config.mode!=="cx"&&bladeOwner.system==="CX"){
   // Factory-built CX uses its own complete Blade rating. Sub-component
@@ -97,7 +98,9 @@ function makeBuild(config,db,attributes){
   partStats.unshift({part:"factoryBlade",owner:bladeOwner.id,code:factory.id,
    attack:n(factory.stats,"attack"),defense:n(factory.stats,"defense"),
    stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
-   sourceUrl:factory.sourceUrl||"",weightG:bladeWeightG});
+   sourceUrl:factory.sourceUrl||"",weightG:bladeWeightG,
+   weightMethod:massParts.some(row=>row.method?.includes('sum')||row.method?.includes('derived'))?
+    'derived-reference-components':'model-reference'});
   if(["attack","defense","stamina"].some(key=>
    Math.abs(n(factory.stats,key)-parts.filter(([key])=>
     ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
