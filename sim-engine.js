@@ -2,7 +2,7 @@
    All distances/time/energy/masses in internal normalized units. No real SI claim. */
 (function(root){
 'use strict';
-const VERSION="sim-v2.1";
+const VERSION="sim-v2.2";
 const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
@@ -55,6 +55,24 @@ function makeBuild(config,db,attributes){
  const unique=new Set(signatures);
  if(unique.size!==signatures.length)flags.push("同顆配置存在重複同類名稱，請檢查相容性");
  const partPhysical=names.map(p=>p.key+":"+p.owner);
+ // Source-linked model reference masses, not measurements of owned copies.
+ const physics=root.BBX_PART_PHYSICS||null;
+ const massParts=parts.map(([kind,p])=>{
+  const ref=physics?.byOwner?.[p.b.id]?.[kind];
+  const grams=Number.isFinite(ref?.weightG)&&ref.weightG>0?ref.weightG:null;
+  return{kind,owner:p.b.id,weightG:grams,sourceId:ref?.sourceId||null,method:ref?.method||null};
+ });
+ const totalWeightG=massParts.every(p=>p.weightG!==null)?
+  Math.round(massParts.reduce((v,p)=>v+p.weightG,0)*100)/100:null;
+ const upperParts=massParts.filter(p=>["blade","lockChip","mainBlade","assistBlade"].includes(p.kind));
+ const bladeWeightG=upperParts.every(p=>p.weightG!==null)?
+  Math.round(upperParts.reduce((v,p)=>v+p.weightG,0)*100)/100:null;
+ const tipReference=physics?.bitTraits?.[bt.b.bit]||{};
+ const tipProfile={...tipReference,code:bt.b.bit,tip:tipReference.tip||"unknown"};
+ const sourceConflicts=(physics?.statConflicts||[]).filter(conflict=>
+  parts.some(([part,p])=>p.b.id===conflict.owner&&part===conflict.part));
+ if(sourceConflicts.length)flags.push("有 "+sourceConflicts.length+" 項標示能力與其他資料庫不同；暫採原商品目錄數值，未視為實測。");
+ if(totalWeightG===null)flags.push("部分零件參考重量未取得；本配置使用舊版質量代理值。");
  const height=n(rc.rec.stats,"height");
  const ratchetName=String(rc.b.ratchet||"");
  const ratchetTeeth=Number(ratchetName.match(/^(\d+)-/)?.[1]??0);
@@ -69,7 +87,8 @@ function makeBuild(config,db,attributes){
   attack:n(p.rec.stats,"attack"),defense:n(p.rec.stats,"defense"),
   stamina:n(p.rec.stats,"stamina"),dash:n(p.rec.stats,"dash"),
   burst:n(p.rec.stats,"burst"),height:n(p.rec.stats,"height"),
-  sourceUrl:p.rec.sourceUrl||""
+  sourceUrl:p.rec.sourceUrl||"",
+  weightG:massParts.find(row=>row.kind===part&&row.owner===p.b.id)?.weightG??null
  }));
  if(config.mode!=="cx"&&bladeOwner.system==="CX"){
   // Factory-built CX uses its own complete Blade rating. Sub-component
@@ -78,7 +97,7 @@ function makeBuild(config,db,attributes){
   partStats.unshift({part:"factoryBlade",owner:bladeOwner.id,code:factory.id,
    attack:n(factory.stats,"attack"),defense:n(factory.stats,"defense"),
    stamina:n(factory.stats,"stamina"),dash:0,burst:0,height:n(factory.stats,"height"),
-   sourceUrl:factory.sourceUrl||""});
+   sourceUrl:factory.sourceUrl||"",weightG:bladeWeightG});
   if(["attack","defense","stamina"].some(key=>
    Math.abs(n(factory.stats,key)-parts.filter(([key])=>
     ["lockChip","mainBlade","assistBlade"].includes(key)).reduce((v,[,p])=>v+n(p.rec.stats,key),0))>.001))
@@ -89,14 +108,22 @@ function makeBuild(config,db,attributes){
   config:{...config},name:bladeOwner.name+" "+rc.b.ratchet+bt.b.bit,
   spin:bladeOwner.spinDirection==="L"?-1:1,vector:x,
   partPhysical,partModel:signatures,partStats,parts:names,flags,
+  totalWeightG,bladeWeightG,massParts,tipProfile,
+  sourceConflicts,
+  massBasis:totalWeightG!==null?"catalogue-model-reference":"unmeasured-proxy",
   // Unmeasured dynamics proxies; these are NOT grams, kg*m^2, N or RPM.
   // Approximate collision footprint sized relative to the dish; not a real diameter.
   radius:0.168+0.00023*(x.defense+x.attack),
-  massProxy:1+0.0024*x.defense+0.0013*x.attack,
-  inertiaProxy:0.8+0.004*x.stamina+0.002*x.defense,
+  massProxy:totalWeightG===null?(1+0.0024*x.defense+0.0013*x.attack):
+   // Source-derived relative mass; factor 1.08 preserves normalized collision scale.
+   Math.max(.75,Math.min(1.42,1.08*totalWeightG/44)),
+  inertiaProxy:(0.8+0.004*x.stamina+0.002*x.defense)*
+   (bladeWeightG===null?1:Math.max(.91,Math.min(1.09,bladeWeightG/35))),
   // Long-lived rotational energy. Blade / bit stamina changes the deceleration.
   // Calibrated for an observable slowdown, not real measured revolutions.
-  staminaDrag:.65+(100-x.stamina)*.010,
+  staminaDrag:(.65+(100-x.stamina)*.010)*
+   (bladeWeightG===null?1:Math.max(.92,Math.min(1.08,35/bladeWeightG)))*
+   (tipProfile.freeRotate?.93:1)*(tipProfile.lowFriction?.96:1),
   lateralDrag:.32+(100-x.stamina)*.002+x.dash*.001,
   // Prototype burst resistance: parts with higher burst and defense scores resist shock.
   // Faster Xtreme motion produces more contacts; locks must resist multiple hits.
@@ -139,7 +166,11 @@ function initTop(spec,side,opts,rng){
  // This is an empirical animation proxy rather than measured launch velocity.
  // Mobility comes from the selected Attack and Dash scores, not a fixed
  // multiplier decided only by the Bit's categorical type.
- const motionBoost=.78+.009*spec.vector.attack+.013*spec.vector.dash;
+ // Bit geometry affects the way launch energy turns into planar movement.
+ const tip=spec.tipProfile||{};
+ const shapeBoost=tip.tip==="flat"?1.05:tip.tip==="round"?.94:tip.tip==="sharp"?.97:1;
+ const tiltSwitch=tip.tiltSwitch?1+.09*cap(Math.abs(angle)/.55,0,1):1;
+ const motionBoost=(.78+.009*spec.vector.attack+.013*spec.vector.dash)*shapeBoost*tiltSwitch;
  const speed=(0.36+0.30*launching+(spec.vector.dash/100)*0.18)*launching*motionBoost*(.96+.08*rng());
  const headingJitter=(rng()-.5)*.12;
  const spin=(19+launching*48*spec.launchTransfer*launcherProxy+2*(rng()-.5))*Math.min(1,launching/.20);
@@ -208,7 +239,9 @@ function createBattle(left,right,settings={}){
    // precession develops as stability fades. Avoid shake tied to blade RPM.
    const lowSpin=cap((12-t.spin)/12,0,1);
    const lateLean=lowSpin*(.07+.22*lowSpin+Math.min(.04,t.wobble*.02));
-   const restoring=24-14*lowSpin,settling=11-5*lowSpin;
+   const tip=t.model.tipProfile||{};
+   const restoring=(24-14*lowSpin)*(tip.antiTilt?1.17:1);
+   const settling=(11-5*lowSpin)*(tip.antiTilt?1.12:1);
    t.tiltVelocity+=dt*(-restoring*(t.tilt-lateLean)-settling*t.tiltVelocity);
    t.tilt=cap(t.tilt+t.tiltVelocity*dt,-.72,.72);
    // Orientation of the tilted axle walks around its contact point, but
@@ -248,7 +281,11 @@ function createBattle(left,right,settings={}){
     // Attack-oriented tips sweep or 'flower' around the dish. Stamina tips
     // hold a quieter center path; balance and defense are intermediate.
     // The small radial oscillation is a stylized movement approximation.
-    const activity=cap((v.attack*.60+v.dash*.80-v.stamina*.20)/65,.12,1);
+    const tip=m.tipProfile||{};
+    const tipMotion=tip.tip==="flat"?1.08:tip.tip==="round"?.88:tip.tip==="sharp"?.84:1;
+    const tiltDrive=tip.tiltSwitch?.83+.35*cap(Math.abs(t.tilt)/.32,0,1):1;
+    const activity=cap((v.attack*.60+v.dash*.80-v.stamina*.20)/65,.12,1)*
+     tipMotion*tiltDrive;
     const motion=Math.max(0,Math.min(1,t.spin/40))*Math.max(0,1-state.elapsed/24);
     const pattern=Math.sin(state.elapsed*(3.5+.018*v.dash)+t.phase);
     const radialPulse=activity*.24*motion*pattern;
@@ -266,14 +303,20 @@ function createBattle(left,right,settings={}){
    // already committed outward pocket entry in the same physics step.
    const speedBeforeRail=Math.hypot(t.vx,t.vy);
    const outwardBeforeRail=r>.001?(t.vx*t.x+t.vy*t.y)/r:0;
-   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12){
+   // Low-gear Needle engages mainly on a tilted contact.
+   const railTip=t.model.tipProfile||{};
+   const tipCanEngage=!railTip.tiltGear||Math.abs(t.tilt)>.08||t.wobble>.28;
+   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12&&tipCanEngage){
     const theta=Math.atan2(t.y,t.x);
     // Xtreme rail contact creates a sudden inward-and-tangential sprint.
     // Unlike the older formula, the dash carries the top across the dish.
-    const push=Math.min(1.4,m.railEfficiency*1.35)*(0.55+t.spin/130);
+    const push=Math.min(1.4,m.railEfficiency*1.35)*
+     (0.55+t.spin/130)*(railTip.extendedGear?1.06:1);
     t.vx+=-Math.sin(theta)*t.spinSign*push-Math.cos(theta)*push*1.15;
     t.vy+= Math.cos(theta)*t.spinSign*push-Math.sin(theta)*push*1.15;
-    t.spin=Math.max(0,t.spin-0.85-0.025*v.dash);
+    const dashSpinLoss=(.85+.025*v.dash)*(railTip.dashLift?.78:
+     railTip.freeRotate?.94:1);
+    t.spin=Math.max(0,t.spin-dashSpinLoss);
     t.railCooldown=1.10-.010*v.dash;state.railCount++;
     record("dash",t.side,"Xtreme Line 衝刺（近似模型）",{x:+t.x.toFixed(3),y:+t.y.toFixed(3),strength:+push.toFixed(3)});
    }
@@ -369,7 +412,7 @@ function createBattle(left,right,settings={}){
      const directed=cap(.48+.52*impactDirection,.48,1);
      t.burstLoad+=hitStrength*(.55+.006*attackerStats.attack)/
       (.85+.007*defenderStats.burst+.004*defenderStats.defense)*
-      t.model.ratchetCatch*reach*directed*.82;
+      t.model.ratchetCatch*reach*directed*.77; // rebalanced for measured-model mass ratios
      // A harder collision knocks the top briefly into the air and sideways.
      // The rebound magnitude depends on attack, defense, and relative motion.
      // Lean away from the contact normal. A rapidly spinning, defensive

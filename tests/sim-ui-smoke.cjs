@@ -10,7 +10,8 @@ const root=path.join(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const db=JSON.parse(read('data/collection.json'));
 const abilities=JSON.parse(read('data/part-abilities.json'));
-const browser={};
+const physics=JSON.parse(read('data/part-physics.json'));
+const browser={BBX_PART_PHYSICS:physics};
 vm.runInNewContext(read('sim-engine.js'),{window:browser,console});
 const html=read('index.html');
 const sceneCode=read('sim-view.js');
@@ -99,6 +100,18 @@ assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
  'visible five-metric ratings must be shown for each current build');
 assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
  'part-level audit must be available in the simulation UI');
+assert(html.includes('data/part-physics.js'), 'physics file must load in the page before the engine');
+assert(html.indexOf('data/part-physics.js')<html.indexOf('sim-engine.js'),
+ 'reference physics data must be available before creating builds');
+assert(nodes.simActiveParts.innerHTML.includes('參考整顆重量：'),
+ 'selected top reference weight must be visible');
+assert(nodes.simActiveParts.innerHTML.includes('同型號重量:'),
+ 'raw selected-part model masses must be auditable');
+assert(nodes.simActiveParts.innerHTML.includes('非本顆實秤'),
+ 'catalogue references must not claim to be measured owned objects');
+assert(nodes.simActiveParts.innerHTML.includes('參考資料：')&&
+ nodes.simActiveParts.innerHTML.includes('beybladewiki.com'),
+ 'each preview should link to source weight reference tables');
 const firstStatHtml=nodes.simActiveParts.innerHTML;
 const changeBit={value:'OWN-UX-08-01',dataset:{team:'0',index:'0',part:'bit'}};
 changeBit.closest=()=>changeBit;
