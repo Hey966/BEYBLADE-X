@@ -18,8 +18,15 @@ const E=browser.BBX_SIM_CORE;
 assert(E,'core export');
 assert.equal(db.beys.length,19);
 assert.equal(stats.summary.partRecords,78);
-assert.equal(physics.summary.recordedWeightEntries,74);
-assert.equal(physics.summary.unverifiedEntries,4);
+assert.equal(physics.summary.recordedWeightEntries,76);
+assert.equal(physics.summary.unverifiedEntries,2);
+assert.equal(physics.summary.resolvedVersionDifferences,1);
+assert(physics.resolvedDifferences.some(v=>v.owner==='OWN-G3393-01'),
+ 'G3393-01 must be a resolved release-specific colorway, not a data error');
+assert(physics.statConflicts.some(v=>v.owner==='OWN-BXG-57-03'),
+ 'exact BXG-57-03 Brush edition source conflict must stay visible');
+assert(!physics.statConflicts.some(v=>v.owner==='OWN-G3393-01'),
+ 'Phoenix Rudder G3393 should not remain falsely unresolved');
 assert.equal(physics.summary.unresolvedStatConflicts,3);
 assert.equal(physics.statConflicts.length,3);
 assert(physics.statConflicts.every(c=>c.status==='unresolved'),'conflicts must not be claimed verified');
@@ -38,6 +45,16 @@ assert.equal(physicalMass.totalWeightG,43.1,
 assert.equal(physicalMass.massBasis,'catalogue-model-reference');
 assert(Math.abs(physicalMass.massProxy-1.08*43.1/44)<1e-9,
  'collision mass must depend on source-weighted total mass, not rating');
+const tigaMass=owned('OWN-BXG-70-01');
+assert.equal(tigaMass.bladeWeightG,38.4,
+ 'Tiga Multi blade reference must add chip, Rage+Flow, and Turn');
+assert.equal(tigaMass.totalWeightG,47,
+ 'Tiga Multi total estimate must sum all selected component references');
+assert.equal(tigaMass.massBasis,'catalogue-model-reference');
+assert.equal(physics.byOwner['OWN-BXG-70-01'].mainBlade.method,
+ 'derived-sum-of-generic-component-model-weights');
+assert.equal(physics.byOwner['OWN-BXG-70-01'].mainBlade.components.length,2,
+ 'Rage Metal and Flow Over remain distinguishable despite combined UI slot');
 const unsignedMass=owned('OWN-G3063-01');
 assert.equal(unsignedMass.totalWeightG,null,
  'unverified special blade weight cannot be silently invented');
