@@ -5,6 +5,7 @@ on:
       - 'data/collection.json'
       - 'data/image-sources.json'
       - 'tools/sync_part_abilities.py'
+      - 'data/part-stat-overrides.json'
       - '.github/workflows/part-abilities.yml'
   workflow_dispatch:
 permissions:
