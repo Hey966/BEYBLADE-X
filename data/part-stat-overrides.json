@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-11-17",
+  "purpose": "Correct mirrored release-catalog stats only when the Hasbro packaging photo confirms the original model and a second source connects that model to this G3084 repack. Never guess values.",
+  "sharedReissueEvidence": "https://beybladewiki.com/zh/wiki/products/rival-rumble-pack",
+  "records": {
+    "OWN-G3084-05": {
+      "reissueOf": "G1682 Fort Hornet R 7-60T",
+      "packagePage": "https://www.toyworld.co.nz/products/beyblade-x-fort-hornet-r-7-60t-cx-starter-pack-set",
+      "packageBackImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Beyblade_20X_20Fort_20Hornet_20R_207-60T_20CX_20Starter_20Pack_20Set_20_4.jpg?v=1774312705&width=2048",
+      "independentStats": "https://beybladewiki.com/toys/part/main-blade-fort",
+      "reason": "G1682 has the same yellow model reissued in G3084-05. Its retail box back prints the full Blade 34/22/44. Round Assist is 10/10/20; the Fort Main component is thus 24/12/24. phstudy G1682 and G3084 values were each five points too high.",
+      "parts": {
+        "mainBlade": {
+          "attack": 24,
+          "defense": 12,
+          "stamina": 24
+        },
+        "blade": {
+          "attack": 34,
+          "defense": 22,
+          "stamina": 44
+        }
+      },
+      "originalCatalog": {
+        "mainBlade": {
+          "attack": 29,
+          "defense": 17,
+          "stamina": 29
+        },
+        "blade": {
+          "attack": 39,
+          "defense": 27,
+          "stamina": 49
+        }
+      },
+      "evidenceGrade": "A-packaging-visible"
+    },
+    "OWN-G3084-06": {
+      "reissueOf": "G1683 Wriggle Kraken S 3-85O",
+      "packagePage": "https://www.toyworld.co.nz/products/beyblade-x-wriggle-kraken-s-3-85o-cx-starter-pack-set",
+      "packageBackImage": "https://www.toyworld.co.nz/cdn/shop/files/G0840_20Wriggle_20Kraken_20_4.jpg?v=1774312663&width=2048",
+      "independentStats": "https://beybladewiki.com/toys/part/main-blade-wriggle",
+      "reason": "G1683, reused in G3084-06, has full Blade attack 28 defense 22 stamina 50 visibly printed on Hasbro retail packaging. Slash Assist has 20/10/10; Wriggle Main must be 8/12/40, also matching independent part DB. phstudy G1683 and G3084 values were each five points too high.",
+      "parts": {
+        "mainBlade": {
+          "attack": 8,
+          "defense": 12,
+          "stamina": 40
+        },
+        "blade": {
+          "attack": 28,
+          "defense": 22,
+          "stamina": 50
+        }
+      },
+      "originalCatalog": {
+        "mainBlade": {
+          "attack": 13,
+          "defense": 17,
+          "stamina": 45
+        },
+        "blade": {
+          "attack": 33,
+          "defense": 27,
+          "stamina": 55
+        }
+      },
+      "evidenceGrade": "A-packaging-visible"
+    }
+  },
+  "safetyNotes": [
+    "Corrections apply to the two actual G3084 reissued tops, not to unrelated G1682/G1683 inventory that the owner does not possess.",
+    "Only overwrite Attack, Defense, Stamina. Do not modify Ratchet, Bit, Lock Chip, Assist Blade, weights, owned inventory or image mapping.",
+    "Keep raw catalog values under originalCatalog and the corrected entry's verification metadata; allow reproducible auto-sync.",
+    "The performance-score difference is a printed-data correction, NOT a measured attack-speed, burst rate or win rate."
+  ]
+}
