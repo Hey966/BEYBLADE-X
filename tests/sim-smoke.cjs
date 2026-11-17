@@ -132,7 +132,18 @@ for(let seed=1;seed<=120;seed++){
 }
 assert(highContactCount>0,'high energy tops should meet');
 assert(impactSeen,'hit should produce airborne knockback');
-assert(burstCount>0,'some repeatable high energy battles should burst');
+// High launch energy is not guaranteed to burst a particular build.
+// EvaBrave vs Gill Shark can ring out instead. Verify burst separately in a
+// matchup with an exposed Ratchet, while retaining possible spin results.
+let matchupBursts=0,matchupSpins=0;
+for(let seed=1;seed<=75;seed++){
+ const result=E.runBattle(owned('OWN-CX-08-06'),owned('OWN-UX-08-01'),
+  {seed:seed*397,arena:'xtreme',launch:[{power:10500},{power:10500}],record:false});
+ matchupBursts+=result.finish==='burst';
+ matchupSpins+=result.finish==='spin';
+}
+assert(matchupBursts>0&&matchupSpins>0,
+ 'the same physical matchup should allow both impact bursts and spin finishes');
 // Regression: two live tops must never visibly interpenetrate during contact.
 const coincident=E.createBattle(a[0],b[0],{seed:111});
 coincident.tops.forEach(t=>{t.landed=true;t.height=0;t.x=0;t.y=0;t.vx=0;t.vy=0;});
