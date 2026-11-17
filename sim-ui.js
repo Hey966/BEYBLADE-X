@@ -122,8 +122,16 @@ function syncPower(i,source){
  if(runtime)clearMatch('發射力道已變更，請重新開始。');
 }
 function settings(){
+ // Randomize only initial conditions between new matches, never a finish.
+ // Leave auto mode to replay the displayed seed with identical parts/power.
+ const randomize=$('simSeedAuto')?.checked!==false;
+ let seed=(Math.trunc(Number($('simSeed').value))||966)>>>0;
+ if(randomize){
+  seed=(Math.floor(Math.random()*4294967295)+1)>>>0;
+  $('simSeed').value=String(seed);
+ }
  return {
-  seed:(Math.trunc(Number($('simSeed').value))||966)>>>0,
+  seed,
   arena:$('simArenaType').value,
   rail:$('simArenaType').value==='xtreme',
   launch:[0,1].map(i=>({power:spValue($('simPower'+i+'Number').value),
@@ -242,7 +250,7 @@ function beginRound(){
  buildVisualPreview([runtime.teams[0][idx],runtime.teams[1][idx]],false);
  $('simNext').disabled=true;$('simPause').disabled=false;$('simPause').textContent='暫停';
  viewer.render(runtime.battle);updateScore();
- report((idx+1)+' 號陀螺從左右半場上方投放，落點由亂數種子決定。');
+ report((idx+1)+' 號陀螺從左右半場上方投放。基準種子 '+conf.seed+'，本回合種子 '+seed+'。勝負由碰撞與配件判定。');
  const token=++frameToken;playFrame(token,performance.now());
 }
 function start(){
@@ -271,7 +279,14 @@ $('simArenaType').addEventListener('change',()=>{
  viewer.setArena($('simArenaType').value);
  clearMatch('場地已切換。畫面及物理參數已同步，請重新開始。');
 });
-for(const id of ['simSeed','simLauncher0','simLauncher1'])$(id).addEventListener('change',()=>{
+$('simSeed')?.addEventListener('change',()=>{
+ if($('simSeedAuto'))$('simSeedAuto').checked=false;
+ clearMatch('已切換固定種子。相同配件與發射條件可重播相同結果。');
+});
+$('simSeedAuto')?.addEventListener('change',()=>{
+ clearMatch($('simSeedAuto').checked?'下次新對戰會產生不同種子。':'已固定目前種子，可重現對戰。');
+});
+for(const id of ['simLauncher0','simLauncher1'])$(id).addEventListener('change',()=>{
  clearMatch('發射設定已變更，請重新開始。');
 });
 for(const i of [0,1]){
@@ -287,6 +302,7 @@ $('simSettingsReset').addEventListener('click',()=>{
  $('simMatchType').value='1';
  $('simArenaType').value='xtreme';
  $('simSeed').value='966';
+ if($('simSeedAuto'))$('simSeedAuto').checked=true;
  $('simSpeed').value='1';
  for(const i of [0,1]){
   $('simLauncher'+i).value='winder';
@@ -297,7 +313,7 @@ $('simSettingsReset').addEventListener('click',()=>{
   $('simAngle'+i+'Display').textContent='0°';
  }
  renderTeams();
- clearMatch('已重置對戰形式、場地、發射器、SP 力道、角度、種子與播放速度。自訂零件保留。');
+ clearMatch('已重置對戰設定。每次新對戰預設換種子；關閉此功能可重播。自訂零件保留。');
 });
 $('simSoundToggle')?.addEventListener('click',()=>{
  if(audio){
