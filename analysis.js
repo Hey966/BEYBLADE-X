@@ -220,7 +220,7 @@ function pickDeck(pool,count){
  let best=null,bestValue=-Infinity;
  // Evaluate multiple first and second choices. Select the earliest valid third
  // from a score-ordered pool while respecting physical part IDs and same-model restrictions.
- for(let i=0;i<Math.min(28,bests.length);i++){
+ for(let i=0;i<Math.min(140,bests.length);i++){
   const first=bests[i];
   let validSeconds=0;
   for(let j=0;j<bests.length;j++){
@@ -234,7 +234,7 @@ function pickDeck(pool,count){
     const score=team.reduce((sum,c)=>sum+c.score,0)+(diversity-1)*2;
     if(score>bestValue){bestValue=score;best=team;}
    }
-   if(++validSeconds>=8)break;
+   if(++validSeconds>=22)break;
   }
  }
  return best||[];
@@ -345,13 +345,13 @@ function pickCounterDeck(pool,count,enemies){
  let best=null,bestScore=-Infinity;
  // Search diverse leading pair choices, then maximize the team's ability
  // coverage of the selected opponents without reusing a physical part or a same-model component.
- for(const first of heads.slice(0,35)){
+ for(const first of heads.slice(0,55)){
   let secondCount=0;
   for(const second of shortlist){
    if(first===second||!usable([first,second]))continue;
    let localThird=null,localScore=-Infinity;
    // Consider both high-ranked global candidates and specialists for a specific enemy.
-   for(const third of heads.concat(shortlist.slice(0,95))){
+   for(const third of heads.concat(shortlist.slice(0,155))){
     if(third===first||third===second||!usable([first,second,third]))continue;
     const value=counterTeamScore([first,second,third],enemies);
     if(value>localScore){localThird=third;localScore=value;}
@@ -359,7 +359,7 @@ function pickCounterDeck(pool,count,enemies){
    if(localThird&&localScore>bestScore){
     bestScore=localScore;best=[first,second,localThird];
    }
-   if(++secondCount>=12)break;
+   if(++secondCount>=20)break;
   }
  }
  if(best)return best;
@@ -556,6 +556,18 @@ function counterResultMarkup(team,enemies){
   '<div class="counter-team-coverage"><h4>我方壓制覆蓋</h4>'+coverage+'</div>'+
   '<div class="analysis-result-grid">'+cards+'</div>';
 }
+function validateOpponentDeck(count){
+ const C=window.BBX_SIM_CORE;
+ if(!C?.makeBuild||!C?.validateDeck)throw Error('模擬規則尚未載入，不能驗證對手的 3 對 3 配件。');
+ const deck=opponentChoices.slice(0,count).map(choice=>C.makeBuild(
+  choice.blade==='CX-CUSTOM'?
+   {mode:'cx',chip:choice.chip,main:choice.main,assist:choice.assist,ratchet:choice.ratchet,bit:choice.bit}:
+   {mode:'whole',blade:choice.blade,ratchet:choice.ratchet,bit:choice.bit},
+  {beys:api.getBeys()},db
+ ));
+ C.validateDeck(deck);
+ return true;
+}
 function runCounter(){
  const enemies=opponentSet();
  if(!enemies||!enemies.length){
@@ -568,6 +580,8 @@ function runCounter(){
   $('counterResults').textContent='只支援 1 對 1 或 3 對 3 分析。';
   return;
  }
+ try{validateOpponentDeck(count)}
+ catch(error){lastCounter=[];$('counterResults').textContent='對手配置不符合 3 對 3 規則：'+error.message;return}
  $('counterResults').textContent='正在比較雙方完整能力與隊伍壓制覆蓋…';
  const pool=counterCandidates(enemies);
  const team=pickCounterDeck(pool,count,enemies);
