@@ -4,6 +4,18 @@
 'use strict';
 const VERSION="sim-v2.4";
 const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
+// Real BX-10: two front-side Over pockets, one front-centre Xtreme pocket.
+// Front corresponds to positive simulation Y and render Z.
+const STADIUM_ZONES=Object.freeze([
+ Object.freeze({kind:"over",theta:.61,halfWidth:.29}),
+ Object.freeze({kind:"extreme",theta:Math.PI/2,halfWidth:.31}),
+ Object.freeze({kind:"over",theta:Math.PI-.61,halfWidth:.29})
+]);
+function stadiumPocket(theta,arena){
+ if(arena!=="xtreme")return null;
+ const zone=STADIUM_ZONES.find(z=>Math.abs(Math.atan2(Math.sin(theta-z.theta),Math.cos(theta-z.theta)))<z.halfWidth);
+ return zone?.kind||null;
+}
 const cap=(v,a=0,b=100)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:0));
 const n=(obj,key)=>Number.isFinite(obj?.[key])?obj[key]:0;
 const sum=(...items)=>items.reduce((o,x)=>{for(const k of ['attack','defense','stamina'])o[k]+=n(x,k);return o},{attack:0,defense:0,stamina:0});
@@ -332,8 +344,7 @@ function createBattle(left,right,settings={}){
    // Keep the full blade footprint inside the wall, not just its centre.
    if(r>R-t.model.radius){
     const theta=Math.atan2(t.y,t.x);
-    const pocket=(env.arena==="xtreme"&&Math.abs(theta+0.70)<0.46)?"extreme":
-      (Math.abs(theta-0.65)<0.46||Math.abs(theta-2.45)<0.276)?"over":null;
+    const pocket=stadiumPocket(theta,env.arena);
     const outward=outwardBeforeRail;
     const momentum=speedBeforeRail;
     // The stadium has a low raised lip. A fast tip skimming the floor should
@@ -508,5 +519,5 @@ function simulateMatch(left,right,options={}){
   finalized:achieved,reason:achieved?"target_reached":"unresolved_round_limit",
   assumptions:"unitless_uncalibrated_model"};
 }
-root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,RIM_LIP_HEIGHT,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
+root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,RIM_LIP_HEIGHT,STADIUM_ZONES,stadiumPocket,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
 })(typeof window!=="undefined"?window:this);
