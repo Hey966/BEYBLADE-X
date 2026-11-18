@@ -439,6 +439,7 @@ $('simSettingsReset').addEventListener('click',()=>{
   $('simPower'+i+'Display').textContent='10,500';
   $('simAngle'+i+'Display').textContent='0°';
  }
+ viewer.setArena('xtreme');
  renderTeams();
  clearMatch('已重置對戰設定。每次新對戰預設換種子；關閉此功能可重播。自訂零件保留。');
 });
@@ -515,6 +516,11 @@ $('simBatchDownload').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(latestBatch,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BEYBLADE-X_simulation_'+latestBatch.seed+'.json';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+root.addEventListener?.('bbx-inventory-updated',()=>{
+ const next=api.getBeys().filter(b=>abilities.beys?.[b.id]?.parts?.ratchet&&abilities.beys?.[b.id]?.parts?.bit);
+ beys.splice(0,beys.length,...next);cx.splice(0,cx.length,...next.filter(b=>b.system==='CX'));
+ renderTeams();clearMatch('收藏或能力資料已更新，請重新確認配件再開始對戰。');
 });
 renderTeams();clearMatch('請選兩隊配件與發射設定。雙方從盤面上方落入各自半場，落地輕彈後自由對戰。');
 })(typeof window!=='undefined'?window:this);
