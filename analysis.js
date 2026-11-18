@@ -58,7 +58,7 @@ function showPart(owner,kind){
   '<div class="ability-bars">'+lines+'</div>'+
   '<p class="ability-explain">'+html(desc)+(topstat&&v(r.stats,topstat)>0?' 這個配件的主要數值偏向'+html(roles[topstat])+'。':'')+'</p>'+
   '<p class="analysis-note">圖表為來源資料所列數值，不是勝率。不同零件類別的數值不能直接等同實戰表現。</p>'+
-  (r.sourceUrl?.startsWith('https://')?'<a class="ability-source" target="_blank" rel="noopener noreferrer" href="'+html(r.sourceUrl)+'">查看原始零件資料 ↗</a>':'')+'</div>';
+  (r.sourceUrl?.startsWith('https://')?'<a class="ability-source" target="_blank" rel="noopener noreferrer" href="'+html(r.sourceUrl)+'">查看公開零件能力來源 ↗</a>':'')+'</div>';
  dlg.showModal();
 }
 $('closeAbility')?.addEventListener('click',()=>$('abilityDialog').close());
@@ -175,10 +175,22 @@ function power(c,style){
  const vec=combatVector(c.blade,c.ratchet,c.bit),bitType=roleOf(c.bit.data);
  return {value:scoreStyle(vec,style,bitType),vec,bitType};
 }
+const deckModelFields={blade:'blade',chip:'lockChip',main:'mainBlade',assist:'assistBlade',ratchet:'ratchet',bit:'bit'};
+function modelForKey(key){
+ const [kind,owner]=key.split(':');
+ const value=String(getBey(owner)?.[deckModelFields[kind]]??'').trim().toUpperCase();
+ return value?kind+':'+value:'';
+}
+function isRepeatRestricted(model){return !model.startsWith('chip:')||/^(VALKYRIE|EMPEROR|ワルキューレ|エンペラー|戰神|帝王)$/iu.test(model.slice(5));}
 function usable(choices){
- const keys=new Set();
+ const keys=new Set(),models=new Set();
  for(const c of choices)for(const key of c.keys){
   if(keys.has(key))return false;keys.add(key);
+  const model=modelForKey(key);
+  if(model&&isRepeatRestricted(model)){
+   if(models.has(model))return false;
+   models.add(model);
+  }
  }
  return true;
 }
@@ -207,7 +219,7 @@ function pickDeck(pool,count){
  const bests=pool;
  let best=null,bestValue=-Infinity;
  // Evaluate multiple first and second choices. Select the earliest valid third
- // from a score-ordered pool while respecting every physical part ID.
+ // from a score-ordered pool while respecting physical part IDs and same-model restrictions.
  for(let i=0;i<Math.min(28,bests.length);i++){
   const first=bests[i];
   let validSeconds=0;
@@ -332,7 +344,7 @@ function pickCounterDeck(pool,count,enemies){
  });
  let best=null,bestScore=-Infinity;
  // Search diverse leading pair choices, then maximize the team's ability
- // coverage of the selected opponents without reusing a physical component.
+ // coverage of the selected opponents without reusing a physical part or a same-model component.
  for(const first of heads.slice(0,35)){
   let secondCount=0;
   for(const second of shortlist){
@@ -416,7 +428,7 @@ function resultMarkup(team,title,mode,enemy){
  }).join('');
  const keys=team.flatMap(c=>c.keys);
  const note=enemy?'<p>對方類型為'+html(roles[enemy.type]||'未知')+'，模型優先考慮'+html(roles[mode])+'的相剋方向。</p>':'';
- return '<div class="analysis-result-summary"><h3>'+html(title)+'</h3><p>計算 '+team.length+' 顆陀螺。'+(team.length>1?'所有實體零件均未重複使用。':'')+'</p>'+note+
+ return '<div class="analysis-result-summary"><h3>'+html(title)+'</h3><p>計算 '+team.length+' 顆陀螺。'+(team.length>1?'實體零件與非例外同型號零件均未重複使用。':'')+'</p>'+note+
   '<p>模型總分 '+fmt(total)+'。分數只用於這次候選排序，不是勝率。數值越高不代表一定獲勝。</p>'+
   '<button type="button" class="analysis-load" data-analysis-load="1">套用至組裝器（可另行保存）</button></div><div class="analysis-result-grid">'+cards+'</div>';
 }
@@ -537,7 +549,7 @@ function counterResultMarkup(team,enemies){
  }).join('');
  const total=counterTeamScore(team,enemies);
  return '<div class="analysis-result-summary"><h3>能力壓制推薦：'+team.length+' 顆對 '+enemies.length+' 顆</h3>'+
-  '<p>依雙方完整數值比較，不依對手的攻擊／防禦／持久類型直接決定推薦。'+(team.length===3?'已檢查三顆不重複使用實體戰刃、固鎖、軸心及 CX 模組。':'')+'</p>'+
+  '<p>依雙方完整數值比較，不依對手的攻擊／防禦／持久類型直接決定推薦。'+(team.length===3?'已檢查三顆不重複使用實體與同型號戰刃、固鎖及軸心；CX 鎖定紋章依官方例外。':'')+'</p>'+
   '<p>整隊相對模型分 '+fmt(total)+'。分數只用於比較，非勝率；對戰結果還受發射、競技盤、重心及機械相容性影響。</p>'+
   '<button type="button" class="analysis-load" data-analysis-load="1">將 '+team.length+' 顆配置套用至組裝器</button></div>'+
   '<div class="counter-enemy-overview"><h4>對手完整能力</h4>'+enemyCards+'</div>'+

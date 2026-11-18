@@ -320,7 +320,7 @@ function create(container,status,api){
   ctx.font='11px system-ui';ctx.fillStyle='#bcd7e9';
   ctx.fillText(currentArena==='xtreme'?'Xtreme 模擬盤｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
   if(state?.done){
-   const labels={spin:'迴轉勝利',burst:'爆裂勝利',over:'擊飛勝利',extreme:'極限勝利',draw:'平手'};
+   const labels={spin:'持久勝利',burst:'爆裂勝利',over:'擊飛勝利',extreme:'極限勝利',draw:'平手'};
    ctx.font='bold 15px system-ui';ctx.fillStyle='#ffddab';
    ctx.fillText(labels[state.finish]||'',12,height-20);
   }

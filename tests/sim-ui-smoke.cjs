@@ -98,7 +98,7 @@ fire('simSettingsReset');
 assert.equal(nodes.simSeedAuto.checked,true,'reset should re-enable fresh seeds');
 assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
  'visible five-metric ratings must be shown for each current build');
-assert(nodes.simActiveParts.innerHTML.includes('查看各零件原始數值'),
+assert(nodes.simActiveParts.innerHTML.includes('查看各零件來源數值'),
  'part-level audit must be available in the simulation UI');
 assert(html.includes('data/part-physics.js'), 'physics file must load in the page before the engine');
 assert(html.includes('data/part-abilities.js?v=20261117-hasbro-box-v24'),
@@ -119,6 +119,8 @@ assert(nodes.simActiveParts.innerHTML.includes('非本顆實秤'),
 assert(nodes.simActiveParts.innerHTML.includes('參考資料：')&&
  nodes.simActiveParts.innerHTML.includes('beybladewiki.com'),
  'each preview should link to source weight reference tables');
+assert(html.indexOf('id="simStart"')<html.indexOf('id="simActiveParts"'),
+ 'live battle controls must precede the two statistics panels');
 const firstStatHtml=nodes.simActiveParts.innerHTML;
 const changeBit={value:'OWN-UX-08-01',dataset:{team:'0',index:'0',part:'bit'}};
 changeBit.closest=()=>changeBit;
@@ -137,7 +139,7 @@ assert.equal(nodes.simPower0.value,'10500');
 assert.equal(nodes.simPower0Number.value,'10500');
 fire('simPower0','input','14000');
 assert.equal(nodes.simPower0Number.value,'14000');
-assert.equal(nodes.simPower0Display.textContent,'14,000 SP');
+assert.equal(nodes.simPower0Display.textContent,'14,000');
 fire('simPower0Number','change','12345');
 assert.equal(nodes.simPower0.value,'12345');
 fire('simSettingsReset');

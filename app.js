@@ -140,15 +140,18 @@ function itemResources(s){let keys=[];if(s.mode==='cx'){
  for(const k of ['chip','main','assist'])if(s[k])keys.push([`${k}:${s[k]}`,k]);
  }else if(s.blade){const b=getBey(s.blade);if(b){if(b.system==='CX'){['chip','main','assist'].forEach(k=>{if(b[{chip:'lockChip',main:'mainBlade',assist:'assistBlade'}[k]])keys.push([`${k}:${b.id}`,k]);});}else keys.push([`blade:${b.id}`,'戰刃']);}}
  for(const k of ['ratchet','bit'])if(s[k])keys.push([`${k}:${s[k]}`,k]);return keys;}
-function validate(){let seen=new Set(),errs=[],used=0;slots.forEach((s,i)=>{
+const modelColumns={blade:'blade',chip:'lockChip',main:'mainBlade',assist:'assistBlade',ratchet:'ratchet',bit:'bit'};
+function modelForKey(key){const [kind,owner]=key.split(':');const value=String(getBey(owner)?.[modelColumns[kind]]??'').trim();return value?kind+':'+value.toUpperCase():'';}
+function isRepeatRestricted(model){return !model.startsWith('chip:')||/^(VALKYRIE|EMPEROR|ワルキューレ|エンペラー|戰神|帝王)$/iu.test(model.slice(5));}
+function validate(){let seen=new Set(),seenModels=new Set(),errs=[],used=0;slots.forEach((s,i)=>{
  const any=s.blade||s.chip||s.main||s.assist||s.ratchet||s.bit;if(!any)return;used++;
  const label=`第 ${i+1} 槽`;
  if(s.mode==='whole'&&!s.blade)errs.push(`${label}缺少戰刃`);
  if(s.mode==='cx'&&(!s.chip||!s.main||!s.assist))errs.push(`${label}的 CX 模組未選齊`);
  if(!s.ratchet||!s.bit)errs.push(`${label}缺少固鎖或軸心`);
- for(const [key,name] of itemResources(s)){if(seen.has(key))errs.push(`${label}重複使用實體${name}`);seen.add(key)}
+ for(const [key,name] of itemResources(s)){if(seen.has(key))errs.push(`${label}重複使用實體${name}`);seen.add(key);const model=modelForKey(key);if(model&&isRepeatRestricted(model)&&seenModels.has(model))errs.push(`${label}重複使用同型號${name}（不同顏色也不行）`);if(model&&isRepeatRestricted(model))seenModels.add(model)}
  });return {errs,used};}
-function renderValidation(){const {errs,used}=validate();$('validation').classList.toggle('bad',!!errs.length);$('validation').textContent=errs.length?'請修正：'+[...new Set(errs)].join('；'):(used?`已設定 ${used} 顆，沒有重複使用實體配件。`:'請先選擇戰刃、固鎖與軸心。');}
+function renderValidation(){const {errs,used}=validate();$('validation').classList.toggle('bad',!!errs.length);$('validation').textContent=errs.length?'請修正：'+[...new Set(errs)].join('；'):(used?`已設定 ${used} 顆，沒有重複實體或同型號配件。`:'請先選擇戰刃、固鎖與軸心。');}
 $('saveDeck').onclick=()=>{const {errs,used}=validate();if(errs.length||!used)return notify('配置未完成或有零件重複，無法保存');const name=$('deckName').value.trim()||`我的配置 ${decks.length+1}`;decks.unshift({id:`D-${Date.now()}`,name,slots:clone(slots),createdAt:new Date().toISOString()});save();renderSaved();notify('已保存至目前瀏覽器');};
 $('clearDeck').onclick=()=>{slots=[blank(),blank(),blank()];save();renderSlots();notify('已清空組裝槽');};
 function renderSaved(){$('savedDecks').innerHTML=decks.length?decks.map(d=>`<div class="saved-card"><div><strong>${esc(d.name)}</strong><small>${esc((d.slots||[]).filter(s=>s.blade||s.chip||s.main).length)} 顆 · ${esc((d.createdAt||'').slice(0,10))}</small></div><div class="saved-actions"><button data-load="${esc(d.id)}">載入</button><button data-remove="${esc(d.id)}">刪除</button></div></div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:13px">尚無保存配置。</div>';
