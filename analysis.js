@@ -196,6 +196,8 @@ function usable(choices){
 }
 function candidateList(style){
  const bs=bladePool(),rs=ratchets(),ts=bits();
+ const matchingBits=ts.filter(t=>roleOf(t.data)===style);
+ const eligibleBits=matchingBits.length?matchingBits:ts;
  if(!bs.length||!rs.length||!ts.length)return [];
  // Keep promising blades while retaining at least one source from each owned base.
  const estimated=bs.map(b=>({b,value:style==='attack'?b.stats.attack:style==='defense'?b.stats.defense:style==='stamina'?b.stats.stamina:(b.stats.attack+b.stats.defense+b.stats.stamina)/3}));
@@ -203,12 +205,12 @@ function candidateList(style){
  const selected=estimated.slice(0,80).map(x=>x.b);
  for(const b of bs.filter(b=>b.mode==='whole'))if(!selected.includes(b))selected.push(b);
  const result=[];
- for(const blade of selected)for(const ratchet of rs)for(const bit of ts){
+ for(const blade of selected)for(const ratchet of rs)for(const bit of eligibleBits){
   const c={blade,ratchet,bit,keys:[...blade.keys,'ratchet:'+ratchet.owner,'bit:'+bit.owner]};
   const evaluated=power(c,style);
   // Requested class is governed by Bit type. Non-matching Bits remain selectable only
   // when the requested class has no available compatible Bit.
-  if(evaluated.bitType!==style)continue;
+  if(matchingBits.length&&evaluated.bitType!==style)continue;
   c.score=evaluated.value;c.vec=evaluated.vec;c.type=evaluated.bitType;
   result.push(c);
  }
@@ -222,10 +224,13 @@ function pickDeck(pool,count){
  // from a score-ordered pool while respecting physical part IDs and same-model restrictions.
  for(let i=0;i<Math.min(140,bests.length);i++){
   const first=bests[i];
+  const ceiling=bests[0]?.score||0;
+  if(best&&first.score+ceiling*2+4<=bestValue)break;
   let validSeconds=0;
   for(let j=0;j<bests.length;j++){
    if(i===j)continue;
    const second=bests[j];
+   if(best&&first.score+second.score+ceiling+4<=bestValue)break;
    if(!usable([first,second]))continue;
    const third=bests.find((c,k)=>k!==i&&k!==j&&usable([first,second,c]));
    if(third){
