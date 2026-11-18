@@ -427,7 +427,7 @@ function create(container,status,api){
    gl.setClearColor(0x112f61,1);gl.outputColorSpace=T.SRGBColorSpace;
    const scene=new T.Scene();
    scene.background=new T.Color(0x112f61);
-   scene.fog=new T.Fog(0x112f61,5.2,10);
+   scene.fog=new T.Fog(0x112f61,7.5,14);
    const cam=new T.PerspectiveCamera(44,1,.1,25);
    const initial=root.BBX_STADIUM_CAMERA?.project?.(root.BBX_STADIUM_CAMERA.defaults);
    cam.position.set(initial?.x||0,initial?.y||3.5,initial?.z||2.45);cam.lookAt(0,.02,0);
@@ -437,68 +437,109 @@ function create(container,status,api){
    backgroundGrid.position.y=-.29;
    scene.add(backgroundGrid);
    const group=new T.Group();
-   const shell=new T.MeshStandardMaterial({color:0xf1f5f8,metalness:.14,roughness:.31});
-   const bright=new T.MeshStandardMaterial({color:0xf9fcff,metalness:.11,roughness:.26});
-   const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.13,roughness:.38});
-   const frame=new T.Mesh(new T.CylinderGeometry(1.45,1.53,.20,12),shell);
-   frame.position.y=-.15;frame.rotation.y=Math.PI/12;group.add(frame);
-   const basin=new T.Mesh(new T.CylinderGeometry(1.32,1.34,.095,112),bright);
-   basin.position.y=-.045;group.add(basin);
-   const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.014,112),mat);
-   floor.position.y=.011;group.add(floor);
-   // The launch halves are simulation-only. Keep the physical stadium visually continuous.
-   // Raised retaining wall. The full rim is used for the plain practice dish;
-   // the Xtreme dish has three openings aligned with the simulated pockets.
-   // Torus centre is at the same normalized height as RIM_LIP_HEIGHT in physics.
-   const rimMat=new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24});
-   rimFull=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),rimMat);
-   rimFull.rotation.x=Math.PI/2;rimFull.position.y=.065;
+   // Official BX-10-inspired white base and translucent, chamfered guard.
+   // Visual-only normalized dimensions; not a manufacturer's CAD mesh.
+   const shell=new T.MeshStandardMaterial({color:0xedf2f5,metalness:.04,roughness:.49,side:T.DoubleSide});
+   const bright=new T.MeshStandardMaterial({color:0xffffff,metalness:.05,roughness:.38,side:T.DoubleSide});
+   const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.03,roughness:.59,side:T.DoubleSide});
+   const metal=new T.MeshStandardMaterial({color:0xaebfca,metalness:.10,roughness:.46});
+   const clear=new T.MeshStandardMaterial({color:0xf5fcff,metalness:.04,roughness:.26,
+    transparent:true,opacity:.20,depthWrite:false,side:T.DoubleSide});
+   // White octagonal outer chassis with the centre carved away.
+   const corners=[[-1.38,-1.48],[1.38,-1.48],[1.80,-1.12],[1.80,1.13],
+    [1.40,1.48],[-1.40,1.48],[-1.80,1.13],[-1.80,-1.12]];
+   const hull=new T.Shape();
+   corners.forEach(([x,z],i)=>i?hull.lineTo(x,-z):hull.moveTo(x,-z));
+   hull.closePath();
+   const hole=new T.Path();hole.absarc(0,0,1.315,0,TAU,true);hull.holes.push(hole);
+   const base=new T.Mesh(new T.ExtrudeGeometry(hull,{depth:.13,bevelEnabled:true,
+    bevelThickness:.018,bevelSize:.018,bevelSegments:2,curveSegments:64}),shell);
+   base.rotation.x=-Math.PI/2;base.position.y=-.145;group.add(base);
+   // Radially sloped battle basin. Lower centre, gently rising outside.
+   const bowlPoints=[[0,-.012],[.25,-.012],[.55,-.009],[.74,-.004],
+    [.91,.007],[1.05,.027],[1.19,.055],[1.32,.082]];
+   const bowl=new T.Mesh(new T.LatheGeometry(bowlPoints.map(([r,y])=>new T.Vector2(r,y)),120),mat);
+   group.add(bowl);
+   const groove=new T.Mesh(new T.TorusGeometry(1.29,.014,10,116),metal);
+   groove.rotation.x=Math.PI/2;groove.position.y=.089;group.add(groove);
+   // Real BX-10 guard is polygonal, mostly clear, and open over the battle bowl.
+   const upperGuard=new T.Mesh(new T.ShapeGeometry(hull,64),clear);
+   upperGuard.rotation.x=-Math.PI/2;upperGuard.position.y=.265;group.add(upperGuard);
+   for(let i=0;i<corners.length;i++){
+    const [x1,z1]=corners[i],[x2,z2]=corners[(i+1)%corners.length];
+    const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);
+    const wall=new T.Mesh(new T.BoxGeometry(len,.28,.024),clear);
+    wall.position.set((x1+x2)/2,.115,(z1+z2)/2);
+    wall.rotation.y=-Math.atan2(dz,dx);group.add(wall);
+   }
+   for(let i=0;i<4;i++){
+    const theta=(i+.5)*TAU/4;
+    const clip=new T.Mesh(new T.BoxGeometry(.13,.12,.13),metal);
+    clip.position.set(Math.cos(theta)*1.59,.11,Math.sin(theta)*1.39);
+    clip.rotation.y=-theta;group.add(clip);
+   }
+   // Three visible front apertures share exactly the simulator's zone angles.
+   const zones=root.BBX_SIM_CORE?.STADIUM_ZONES||[
+    {kind:'over',theta:.61,halfWidth:.29},{kind:'extreme',theta:Math.PI/2,halfWidth:.31},
+    {kind:'over',theta:Math.PI-.61,halfWidth:.29}];
+   const rimMaterial=new T.MeshStandardMaterial({color:0xfafcff,metalness:.04,roughness:.36});
+   rimFull=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),rimMaterial);
+   rimFull.rotation.x=-Math.PI/2;rimFull.position.y=.135;
    rimFull.visible=currentArena!=='xtreme';group.add(rimFull);
    rimOpen=new T.Group();
-   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
-    const rimGeo=new T.TorusGeometry(1.37,.073,14,Math.max(8,Math.ceil((to-from)*32)),to-from);
-    rimGeo.rotateZ(from);
-    const segment=new T.Mesh(rimGeo,rimMat);
-    segment.rotation.x=Math.PI/2;segment.position.y=.065;
-    rimOpen.add(segment);
+   const openings=zones.map(z=>[z.theta-z.halfWidth,z.theta+z.halfWidth]).sort((a,b)=>a[0]-b[0]);
+   let cursor=0;
+   for(const [a,b] of [...openings,[TAU,TAU]]){
+    if(a>cursor){
+     const rimGeo=new T.TorusGeometry(1.37,.073,14,Math.max(8,Math.ceil((a-cursor)*45)),a-cursor);
+     rimGeo.rotateZ(-a);
+     const part=new T.Mesh(rimGeo,rimMaterial);
+     part.rotation.x=-Math.PI/2;part.position.y=.135;rimOpen.add(part);
+    }
+    cursor=Math.max(cursor,b);
    }
    rimOpen.visible=currentArena==='xtreme';group.add(rimOpen);
-   const groove=new T.Mesh(new T.TorusGeometry(1.29,.026,10,112),
-    new T.MeshStandardMaterial({color:0x9db3c5,metalness:.38,roughness:.42}));
-   groove.rotation.x=Math.PI/2;groove.position.y=.02;group.add(groove);
-   // Light green Xtreme line: only visible on Xtreme stadium.
-   const guide=new T.Mesh(new T.TorusGeometry(1.17,.038,12,116),
-    new T.MeshStandardMaterial({color:0xb6f344,emissive:0x69b626,
-      emissiveIntensity:.84,metalness:.19,roughness:.2}));
-   guide.rotation.x=Math.PI/2;guide.position.y=.075;group.add(guide);
+   // The official green toothed rail has a pronounced inward entry bend at rear.
+   const railMat=new T.MeshStandardMaterial({color:0x26a844,metalness:.12,roughness:.38,
+    emissive:0x135523,emissiveIntensity:.22});
+   const railRadius=theta=>{
+    const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
+    return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
+   };
+   const railCurve=new T.CatmullRomCurve3(Array.from({length:150},(_,i)=>{
+    const theta=i*TAU/150,r=railRadius(theta);
+    return new T.Vector3(Math.cos(theta)*r,.101,Math.sin(theta)*r);
+   }),true,'centripetal');
+   const guide=new T.Mesh(new T.TubeGeometry(railCurve,220,.036,9,true),railMat);
+   const teeth=new T.InstancedMesh(new T.BoxGeometry(.042,.020,.025),railMat,76);
+   const tooth=new T.Object3D();
+   for(let i=0;i<76;i++){
+    const t=i*TAU/76,r=railRadius(t);
+    tooth.position.set(Math.cos(t)*r,.102,Math.sin(t)*r);
+    tooth.rotation.set(0,-t,0);tooth.updateMatrix();teeth.setMatrixAt(i,tooth.matrix);
+   }
+   teeth.instanceMatrix.needsUpdate=true;guide.add(teeth);group.add(guide);
    const pocketGroup=new T.Group();
-   const darkPocket=new T.MeshStandardMaterial({color:0x6b8397,metalness:.28,roughness:.43});
-   for(const [j,theta] of [-.70,.65,2.45].entries()){
-    const pocket=new T.Mesh(new T.RingGeometry(1.13,1.40,20,1,theta-.22,.44),
-     new T.MeshBasicMaterial({color:j===0?0x97de3a:0x7b96ae,transparent:true,
-       opacity:j===0?.8:.57,side:T.DoubleSide,depthWrite:false}));
-    pocket.rotation.x=-Math.PI/2;pocket.position.y=.049;pocketGroup.add(pocket);
-    const rimPost=new T.Mesh(new T.BoxGeometry(.24,.115,.20),bright);
-    rimPost.position.set(Math.cos(theta)*1.47,.08,Math.sin(theta)*1.47);
-    rimPost.rotation.y=-theta;pocketGroup.add(rimPost);
+   for(const zone of zones){
+    const begin=-zone.theta-zone.halfWidth,width=zone.halfWidth*2;
+    const floor=new T.Mesh(new T.RingGeometry(1.28,1.61,24,1,begin,width),
+     new T.MeshStandardMaterial({color:0x4d6170,metalness:.01,roughness:.75,
+      side:T.DoubleSide}));
+    floor.rotation.x=-Math.PI/2;floor.position.y=.007;pocketGroup.add(floor);
+    const accent=new T.Mesh(new T.RingGeometry(1.29,1.35,24,1,begin,width),
+     new T.MeshBasicMaterial({color:zone.kind==='extreme'?0xc75e57:0xe5c56c,
+      transparent:true,opacity:.72,depthWrite:false,side:T.DoubleSide}));
+    accent.rotation.x=-Math.PI/2;accent.position.y=.013;pocketGroup.add(accent);
+    const gate=new T.Mesh(new T.BoxGeometry(zone.kind==='extreme'?.34:.29,.06,.09),metal);
+    gate.position.set(Math.cos(zone.theta)*1.56,.025,Math.sin(zone.theta)*1.56);
+    gate.rotation.y=-zone.theta;pocketGroup.add(gate);
    }
    group.add(pocketGroup);
-   const frontGuide=new T.Mesh(new T.BoxGeometry(1.85,.052,.075),
-     new T.MeshStandardMaterial({color:0xbbf64d,emissive:0x5aaa20,emissiveIntensity:.75}));
-   frontGuide.position.set(0,.03,1.35);pocketGroup.add(frontGuide);
-   for(let j=0;j<68;j++){
-    const theta=j*TAU/68;
-    const tick=new T.Mesh(new T.BoxGeometry(.02,.003,.011),
-     new T.MeshBasicMaterial({color:j%8===0?0x52697c:0xaac0ce}));
-    tick.position.set(Math.cos(theta)*.86,.021,Math.sin(theta)*.86);
-    tick.rotation.y=-theta;group.add(tick);
-   }
-   // Embossed white side panels echo the stepped stadium shell.
-   for(let j=0;j<8;j++){
-    const theta=j*TAU/8;
-    const arm=new T.Mesh(new T.BoxGeometry(.16,.045,.27),shell);
-    arm.position.set(Math.cos(theta)*1.42,.055,Math.sin(theta)*1.42);
-    arm.rotation.y=-theta;group.add(arm);
+   for(let i=0;i<8;i++){
+    const theta=i*TAU/8;
+    const tab=new T.Mesh(new T.BoxGeometry(.13,.040,.16),bright);
+    tab.position.set(Math.cos(theta)*1.46,.040,Math.sin(theta)*1.46);
+    tab.rotation.y=-theta;group.add(tab);
    }
    // Effects are purely visual. Physics remains in sim-engine.js.
    fx3D=new T.Group();scene.add(fx3D);
@@ -572,7 +613,8 @@ function create(container,status,api){
    if(loser&&(finish==='over'||finish==='extreme')){
     x+=t.x/dist*age*.7;z+=t.y/dist*age*.7;
    }
-   mesh.root.position.set(x,.016+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
+   const slope=Math.min(1,Math.max(0,(Math.hypot(x,z)-.70)/.62));
+   mesh.root.position.set(x,.007+.094*slope*slope+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
    // Tilt direction comes from impact recoil and axial precession. Blade
    // heading only spins the top; it must not create unrelated body shaking.
@@ -608,7 +650,7 @@ function create(container,status,api){
     mesh.root.position.y+=Math.max(0,.02-bladeLow);
    }
   }
-  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.45:.84);
+  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>0)?0.50:.22);
   for(let i=0;i<trailLines.length;i++){
    const line=trailLines[i],points=trails[i]||[];
    line.visible=!!state&&!state.done&&points.length>=2;
