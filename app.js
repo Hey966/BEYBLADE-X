@@ -332,7 +332,10 @@ function renderCompleteness(){
  const missing=(window.BBX_PART_PHYSICS?.unverified||[]).filter(x=>x.status!=='resolved');
  const userPending=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id)&&!window.BBX_PART_STATS?.beys?.[b.id]?.parts?.blade);
  const conflicts=(window.BBX_PART_PHYSICS?.statConflicts||[]).filter(x=>x.status==='unresolved');
- el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突，另有 '+userPending.length+' 顆本機新增收藏尚未登錄戰刃能力。</p>'+
+ const catalogRecords=Object.values(window.BBX_PART_STATS?.beys||{})
+  .filter(x=>!L.ownId(x.id)).flatMap(x=>Object.values(x.parts||{}));
+ const packageVerified=catalogRecords.filter(p=>p.verification?.status==='verified-from-product-packaging').length;
+ el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突，另有 '+userPending.length+' 顆本機新增收藏尚未登錄戰刃能力。原有 '+catalogRecords.length+' 筆零件數據中，具原廠包裝可追溯核對的有 '+packageVerified+' 筆；其他不能視為官方實測。</p>'+
  '<div class="completeness-links">'+pending.map(b=>'<div><strong>'+esc(b.name)+'</strong>：完整透明圖待核對'+
  (b.wholeReferencePage?.startsWith('https://')?' · <a href="'+esc(b.wholeReferencePage)+'" target="_blank" rel="noopener noreferrer">'+esc(b.wholeReferenceNote||'查看同款商品參考')+'</a>':'')+'</div>').join('')+'</div>'+
  '<p>BX／UX 不使用的 CX 子零件，不列入缺圖。缺乏原始秤重或有爭議的能力值，仍保留待查證狀態。</p>'+
