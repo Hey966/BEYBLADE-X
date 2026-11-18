@@ -8,6 +8,8 @@ const db = window.BBX_PART_STATS;
 if(!api) { console.error('Collection API unavailable'); return; }
 const html = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const roles={attack:'攻擊',defense:'防禦',stamina:'持久',balance:'平衡'};
+const bitLabel=(code,owner)=>window.BBX_BIT_TYPES?.label?.(code,owner)||String(code??'');
+const bitSuffix=(code,owner)=>window.BBX_BIT_TYPES?.suffix?.(code,owner)||'';
 const partNames={blade:'戰刃 Blade',ratchet:'固鎖 Ratchet',bit:'軸心 Bit',lockChip:'鎖定紋章',mainBlade:'主刃',assistBlade:'輔助刃'};
 const abilities=()=>db?.beys||{};
 const getBey=id=>api.getBey(id);
@@ -42,7 +44,7 @@ function showPart(owner,kind){
   kind==='mainBlade'?'CX 主刃提供主要接觸輪廓。與輔助刃共同構成完整戰刃。':
   '戰刃決定主要重量分布、接觸輪廓與碰撞效果。';
  pane.innerHTML='<div class="ability-sheet">'+
-  '<span class="eyebrow">COMPONENT PROFILE</span><h2>'+html(r.name||bey?.name||'配件能力')+'</h2>'+
+  '<span class="eyebrow">COMPONENT PROFILE</span><h2>'+html((r.name||bey?.name||'配件能力')+(kind==='bit'?bitSuffix(bey?.bit,owner):''))+'</h2>'+
   '<p>'+html(partNames[kind]||kind)+' · 來源：'+html(bey?.name||owner)+'</p>'+
   (picture?'<img class="ability-image" src="'+html(picture)+'" alt="'+html(r.name)+'">':'')+
   '<div class="ability-metadata"><span>類型：'+html(roles[r.type]||'未標示')+'</span>'+
@@ -73,7 +75,7 @@ function showSource(owner,kind){
  const specs=[
    ['原廠戰刃',bey.blade],
    ['原廠固鎖',bey.ratchet],
-   ['原廠軸心',bey.bit],
+   ['原廠軸心',bitLabel(bey.bit,owner)],
    ['迴旋方向',bey.spinDirection==='L'?'左迴旋':'右迴旋']
  ];
  if(bey.system==='CX')specs.push(
@@ -85,7 +87,7 @@ function showSource(owner,kind){
   '<h2>'+html(bey.name)+'</h2>'+
   '<p class="source-subtitle">'+html(bey.system)+' · '+html(market)+' · '+html(pkg?.manufacturer||'')+'</p>'+
   (photo?'<div class="source-photo-frame"><img src="'+html(photo)+'" alt="'+html(bey.name)+' 商品圖" loading="lazy"></div>':'')+
-  '<div class="source-identified"><strong>你點選的零件</strong><p>'+html(label)+'：'+html(part?.name||'原廠零件')+'</p></div>'+
+  '<div class="source-identified"><strong>你點選的零件</strong><p>'+html(label)+'：'+html((part?.name||'原廠零件')+(kind==='bit'?bitSuffix(bey.bit,owner):''))+'</p></div>'+
   '<div class="source-original-specs">'+specs.filter(([,value])=>value).map(([name,value])=>'<div><span>'+html(name)+'</span><strong>'+html(value)+'</strong></div>').join('')+'</div>'+
   '<p class="source-subtitle">來源套組：'+html(pkg?.title||bey.packageId||'未登記')+
   (pkg?.productCode?'（'+html(pkg.productCode)+'）':'')+'</p>'+
@@ -359,7 +361,7 @@ function toSlots(c){
   {mode:'whole',blade:c.blade.source,ratchet:c.ratchet.owner,bit:c.bit.owner};
 }
 function fmt(n){return Number(n||0).toFixed(1)}
-function buildName(c){return c.blade.name+' '+c.ratchet.code+c.bit.code}
+function buildName(c){return c.blade.name+' '+c.ratchet.code+bitLabel(c.bit.code,c.bit.owner)}
 function versionedPhoto(url){
  if(!url)return '';
  return url.includes('own-g3393-01.png')?url+(url.includes('?')?'&':'?')+'v=rudder-clean-20261116':url;
@@ -371,7 +373,7 @@ function recommendationPictures(c){
   return '<button type="button" class="analysis-part-thumb source-photo" data-source-owner="'+html(owner)+'" data-source-kind="'+html(kind)+'" aria-label="查看'+html(label)+'的來源陀螺 '+html(origin?.name||'')+'">'+content+'<span>'+html(label)+'</span><small>查看來源</small></button>';
  };
  const ratchet=cell('固鎖 '+c.ratchet.code,partPicture(c.ratchet.owner,'ratchet'),c.ratchet.owner,'ratchet');
- const bit=cell('軸心 '+c.bit.code,partPicture(c.bit.owner,'bit'),c.bit.owner,'bit');
+ const bit=cell('軸心 '+bitLabel(c.bit.code,c.bit.owner),partPicture(c.bit.owner,'bit'),c.bit.owner,'bit');
  if(c.blade.mode==='cx'&&c.blade.mixed){
   const parts=[
    cell('鎖定紋章',partPicture(c.blade.chip,'lockChip'),c.blade.chip,'lockChip'),
@@ -403,7 +405,7 @@ function resultMarkup(team,title,mode,enemy){
    recommendationPictures(c)+
    '<h4>'+html(buildName(c))+'</h4>'+
    (c.blade.mode==='cx'?'<p class="analysis-cx">CX：紋章 '+html(getBey(c.blade.chip)?.lockChip)+' / 主刃 '+html(getBey(c.blade.main)?.mainBlade)+' / 輔助刃 '+html(getBey(c.blade.assist)?.assistBlade)+'</p>':'')+
-   '<p class="analysis-origin">固鎖：'+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心：'+html(c.bit.code)+'（'+html(c.bit.name)+'）</p>'+
+   '<p class="analysis-origin">固鎖：'+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心：'+html(bitLabel(c.bit.code,c.bit.owner))+'（'+html(c.bit.name)+'）</p>'+
    '<div class="analysis-vector"><span>攻 '+fmt(v.attack)+'</span><span>防 '+fmt(v.defense)+'</span><span>持 '+fmt(v.stamina)+'</span><span>衝 '+fmt(v.dash)+'</span></div>'+
    '<p>'+message+(usedSource?' CX 混搭圖片不代表實物外觀。':'')+'</p></article>';
  }).join('');
@@ -439,7 +441,7 @@ function opponentEntryHtml(index){
  const beyItems=rows().map(b=>({id:b.id,label:b.name+' ['+b.system+']'}));
  beyItems.push({id:'CX-CUSTOM',label:'CX 模組自訂（紋章＋主刃＋輔助刃）'});
  const ratchetItems=ratchets().map(x=>({id:x.owner,label:x.code+' ／ '+x.name}));
- const bitItems=bits().map(x=>({id:x.owner,label:x.code+' ／ '+x.name}));
+ const bitItems=bits().map(x=>({id:x.owner,label:bitLabel(x.code,x.owner)+' ／ '+x.name}));
  const cx=rows().filter(b=>b.system==='CX');
  const cxItems=field=>cx.map(b=>({id:b.id,label:b[field]+' ／ '+b.name}));
  const isCustom=choice.blade==='CX-CUSTOM';
@@ -493,7 +495,7 @@ function selectedOpponent(index){
   label=b.name;
  }
  const vector=combatVector(blade,ratchet,bit);
- return {label:label+' '+ratchet.code+bit.code,vector,ratchet,bit};
+ return {label:label+' '+ratchet.code+bitLabel(bit.code,bit.owner),vector,ratchet,bit};
 }
 function opponentSet(){
  const count=Number($('opponentCount')?.value||3);
@@ -523,7 +525,7 @@ function counterResultMarkup(team,enemies){
    recommendationPictures(c)+
    '<h4>'+html(buildName(c))+'</h4>'+
    (c.blade.mode==='cx'?'<p class="analysis-cx">CX：紋章 '+html(getBey(c.blade.chip)?.lockChip)+'／主刃 '+html(getBey(c.blade.main)?.mainBlade)+'／輔助刃 '+html(getBey(c.blade.assist)?.assistBlade)+'</p>':'')+
-   '<p class="analysis-origin">固鎖 '+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心 '+html(c.bit.code)+'（'+html(c.bit.name)+'）</p>'+
+   '<p class="analysis-origin">固鎖 '+html(c.ratchet.code)+'（'+html(c.ratchet.name)+'）<br>軸心 '+html(bitLabel(c.bit.code,c.bit.owner))+'（'+html(c.bit.name)+'）</p>'+
    '<div class="analysis-vector"><span>攻 '+fmt(v.attack)+'</span><span>防 '+fmt(v.defense)+'</span><span>持 '+fmt(v.stamina)+'</span><span>衝 '+fmt(v.dash)+'</span><span>抗爆 '+fmt(v.burst)+'</span></div>'+
    '<h5 class="counter-why-title">針對各對手的能力差距</h5>'+
    '<ul class="counter-reasons">'+why+'</ul></article>';

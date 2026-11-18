@@ -4,6 +4,10 @@ on:
     paths:
       - 'sim-engine.js'
       - 'sim-ui.js'
+      - 'bit-types.js'
+      - 'app.js'
+      - 'analysis.js'
+      - 'tests/bit-type-labels.cjs'
       - 'sim-audio.js'
       - 'sim-view.js'
       - 'data/collection.json'
@@ -30,7 +34,9 @@ jobs:
           node-version: '22'
       - name: Check syntax
         run: |
+          node --check bit-types.js
           node --check app.js
+          node --check analysis.js
           node --check sim-engine.js
           node --check sim-ui.js
           node --check sim-view.js
@@ -40,6 +46,8 @@ jobs:
           python-version: '3.12'
       - name: Verify offline Hasbro packaging corrections and sync guards
         run: python tests/test_part_sync_overrides.py
+      - name: Verify Bit classifications across collection and UI
+        run: node tests/bit-type-labels.cjs
       - name: Validate model and 3on3 restrictions
         run: node tests/sim-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization

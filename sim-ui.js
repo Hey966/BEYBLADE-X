@@ -5,6 +5,8 @@ const C=root.BBX_SIM_CORE,V=root.BBX_SIM_VIEW,api=root.BBX_COLLECTION_API,abilit
 const $=id=>document.getElementById(id);
 if(!C||!V||!api||!abilities){const e=$('simMessage');if(e)e.textContent="模擬器缺少收藏或能力資料。";return}
 const clean=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bitLabel=(code,owner)=>root.BBX_BIT_TYPES?.label?.(code,owner)||String(code??'');
+const bitSuffix=(code,owner)=>root.BBX_BIT_TYPES?.suffix?.(code,owner)||'';
 const beys=api.getBeys().filter(b=>abilities.beys?.[b.id]?.parts?.ratchet&&abilities.beys?.[b.id]?.parts?.bit);
 const cx=beys.filter(b=>b.system==='CX');
 const choose=(p,b,valid=true)=>'<option value="'+clean(p)+'"'+(String(p)===String(b)?' selected':'')+(valid?'':' disabled')+'>'+clean(beys.find(x=>x.id===p)?.name||p)+'</option>';
@@ -24,7 +26,7 @@ function syncSoundButton(){
 function options(ids,selected,part){
  return ids.map(b=>{
   const disabled=!abilities.beys?.[b.id]?.parts?.[part]?.available;
-  return '<option value="'+clean(b.id)+'"'+(b.id===selected?' selected':'')+(disabled?' disabled':'')+'>'+clean(b.name+(part==='ratchet'?' / '+b.ratchet:part==='bit'?' / '+b.bit:part==='lockChip'?' / '+b.lockChip:part==='mainBlade'?' / '+b.mainBlade:part==='assistBlade'?' / '+b.assistBlade:''))+'</option>';
+  return '<option value="'+clean(b.id)+'"'+(b.id===selected?' selected':'')+(disabled?' disabled':'')+'>'+clean(b.name+(part==='ratchet'?' / '+b.ratchet:part==='bit'?' / '+bitLabel(b.bit,b.id):part==='lockChip'?' / '+b.lockChip:part==='mainBlade'?' / '+b.mainBlade:part==='assistBlade'?' / '+b.assistBlade:''))+'</option>';
  }).join('');
 }
 function card(team,index){
@@ -70,7 +72,7 @@ function buildVisualPreview(specs,preview=true){
   const effective='<div class="sim-stat-grid" aria-label="目前配置實際參與對戰的能力">'+
    statNames.map(([label,key])=>'<span>'+clean(label)+' <b>'+statNum(spec.vector[key])+'</b></span>').join('')+'</div>';
   const source='<details class="sim-part-stats"><summary>查看各零件原始數值</summary>'+
-   (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(partNames[p.part]||p.part)+'</b> '+
+   (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(p.part==='bit'?'軸心 '+bitLabel(spec.tipProfile?.code,spec.config.bit):(partNames[p.part]||p.part))+'</b> '+
     statNames.map(([label,key])=>clean(label)+':'+statNum(p[key])).join(' / ')+
     (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+
     ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':
@@ -89,17 +91,17 @@ function buildVisualPreview(specs,preview=true){
    (measured?'參考整顆重量：'+Number(spec.totalWeightG).toFixed(1)+
      ' g（'+(derived?'含組件推算；':'')+'非本顆實秤）':
     '參考整顆重量：尚缺資料，採既有質量代理值')+
-   '；軸心：'+clean(spec.tipProfile?.code||'?')+'（'+clean(tipNames[spec.tipProfile?.tip]||'未知')+'）'+
+   '；軸心：'+clean(bitLabel(spec.tipProfile?.code,spec.config.bit))+'；接觸型態：'+clean(tipNames[spec.tipProfile?.tip]||'未知')+
    '</div>';
   const sourceIds=[...new Set((spec.massParts||[]).map(row=>row.sourceId).filter(Boolean))];
   const sourceLinks=sourceIds.filter(id=>root.BBX_PART_PHYSICS?.sources?.[id]&&sourceNames[id])
    .map(id=>'<a href="'+clean(root.BBX_PART_PHYSICS.sources[id])+'" target="_blank" rel="noopener noreferrer">'+
     clean(sourceNames[id])+'</a>');
   const citations=sourceLinks.length?'<div class="sim-source-links">參考資料：'+sourceLinks.join(' / ')+'</div>':'';
-  return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name)+'</strong>'+
+  return '<div class="sim-visual-side"><strong>'+(i===0?'我方':'對手')+'：'+clean(spec.name+bitSuffix(spec.tipProfile?.code,spec.config.bit))+'</strong>'+
    '<div class="sim-visual-pieces">'+images.map(p=>'<div class="sim-piece-preview">'+
     (p.image?'<img src="'+clean(p.image)+'" alt="'+clean(p.name)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">':'<div class="sim-part-empty">尚無圖片</div>')+
-    '<span>'+clean(p.name)+'</span><small>'+clean(p.value)+'</small></div>').join('')+'</div>'+
+    '<span>'+clean(p.name)+'</span><small>'+clean(p.kind==='bit'?bitLabel(p.value,p.owner):p.value)+'</small></div>').join('')+'</div>'+
     effective+weight+citations+source+(spec.flags?.length?'<div class="sim-build-flags">'+spec.flags.map(clean).join('；')+'</div>':'')+'</div>';
  }).join('');
  $('simActiveParts').innerHTML=content;
