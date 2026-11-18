@@ -8,6 +8,10 @@ on:
       - 'blade-types.js'
       - 'tests/blade-type-labels.cjs'
       - 'tests/site-official-audit.cjs'
+      - 'tests/missing-data-audit.cjs'
+      - 'data/image-status.json'
+      - 'data/image-sources.json'
+      - 'tools/create_png_assets.py'
       - 'style.css'
       - 'index.html'
       - 'app.js'
@@ -52,6 +56,8 @@ jobs:
           python-version: '3.12'
       - name: Verify offline Hasbro packaging corrections and sync guards
         run: python tests/test_part_sync_overrides.py
+      - name: Verify missing data status and referenced media
+        run: node tests/missing-data-audit.cjs
       - name: Check official rules, source integrity, layout and model units
         run: node tests/site-official-audit.cjs
       - name: Verify Blade and CX subcomponent classifications

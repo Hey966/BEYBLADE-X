@@ -74,8 +74,10 @@ def download(url: str) -> bytes:
     return data
 
 def process_task(task):
-    bey, layer, spec = task
+    bey, layer, spec, system = task
     if not spec:
+        if system in ("BX", "UX") and layer in ("lockChip", "mainBlade", "assistBlade"):
+            return {"id":bey["id"], "part":layer, "status":"not_applicable", "reason":"BX/UX does not contain CX-only subcomponents"}
         return {"id":bey["id"],"part":layer,"status":"awaiting_verified_photo"}
     relative_path=pathlib.PurePosixPath(spec["output"])
     if relative_path.is_absolute() or ".." in relative_path.parts or not str(relative_path).startswith("images/reference/") or relative_path.suffix.lower()!=".png":
@@ -103,7 +105,9 @@ def process_task(task):
 def run():
     data=json.loads(MANIFEST.read_text(encoding="utf-8"))
     layers=("whole","blade","ratchet","bit","lockChip","mainBlade","assistBlade")
-    tasks=[(bey,layer,bey.get(layer)) for pkg in data["packages"] for bey in pkg["items"] for layer in layers]
+    collection = json.loads((ROOT/"data"/"collection.json").read_text(encoding="utf-8"))
+    systems = {b["id"]:b["system"] for b in collection["beys"]}
+    tasks=[(bey,layer,bey.get(layer),systems[bey["id"]]) for pkg in data["packages"] for bey in pkg["items"] for layer in layers]
     with ThreadPoolExecutor(max_workers=6) as pool:
         outcomes=list(pool.map(process_task,tasks))
     # The collection card image represents the ASSEMBLED top ("whole").
