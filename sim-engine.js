@@ -11,6 +11,10 @@ const STADIUM_ZONES=Object.freeze([
  Object.freeze({kind:"extreme",theta:Math.PI/2,halfWidth:.47}),
  Object.freeze({kind:"over",theta:Math.PI-.61,halfWidth:.37})
 ]);
+function stadiumRailRadius(theta){
+ const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
+ return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
+}
 function stadiumPocket(theta,arena){
  if(arena!=="xtreme")return null;
  const zone=STADIUM_ZONES.find(z=>Math.abs(Math.atan2(Math.sin(theta-z.theta),Math.cos(theta-z.theta)))<z.halfWidth);
@@ -327,8 +331,9 @@ function createBattle(left,right,settings={}){
    // Low-gear Needle engages mainly on a tilted contact.
    const railTip=t.model.tipProfile||{};
    const tipCanEngage=!railTip.tiltGear||Math.abs(t.tilt)>.08||t.wobble>.28;
-   if(env.rail&&r>1.085&&r<R&&t.railCooldown===0&&t.spin>12&&tipCanEngage){
-    const theta=Math.atan2(t.y,t.x);
+   const theta=Math.atan2(t.y,t.x);
+   const railDistance=Math.abs(r-stadiumRailRadius(theta));
+   if(env.rail&&railDistance<.085&&r<R&&t.railCooldown===0&&t.spin>12&&tipCanEngage){
     // Xtreme rail contact creates a sudden inward-and-tangential sprint.
     // Unlike the older formula, the dash carries the top across the dish.
     const push=Math.min(1.4,m.railEfficiency*1.35)*
@@ -519,5 +524,5 @@ function simulateMatch(left,right,options={}){
   finalized:achieved,reason:achieved?"target_reached":"unresolved_round_limit",
   assumptions:"unitless_uncalibrated_model"};
 }
-root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,RIM_LIP_HEIGHT,STADIUM_ZONES,stadiumPocket,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
+root.BBX_SIM_CORE={VERSION,DT,MAX_TIME,RIM_LIP_HEIGHT,STADIUM_ZONES,stadiumPocket,stadiumRailRadius,makeBuild,validateDeck,createBattle,runBattle,simulateMatch,rand};
 })(typeof window!=="undefined"?window:this);

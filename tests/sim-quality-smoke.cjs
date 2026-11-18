@@ -43,7 +43,7 @@ includes('new T.MeshPhysicalMaterial(','stadium clear guard should use physical 
 includes('quality?.contactShadow','contact shadow must actually render');
 includes('quality?.spinBlur','spin blur must depend on the selected profile');
 includes('quality?.sparkBudget','impact spark count must be quality dependent');
-includes('points.slice(-quality.trailLimit)','motion trails must adapt');
+includes('points.slice(-Math.min(36,quality.trailLimit))','motion trails must adapt without reallocating GPU geometry');
 includes('g.traverse(obj=>{','newly assembled tops must receive active material quality');
 includes('setQuality,getQuality:()=>qualityMode','quality must be exposed by the view');
 assert.ok(ui.includes("const qualityKey='bbx-render-quality-v1'"));

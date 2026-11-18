@@ -110,6 +110,17 @@ def run():
     tasks=[(bey,layer,bey.get(layer),systems[bey["id"]]) for pkg in data["packages"] for bey in pkg["items"] for layer in layers]
     with ThreadPoolExecutor(max_workers=6) as pool:
         outcomes=list(pool.map(process_task,tasks))
+    # User-synced items are not in the verified-image source manifest yet.
+    # Keep all seven status slots, even after the asset generator is rerun.
+    manifest_ids={task[0]["id"] for task in tasks}
+    for user_bey in collection["beys"]:
+        if user_bey["id"] in manifest_ids:
+            continue
+        for part in layers:
+            not_applicable=user_bey["system"]!="CX" and part in ("lockChip","mainBlade","assistBlade")
+            outcomes.append({"id":user_bey["id"],"part":part,
+                "status":"not_applicable" if not_applicable else "awaiting_verified_photo",
+                "reason":"BX/UX does not contain CX modules" if not_applicable else "User-submitted release requires verified photo"})
     # The collection card image represents the ASSEMBLED top ("whole").
     # In the detail dialog, "blade" is a genuinely separate top blade.
     dbpath=ROOT/"data"/"collection.json"

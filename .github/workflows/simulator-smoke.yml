@@ -20,6 +20,10 @@ on:
       - 'sim-audio.js'
       - 'sim-view.js'
       - 'sim-camera.js'
+      - 'collection-local.js'
+      - 'tests/local-collection-smoke.cjs'
+      - 'tests/owner-sync-workflow-smoke.cjs'
+      - '.github/workflows/import-collected-top.yml'
       - 'sim-quality.js'
       - 'tests/sim-quality-smoke.cjs'
       - 'tests/stadium-camera-smoke.cjs'
@@ -55,6 +59,7 @@ jobs:
           node --check sim-ui.js
           node --check sim-view.js
           node --check sim-camera.js
+          node --check collection-local.js
           node --check sim-quality.js
           node --check sim-audio.js
       - uses: actions/setup-python@v5
@@ -74,6 +79,10 @@ jobs:
         run: node tests/sim-smoke.cjs
       - name: Verify camera orbit, zoom, and official stadium sectors
         run: node tests/stadium-camera-smoke.cjs
+      - name: Validate backup migration, user-authored stats and GitHub sync wiring
+        run: node tests/local-collection-smoke.cjs
+      - name: Dry-run owner-reviewed GitHub synchronization
+        run: node tests/owner-sync-workflow-smoke.cjs
       - name: Verify WebGL quality modes and controls
         run: node tests/sim-quality-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization

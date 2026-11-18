@@ -7,19 +7,21 @@ const html=read('index.html'),css=read('style.css');
 const coll=JSON.parse(read('data/collection.json'));
 const abilities=JSON.parse(read('data/part-abilities.json'));
 const physics=JSON.parse(read('data/part-physics.json'));
-assert.equal(coll.beys.length,19);
+assert.ok(coll.beys.length>=19);
+assert.equal(coll.beys.filter(b=>b.id.startsWith('OWN-')).length,19);
 let records=0,boxes=0;
 for(const bey of coll.beys)for(const [kind,part] of Object.entries(abilities.beys[bey.id]?.parts||{})){
  records++;
  const metrics=['attack','defense','stamina',...(kind==='ratchet'?['height']:kind==='bit'?['dash','burst']:[])];
- for(const key of metrics)assert.ok(Number.isFinite(part.stats?.[key])&&part.stats[key]>=0&&part.stats[key]<=100,bey.id+'/'+kind+'/'+key);
+ for(const key of metrics)assert.ok(Number.isFinite(part.stats?.[key])&&part.stats[key]>=0&&part.stats[key]<=(key==='height'?200:100),bey.id+'/'+kind+'/'+key);
  if(kind==='ratchet')assert.equal(part.stats.height,Number(bey.ratchet.split('-')[1]),bey.id);
- assert.ok(part.sourceUrl.startsWith('https://'),bey.id+'/'+kind);
+ assert.ok(part.sourceUrl.startsWith('https://')||
+  (bey.id.startsWith('LOCAL-')&&part.verification?.status==='user-entered-unverified'),bey.id+'/'+kind);
  if(part.verification?.status==='verified-from-product-packaging')boxes++;
 }
-assert.equal(records,78);
+assert.ok(records>=78);
 assert.equal(boxes,4);
-assert.equal(physics.unverified.length,2);
+assert.ok(physics.unverified.length>=2);
 assert.equal(physics.statConflicts.filter(x=>x.status==='unresolved').length,1);
 const ix=id=>html.indexOf('id="'+id+'"');
 assert.ok(ix('simArena')>=0&&ix('simStart')>ix('simArena'));

@@ -104,11 +104,14 @@ function buildVisualPreview(specs,preview=true){
      Number(p.weightG).toFixed(1)+' g'+
      ((p.weightMethod||'').includes('derived')||(p.weightMethod||'').includes('sum')?'（組件推算）':''))+
     (p.sourceUrl?.startsWith('https://')?'<div class="sim-source-links"><a href="'+clean(p.sourceUrl)+'" target="_blank" rel="noopener noreferrer">查看此零件公開能力目錄</a>（非官方實測值）</div>':'')+
-    (p.verification?'<div class="sim-source-links">數值已核對 Hasbro 包裝：'+
-     '<a href="'+clean(p.verification.sourceImage)+'" target="_blank" rel="noopener noreferrer">查看包裝背面</a>'+
-     '（原目錄攻'+statNum(p.verification.originalCatalog.attack)+
-     '／防'+statNum(p.verification.originalCatalog.defense)+
-     '／持'+statNum(p.verification.originalCatalog.stamina)+'）</div>':'')+
+    (p.verification?.status==='verified-from-product-packaging'?
+      '<div class="sim-source-links">數值已核對原廠包裝：'+
+      (p.verification.sourceImage?.startsWith('https://')?'<a href="'+clean(p.verification.sourceImage)+'" target="_blank" rel="noopener noreferrer">查看包裝背面</a>':'包裝連結未提供')+
+      (p.verification.originalCatalog?'（原目錄攻'+statNum(p.verification.originalCatalog.attack)+
+       '／防'+statNum(p.verification.originalCatalog.defense)+
+       '／持'+statNum(p.verification.originalCatalog.stamina)+'）':'')+'</div>':
+      p.verification?.status==='user-entered-unverified'?
+       '<div class="sim-source-links">使用者自填能力，尚未核對原廠，不屬官方認證數值。</div>':'')+
     '</div>').join('')+'</details>';
   const measured=spec.totalWeightG!==null&&Number.isFinite(spec.totalWeightG);
   const derived=(spec.massParts||[]).some(p=>(p.method||'').includes('derived')||
@@ -177,6 +180,7 @@ function syncPower(i,source){
  $('simPower'+i+'Number').value=String(value);
  $('simPower'+i+'Display').textContent=value.toLocaleString('zh-TW');
  if(runtime)clearMatch('模擬發射強度已變更，請重新開始。');
+ else invalidateBatch('發射強度已變更，請重新統計。');
 }
 function settings(){
  // Randomize only initial conditions between new matches, never a finish.
@@ -208,13 +212,14 @@ function fmt(n){return Number(n||0).toFixed(1)}
 function updateScore(){
  if(!runtime){$('simScore').textContent='我方 0 : 0 對手';$('simRound').textContent='尚未開始';return}
  $('simScore').textContent='我方 '+runtime.points[0]+' : '+runtime.points[1]+' 對手';
- $('simRound').textContent=runtime.complete?'比賽結束':'第 '+(runtime.round+1)+' 回合・'+(runtime.teams.length===3?'3 on 3':'1 on 1');
+ $('simRound').textContent=runtime.complete?'比賽結束':'第 '+(runtime.round+1)+' 回合・'+(runtime.teams[0].length===3?'3 on 3':'1 on 1');
 }
 function stopAnimation(){
  frameToken++;if(frameRequest)cancelAnimationFrame(frameRequest);
  frameRequest=0;
 }
 function clearMatch(message){
+ invalidateBatch('對戰設定已變更，舊批次結果已清除。');
  audio?.stop?.();
  stopAnimation();runtime=null;showed=null;updateScore();
  $('simNext').disabled=true;$('simPause').disabled=true;$('simPause').textContent='暫停';
@@ -392,13 +397,7 @@ function rerollMatch(){
   for(let k=0;k<deck.length;k++)selections[i][k]=deck[k];
  }
  // Cancel an in-progress batch, otherwise its old results could be shown for new parts.
- batchCancel=true;++runStamp;latestBatch=null;
- $('simBatchRun').disabled=false;
- $('simBatchCancel').disabled=true;
- $('simBatchDownload').disabled=true;
- $('simBatchBar').style.width='0%';
- $('simBatchProgress').textContent='已更換配件，請重新執行批次模擬。';
- $('simBatchOutput').textContent='新配置尚未執行批次模擬。';
+ invalidateBatch('已更換配件，請重新執行批次模擬。');
  renderTeams();
  clearMatch('雙方已隨機重新搭配'+count+' 顆陀螺的戰刃、固鎖與軸心（含 CX 模組）。比分已清零，場地與發射設定保留。請按開始新對戰。');
 }
@@ -426,7 +425,7 @@ for(const i of [0,1]){
  $('simAngle'+i).addEventListener('input',()=>{
   $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
   if(runtime)clearMatch('角度已變更，請重新開始。');
-  else{renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
+  else{invalidateBatch('發射角度已變更，請重新統計。');renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
  });
 }
 $('simSettingsReset').addEventListener('click',()=>{
@@ -443,6 +442,7 @@ $('simSettingsReset').addEventListener('click',()=>{
   $('simPower'+i+'Display').textContent='10,500';
   $('simAngle'+i+'Display').textContent='0°';
  }
+ viewer.setArena('xtreme');
  renderTeams();
  clearMatch('已重置對戰設定。每次新對戰預設換種子；關閉此功能可重播。自訂零件保留。');
 });
@@ -461,17 +461,24 @@ $('simSoundVolume')?.addEventListener('input',()=>{
 syncSoundButton();
 
 let runStamp=0;
+function invalidateBatch(message){
+ batchCancel=true;++runStamp;latestBatch=null;
+ $('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;
+ $('simBatchDownload').disabled=true;$('simBatchBar').style.width='0%';
+ $('simBatchProgress').textContent=message||'尚無可使用的批次資料。';
+ $('simBatchOutput').textContent='請用目前的配件及設定重新執行批次模擬。';
+}
 function renderBatch(result){
  latestBatch=result;
- const total=result.trials,w=result.win,loss=result.loss,draw=result.draw;
+ const total=result.trials,w=result.win,loss=result.loss,draw=result.draw,unresolved=result.unresolved||0;
  $('simBatchOutput').innerHTML='<div class="sim-batch-bars">'+
-  [['我方',w,'friendly'],['對手',loss,'hostile'],['平手',draw,'neutral']].map(([label,num,kind])=>
+  [['我方',w,'friendly'],['對手',loss,'hostile'],['平手',draw,'neutral'],['未決勝',unresolved,'neutral']].map(([label,num,kind])=>
    '<div><span>'+label+' '+num+' / '+total+'（'+(100*num/Math.max(1,total)).toFixed(1)+'%）</span>'+
    '<div class="sim-progress"><i class="'+kind+'" style="width:'+(100*num/Math.max(1,total))+'%"></i></div></div>').join('')+'</div>'+
   '<p>平均碰撞 '+fmt(result.collisions/Math.max(1,total))+' 次；平均 Xtreme Line 觸發 '+fmt(result.rails/Math.max(1,total))+' 次／完整比賽。</p>'+
   '<p>終結方式：'+Object.entries(result.finishes).map(([k,v])=>clean(k)+' '+v+' 次').join('、')+'</p>'+
-  '<p>這是模型模擬頻率，不是實戰測得的勝率。</p>';
- $('simBatchDownload').disabled=false;
+  '<p>「未決勝」表示達回合上限或連續平局，未達 4 分。此為未校正模型的模擬頻率，不是實戰測得勝率。</p>';
+ $('simBatchDownload').disabled=result.trials===0;
 }
 $('simBatchRun').addEventListener('click',async()=>{
  let teams;
@@ -480,7 +487,7 @@ $('simBatchRun').addEventListener('click',async()=>{
  batchCancel=false;latestBatch=null;
  const opts=settings(),count=Number($('simBatchCount').value);
  const base=opts.seed;
- const result={version:C.VERSION,trials:0,target:count,win:0,loss:0,draw:0,collisions:0,rails:0,finishes:{},model:"uncalibrated",mode:teams[0].length===3?'3v3':'1v1',
+ const result={version:C.VERSION,trials:0,target:count,win:0,loss:0,draw:0,unresolved:0,collisions:0,rails:0,finishes:{},model:"uncalibrated",mode:teams[0].length===3?'3v3':'1v1',
   seed:base,settings:opts,teamLabels:teams.map(t=>t.map(b=>b.name))};
  $('simBatchRun').disabled=true;$('simBatchCancel').disabled=false;$('simBatchDownload').disabled=true;
  const stamp=++runStamp;
@@ -490,7 +497,7 @@ $('simBatchRun').addEventListener('click',async()=>{
     const seed=(base+Math.imul(result.trials+1,0x85EBCA6B))>>>0;
     const sim=C.simulateMatch(teams[0],teams[1],{...opts,seed});
     result.trials++;
-    if(sim.winner===0)result.win++;else if(sim.winner===1)result.loss++;else result.draw++;
+    if(sim.winner===0)result.win++;else if(sim.winner===1)result.loss++;else if(sim.finalized)result.draw++;else result.unresolved++;
     for(const b of sim.rounds){
      result.finishes[b.finish]=(result.finishes[b.finish]||0)+1;
      result.collisions+=b.collisions;result.rails+=b.rails;
@@ -500,17 +507,23 @@ $('simBatchRun').addEventListener('click',async()=>{
    $('simBatchBar').style.width=(result.trials/count*100).toFixed(1)+'%';
    await new Promise(resolve=>setTimeout(resolve,0));
   }
+  if(batchCancel||runStamp!==stamp)return;
   renderBatch(result);
-  $('simBatchProgress').textContent=batchCancel?'已取消。保留 '+result.trials+' 場結果。':'批次模擬完成：'+result.trials+' 場。';
- }catch(error){report('批次模擬失敗：'+error.message,true)}
- finally{$('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;}
+  $('simBatchProgress').textContent='批次模擬完成：'+result.trials+' 場。';
+ }catch(error){if(runStamp===stamp)report('批次模擬失敗：'+error.message,true)}
+ finally{if(runStamp===stamp){$('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;}}
 });
-$('simBatchCancel').addEventListener('click',()=>{batchCancel=true});
+$('simBatchCancel').addEventListener('click',()=>invalidateBatch('批次模擬已取消，舊統計已清除。'));
 $('simBatchDownload').addEventListener('click',()=>{
  if(!latestBatch)return;
  const blob=new Blob([JSON.stringify(latestBatch,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BEYBLADE-X_simulation_'+latestBatch.seed+'.json';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+root.addEventListener?.('bbx-inventory-updated',()=>{
+ const next=api.getBeys().filter(b=>abilities.beys?.[b.id]?.parts?.ratchet&&abilities.beys?.[b.id]?.parts?.bit);
+ beys.splice(0,beys.length,...next);cx.splice(0,cx.length,...next.filter(b=>b.system==='CX'));
+ renderTeams();clearMatch('收藏或能力資料已更新，請重新確認配件再開始對戰。');
 });
 renderTeams();clearMatch('請選兩隊配件與發射設定。雙方從盤面上方落入各自半場，落地輕彈後自由對戰。');
 })(typeof window!=='undefined'?window:this);

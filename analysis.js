@@ -57,7 +57,9 @@ function showPart(owner,kind){
   (Number.isFinite(r.weightG)?'<span>重量：'+html(r.weightG)+' g</span>':'')+'</div>'+
   '<div class="ability-bars">'+lines+'</div>'+
   '<p class="ability-explain">'+html(desc)+(topstat&&v(r.stats,topstat)>0?' 這個配件的主要數值偏向'+html(roles[topstat])+'。':'')+'</p>'+
-  '<p class="analysis-note">圖表為來源資料所列數值，不是勝率。不同零件類別的數值不能直接等同實戰表現。</p>'+
+  '<p class="analysis-note">'+(r.verification?.status==='user-entered-unverified'?
+   '這是使用者自行輸入的能力，尚未經原廠核實。不應當成官方性能數值。':
+   '圖表為公開目錄所列數值，不是勝率。不同零件的數值不能直接等同實戰表現。')+'</p>'+
   (r.sourceUrl?.startsWith('https://')?'<a class="ability-source" target="_blank" rel="noopener noreferrer" href="'+html(r.sourceUrl)+'">查看公開零件能力來源 ↗</a>':'')+'</div>';
  dlg.showModal();
 }
@@ -196,6 +198,8 @@ function usable(choices){
 }
 function candidateList(style){
  const bs=bladePool(),rs=ratchets(),ts=bits();
+ const matchingBits=ts.filter(t=>roleOf(t.data)===style);
+ const eligibleBits=matchingBits.length?matchingBits:ts;
  if(!bs.length||!rs.length||!ts.length)return [];
  // Keep promising blades while retaining at least one source from each owned base.
  const estimated=bs.map(b=>({b,value:style==='attack'?b.stats.attack:style==='defense'?b.stats.defense:style==='stamina'?b.stats.stamina:(b.stats.attack+b.stats.defense+b.stats.stamina)/3}));
@@ -203,12 +207,12 @@ function candidateList(style){
  const selected=estimated.slice(0,80).map(x=>x.b);
  for(const b of bs.filter(b=>b.mode==='whole'))if(!selected.includes(b))selected.push(b);
  const result=[];
- for(const blade of selected)for(const ratchet of rs)for(const bit of ts){
+ for(const blade of selected)for(const ratchet of rs)for(const bit of eligibleBits){
   const c={blade,ratchet,bit,keys:[...blade.keys,'ratchet:'+ratchet.owner,'bit:'+bit.owner]};
   const evaluated=power(c,style);
   // Requested class is governed by Bit type. Non-matching Bits remain selectable only
   // when the requested class has no available compatible Bit.
-  if(evaluated.bitType!==style)continue;
+  if(matchingBits.length&&evaluated.bitType!==style)continue;
   c.score=evaluated.value;c.vec=evaluated.vec;c.type=evaluated.bitType;
   result.push(c);
  }
@@ -220,12 +224,15 @@ function pickDeck(pool,count){
  let best=null,bestValue=-Infinity;
  // Evaluate multiple first and second choices. Select the earliest valid third
  // from a score-ordered pool while respecting physical part IDs and same-model restrictions.
- for(let i=0;i<Math.min(28,bests.length);i++){
+ for(let i=0;i<Math.min(140,bests.length);i++){
   const first=bests[i];
+  const ceiling=bests[0]?.score||0;
+  if(best&&first.score+ceiling*2+4<=bestValue)break;
   let validSeconds=0;
   for(let j=0;j<bests.length;j++){
    if(i===j)continue;
    const second=bests[j];
+   if(best&&first.score+second.score+ceiling+4<=bestValue)break;
    if(!usable([first,second]))continue;
    const third=bests.find((c,k)=>k!==i&&k!==j&&usable([first,second,c]));
    if(third){
@@ -234,7 +241,7 @@ function pickDeck(pool,count){
     const score=team.reduce((sum,c)=>sum+c.score,0)+(diversity-1)*2;
     if(score>bestValue){bestValue=score;best=team;}
    }
-   if(++validSeconds>=8)break;
+   if(++validSeconds>=22)break;
   }
  }
  return best||[];
@@ -345,13 +352,13 @@ function pickCounterDeck(pool,count,enemies){
  let best=null,bestScore=-Infinity;
  // Search diverse leading pair choices, then maximize the team's ability
  // coverage of the selected opponents without reusing a physical part or a same-model component.
- for(const first of heads.slice(0,35)){
+ for(const first of heads.slice(0,55)){
   let secondCount=0;
   for(const second of shortlist){
    if(first===second||!usable([first,second]))continue;
    let localThird=null,localScore=-Infinity;
    // Consider both high-ranked global candidates and specialists for a specific enemy.
-   for(const third of heads.concat(shortlist.slice(0,95))){
+   for(const third of heads.concat(shortlist.slice(0,155))){
     if(third===first||third===second||!usable([first,second,third]))continue;
     const value=counterTeamScore([first,second,third],enemies);
     if(value>localScore){localThird=third;localScore=value;}
@@ -359,7 +366,7 @@ function pickCounterDeck(pool,count,enemies){
    if(localThird&&localScore>bestScore){
     bestScore=localScore;best=[first,second,localThird];
    }
-   if(++secondCount>=12)break;
+   if(++secondCount>=20)break;
   }
  }
  if(best)return best;
@@ -556,6 +563,18 @@ function counterResultMarkup(team,enemies){
   '<div class="counter-team-coverage"><h4>我方壓制覆蓋</h4>'+coverage+'</div>'+
   '<div class="analysis-result-grid">'+cards+'</div>';
 }
+function validateOpponentDeck(count){
+ const C=window.BBX_SIM_CORE;
+ if(!C?.makeBuild||!C?.validateDeck)throw Error('模擬規則尚未載入，不能驗證對手的 3 對 3 配件。');
+ const deck=opponentChoices.slice(0,count).map(choice=>C.makeBuild(
+  choice.blade==='CX-CUSTOM'?
+   {mode:'cx',chip:choice.chip,main:choice.main,assist:choice.assist,ratchet:choice.ratchet,bit:choice.bit}:
+   {mode:'whole',blade:choice.blade,ratchet:choice.ratchet,bit:choice.bit},
+  {beys:api.getBeys()},db
+ ));
+ C.validateDeck(deck);
+ return true;
+}
 function runCounter(){
  const enemies=opponentSet();
  if(!enemies||!enemies.length){
@@ -568,6 +587,8 @@ function runCounter(){
   $('counterResults').textContent='只支援 1 對 1 或 3 對 3 分析。';
   return;
  }
+ try{validateOpponentDeck(count)}
+ catch(error){lastCounter=[];$('counterResults').textContent='對手配置不符合 3 對 3 規則：'+error.message;return}
  $('counterResults').textContent='正在比較雙方完整能力與隊伍壓制覆蓋…';
  const pool=counterCandidates(enemies);
  const team=pickCounterDeck(pool,count,enemies);
@@ -586,5 +607,5 @@ $('counterResults')?.addEventListener('click',e=>{
  api.useSuggestion(lastCounter.map(toSlots),'能力壓制 '+lastCounter.length+' 顆配置');
 });
 renderOpponentEntries();
-if($('autoResults'))$('autoResults').textContent='可從 19 顆已登錄陀螺的零件庫，挑選攻擊、防禦、持久、平衡配置。';
+if($('autoResults'))$('autoResults').textContent='可從 '+rows().length+' 顆具有零件能力紀錄的陀螺挑選攻擊、防禦、持久、平衡配置。未核實項目仍應謹慎參考。';
 })();

@@ -282,8 +282,8 @@ function create(container,status,api){
    }
    ctx.beginPath();
    for(let i=0;i<=160;i++){
-    const t=i*TAU/160,back=Math.atan2(Math.sin(t+Math.PI/2),Math.cos(t+Math.PI/2));
-    const rr=radius*(1.17-.17*Math.exp(-Math.pow(back/.20,4)))/1.32;
+    const t=i*TAU/160;
+    const rr=radius*(root.BBX_SIM_CORE?.stadiumRailRadius?.(t)||1.17)/1.32;
     if(i===0)ctx.moveTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
     else ctx.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
    }
@@ -430,6 +430,40 @@ function create(container,status,api){
    materials.forEach(m=>{m.map?.dispose?.();m.dispose?.()});
   });
  }
+ /* Derive a 2.5-D silhouette from each local, already-verified transparent Blade PNG.
+ * A photo is not CAD: this traces the visible top contour only. */
+function makeBladeSilhouette(canvas){
+ try{
+  const pixels=canvas.getContext('2d',{willReadFrequently:true})
+   .getImageData(0,0,canvas.width,canvas.height).data;
+  const center=canvas.width/2,half=canvas.width*.49,steps=96,samples=[],radii=[];
+  let found=0;
+  for(let i=0;i<steps;i++){
+   const a=i*TAU/steps,cs=Math.cos(a),sn=Math.sin(a);
+   let r=0;
+   for(let k=half;k>=canvas.width*.12;k-=3){
+    const x=Math.round(center+cs*k),y=Math.round(center+sn*k);
+    if(x<0||y<0||x>=canvas.width||y>=canvas.height)continue;
+    if(pixels[(y*canvas.width+x)*4+3]>95){r=k;found++;break}
+   }
+   radii.push(r);
+  }
+  if(found<steps*.80)return null;
+  for(let i=0;i<steps;i++){
+   const tri=[radii[(i+steps-1)%steps],radii[i],radii[(i+1)%steps]].sort((a,b)=>a-b);
+   const radius=Math.max(.46,Math.min(1,tri[1]/half))*.16;
+   const a=i*TAU/steps;samples.push([Math.cos(a)*radius,Math.sin(a)*radius]);
+  }
+  const shape=new THREE.Shape();
+  samples.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));
+  shape.closePath();
+  const geometry=new THREE.ExtrudeGeometry(shape,{depth:.030,steps:1,bevelEnabled:true,
+   bevelSize:.0025,bevelThickness:.0025,bevelSegments:1,curveSegments:2});
+  geometry.rotateX(-Math.PI/2);
+  return geometry;
+ }catch(error){console.warn('Blade contour is not readable; retaining base geometry',error);return null}
+}
+
  function modelColor(str){
   let seed=0;for(const ch of String(str||''))seed=(seed*31+ch.charCodeAt(0))>>>0;
   const palette=[0x93b3c4,0xe8b56b,0xa4d4d8,0xbd92c4,0xb8c678,0xd2a3a0,0xe7d4aa];
@@ -444,15 +478,15 @@ function create(container,status,api){
   const ringMaterial=new THREE.MeshStandardMaterial({color:modelColor(spec.config.ratchet),
    metalness:.10,roughness:.44,transparent:true,opacity:.88,side:THREE.DoubleSide});
   ringMaterial.userData.qualityRole='ratchet';
-  const body=new THREE.Group(),ratchet=new THREE.Group(),bit=new THREE.Group();
+  const body=new THREE.Group(),ratchet=new THREE.Group(),bit=new THREE.Group(),bladeBase=new THREE.Group();
   const shapeIndex=spec.mode==='cx'?8:10;
   const blade=new THREE.Mesh(new THREE.CylinderGeometry(.142,.113,.042,shapeIndex),metallic);
-  blade.position.y=.127;body.add(blade);
+  blade.position.y=.127;bladeBase.add(blade);
   for(let j=0;j<7;j++){
    const element=new THREE.Mesh(new THREE.BoxGeometry(.048,.013,.048),metallic);
    const theta=j*TAU/7;
    element.position.set(Math.cos(theta)*.115,.15,Math.sin(theta)*.115);
-   element.rotation.y=theta;body.add(element);
+   element.rotation.y=theta;bladeBase.add(element);
   }
   // The ratchet is a hollow, translucent ring with its correct lobe count.
   // 0-XX is circular. 3-XX has three protrusions; 7-XX has seven.
@@ -487,6 +521,7 @@ function create(container,status,api){
   }
   const bitBody=new THREE.Mesh(new THREE.CylinderGeometry(.035,.015,.06,8),under);
   bitBody.position.y=.034;bit.add(bitBody);
+  body.add(bladeBase);
   g.add(body,ratchet,bit);
   const spinBlur=new THREE.Mesh(new THREE.RingGeometry(.108,.158,80),
    new THREE.MeshBasicMaterial({color:0xe9f2f6,transparent:true,opacity:0,
@@ -508,6 +543,15 @@ function create(container,status,api){
     if(renderVersion!==token||!THREE||!world)return;
     try{
      const square=p.kind==='ratchet'?getRatchetCanvas(img):getImageCanvas(img),texture=new THREE.CanvasTexture(square);
+     if(p.kind==='blade'||p.kind==='mainBlade'){
+      const contour=makeBladeSilhouette(square);
+      if(contour){
+       body.remove(bladeBase);dispose(bladeBase);
+       const contourMesh=new THREE.Mesh(contour,metallic);
+       contourMesh.position.y=.112;contourMesh.castShadow=true;contourMesh.receiveShadow=true;
+       body.add(contourMesh);
+      }
+     }
      texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(4,renderer?.capabilities?.getMaxAnisotropy?.()||1);
      const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
      const plane=new THREE.Mesh(new THREE.PlaneGeometry(dimensions[p.kind],dimensions[p.kind]),material);
@@ -623,10 +667,7 @@ function create(container,status,api){
    const railMat=new T.MeshStandardMaterial({color:0x26a844,metalness:.12,roughness:.38,
     emissive:0x135523,emissiveIntensity:.22});
    railMat.userData.qualityRole='rail';
-   const railRadius=theta=>{
-    const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
-    return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
-   };
+   const railRadius=root.BBX_SIM_CORE?.stadiumRailRadius||(()=>1.17);
    const railCurve=new T.CatmullRomCurve3(Array.from({length:150},(_,i)=>{
     const theta=i*TAU/150,r=railRadius(theta);
     return new T.Vector3(Math.cos(theta)*r,.101,Math.sin(theta)*r);
@@ -665,7 +706,9 @@ function create(container,status,api){
    // Effects are purely visual. Physics remains in sim-engine.js.
    fx3D=new T.Group();scene.add(fx3D);
    for(let i=0;i<2;i++){
-    const geo=new T.BufferGeometry().setFromPoints([new T.Vector3(),new T.Vector3()]);
+    const geo=new T.BufferGeometry(),data=new Float32Array(36*3);
+    geo.setAttribute('position',new T.BufferAttribute(data,3).setUsage(T.DynamicDrawUsage));
+    geo.setDrawRange(0,0);
     const line=new T.Line(geo,new T.LineBasicMaterial({
       color:i===0?0x45eeff:0xff9861,transparent:true,opacity:.85,depthWrite:false
     }));
@@ -792,8 +835,10 @@ function create(container,status,api){
    line.visible=!!state&&!state.done&&points.length>=2&&quality?.trailLimit>0;
    line.material.opacity=quality?.id==='ultra'?.87:quality?.id==='balanced'?.72:.46;
    if(line.visible){
-    line.geometry.dispose();
-    line.geometry=new THREE.BufferGeometry().setFromPoints(points.slice(-quality.trailLimit).map(p=>new THREE.Vector3(p.x,.13,p.y)));
+    const attribute=line.geometry.getAttribute('position'),sample=points.slice(-Math.min(36,quality.trailLimit));
+    for(let j=0;j<sample.length;j++)attribute.setXYZ(j,sample[j].x,.13,sample[j].y);
+    attribute.needsUpdate=true;
+    line.geometry.setDrawRange(0,sample.length);
    }
   }
   const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
@@ -847,6 +892,7 @@ function create(container,status,api){
     world?.remove(n.root);dispose(n.root);
     if(n.shadow){world?.remove(n.shadow);dispose(n.shadow);}
    }});
+   if(world)dispose(world);
    renderer?.dispose();container.replaceChildren();
   }
  };

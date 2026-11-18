@@ -1,7 +1,8 @@
 /* BEYBLADE X personal collection, v1.0. All browser edits are local until exported. */
 (() => {
 'use strict';
-const VERSION = 1, KEY = 'beyblade-x-966-v1';
+const VERSION = 2, KEY = 'beyblade-x-966-v1', L=window.BBX_LOCAL;
+if(!L){document.body.textContent='收藏資料驗證工具未載入，請重新整理。';return;}
 const seed = window.BBX_SEED;
 if (!seed || !Array.isArray(seed.beys)) { document.body.textContent='無法讀取收藏資料。'; return; }
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -13,14 +14,25 @@ const bladeLabel=(code,owner,kind='blade')=>window.BBX_BLADE_TYPES?.label?.(code
 const bladeSuffix=(code,owner,kind='blade')=>window.BBX_BLADE_TYPES?.suffix?.(code,owner,kind)||'';
 const loc = m => m==='US'?'美版':m==='JP'?'日版':'其他';
 const pmap = () => new Map(DB.packages.map(p=>[p.id,p]));
-let DB=clone(seed), decks=[], filter='ALL', partFilter='ratchet', active='collection', slots=[blank(),blank(),blank()];
+let DB=clone(seed),decks=[],customAbilities={},filter='ALL',partFilter='ratchet',active='collection',slots=[blank(),blank(),blank()];
 function blank(){return{mode:'whole',blade:'',chip:'',main:'',assist:'',ratchet:'',bit:''};}
-try { const x=JSON.parse(localStorage.getItem(KEY)||'null'); if(x&&x.version===VERSION){
- if(Array.isArray(x.additions)) DB.beys.push(...x.additions.filter(b=>b&&typeof b.id==='string'&&!DB.beys.some(o=>o.id===b.id)));
- if(Array.isArray(x.decks)) decks=x.decks.filter(d=>d&&Array.isArray(d.slots)).slice(0,100);
- if(Array.isArray(x.slots)&&x.slots.length===3) slots=x.slots;
- }}catch(e){console.warn('備份資料無法解析',e)}
-function save(){try {localStorage.setItem(KEY,JSON.stringify({version:VERSION,additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots}));return true}catch(e){notify('本機儲存失敗，請匯出備份');return false}}
+const seedIds=new Set(seed.beys.map(b=>b.id));
+function restore(raw){
+ const result=L.parseBackup(raw,seedIds);
+ DB=clone(seed);
+ DB.beys.push(...result.additions);DB.packages.push(...result.packages);
+ decks=result.decks;slots=result.slots;customAbilities=result.customAbilities;
+ const catalog=window.BBX_PART_STATS?.beys;
+ if(catalog){
+  for(const id of Object.keys(catalog))if(L.ownId(id))delete catalog[id];
+  Object.assign(catalog,customAbilities);
+ }
+}
+function storedData(){return{format:'BBX-966-BACKUP',version:VERSION,additions:DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id)),decks,slots,customAbilities};}
+try{const local=JSON.parse(localStorage.getItem(KEY)||'null');if(local)restore(local)}
+catch(e){console.warn('本機備份損壞，未自動載入',e)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(storedData()));return true}
+ catch(e){notify('本機儲存失敗，請匯出備份');return false}}
 let toastTimer;
 function notify(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
 function nav(v){if(!['collection','parts','builder','counter','sim','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();if(v==='data')renderCompleteness();window.scrollTo({top:0,behavior:'smooth'});}
@@ -158,11 +170,125 @@ function renderSaved(){$('savedDecks').innerHTML=decks.length?decks.map(d=>`<div
  $('savedDecks').querySelectorAll('[data-load]').forEach(n=>n.onclick=()=>{const d=decks.find(x=>x.id===n.dataset.load);if(d){slots=clone(d.slots);$('deckName').value=d.name;save();renderSlots();notify('已載入配置')}});
  $('savedDecks').querySelectorAll('[data-remove]').forEach(n=>n.onclick=()=>{if(!confirm('確定刪除這筆配置嗎？'))return;decks=decks.filter(x=>x.id!==n.dataset.remove);save();renderSaved()});}
 function download(obj,filename){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
-$('export').onclick=()=>download({format:'BBX-966-BACKUP',version:VERSION,exportedAt:new Date().toISOString(),base:seed.beys.map(b=>b.id),additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots},`BEYBLADE-X-backup-${new Date().toISOString().slice(0,10)}.json`);
-$('import').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const obj=JSON.parse(await f.text());if(obj.format!=='BBX-966-BACKUP'||!Array.isArray(obj.decks)||!Array.isArray(obj.additions))throw new Error('備份格式不符');if(!confirm('匯入將覆蓋本機資料，確定繼續？'))return;DB=clone(seed);DB.beys.push(...obj.additions.filter(b=>b&&typeof b.id==='string'&&!DB.beys.some(x=>x.id===b.id)));decks=obj.decks.slice(0,100);slots=Array.isArray(obj.slots)&&obj.slots.length===3?obj.slots:[blank(),blank(),blank()];save();all();notify('已匯入備份');}catch(err){notify(`匯入失敗：${err.message}`)}finally{e.target.value=''}};
-$('addForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const name=String(f.get('name')||'').trim(),blade=String(f.get('blade')||'').trim();if(!name||!blade)return;const sys=f.get('system'),market=f.get('market'),id=`LOCAL-${Date.now()}`;const pkgId=`PKG-${id}`;DB.packages.push({id:pkgId,title:'手動新增',manufacturer:market==='US'?'Hasbro':'Takara Tomy',market,count:1,productCode:'手動新增'});
- DB.beys.push({id,name,packageId:pkgId,ownMarket:market,system:sys,spinDirection:'R',type:null,blade,lockChip:sys==='CX'?'未登記':null,mainBlade:sys==='CX'?blade:null,assistBlade:sys==='CX'?'未登記':null,ratchet:String(f.get('ratchet')||'').trim(),bit:String(f.get('bit')||'').trim(),currentBuild:null,imagePath:null,imageStatus:'pending_user_photo',manufacturerBeyCode:null});
- save();all();e.target.reset();notify('已新增至本機。請匯出備份以保存。')};
+$('export').onclick=()=>download({...storedData(),exportedAt:new Date().toISOString(),base:seed.beys.map(b=>b.id),packages:DB.packages.filter(p=>p.id.startsWith('PKG-LOCAL-'))},`BEYBLADE-X-backup-${new Date().toISOString().slice(0,10)}.json`);
+$('import').onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  if(f.size>1_500_000)throw Error('備份超過 1.5 MB，請確認來源');
+  const obj=JSON.parse(await f.text());
+  const checked=L.parseBackup(obj,seedIds);
+  if(!confirm('即將匯入 '+checked.additions.length+' 顆新增收藏及 '+checked.decks.length+' 筆配置。這會覆蓋本機記錄，繼續嗎？'))return;
+  restore(obj);save();all();window.dispatchEvent(new Event('bbx-inventory-updated'));notify('已通過驗證並匯入備份');
+ }catch(err){notify('匯入失敗：'+err.message)}
+ finally{e.target.value=''}
+};
+function toggleCXInputs(){
+ const on=$('addForm').elements.system.value==='CX';
+ const group=$('addCXFields');
+ group.hidden=!on;
+ for(const el of group.querySelectorAll('input'))el.required=on;
+}
+$('addForm').elements.system.addEventListener('change',toggleCXInputs);
+toggleCXInputs();
+$('addForm').onsubmit=e=>{
+ e.preventDefault();const f=new FormData(e.target);
+ const id='LOCAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+ try{
+  const bey=L.sanitizeBey({
+   id,name:f.get('name'),blade:f.get('blade'),system:f.get('system'),
+   spinDirection:f.get('spinDirection'),ownMarket:f.get('market'),ratchet:f.get('ratchet'),bit:f.get('bit'),
+   lockChip:f.get('lockChip'),mainBlade:f.get('mainBlade'),assistBlade:f.get('assistBlade')
+  });
+  if(bey.system==='CX'&&(!bey.lockChip||!bey.mainBlade||!bey.assistBlade))throw Error('CX 必須填寫紋章、主刃與輔助刃');
+  DB.packages.push(L.makePackage(bey));DB.beys.push(bey);
+  save();all();renderManualAbilityOptions();e.target.reset();toggleCXInputs();
+  window.dispatchEvent(new Event('bbx-inventory-updated'));
+  notify('已新增至本機。請填入有來源的能力數值，再用於分析。');
+ }catch(error){notify('無法新增：'+error.message)}
+};
+/* Optional, explicitly user-entered part scores. Never invent missing catalog ratings. */
+function renderManualAbilityOptions(){
+ const select=$('manualAbilityBey');if(!select)return;
+ const previous=select.value;
+ const added=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id));
+ select.innerHTML='<option value="">選擇新收藏</option>'+added.map(b=>opt(b.id,b.name,previous)).join('');
+ const status=$('manualAbilityStatus');if(!added.length)status.textContent='尚未新增本機收藏。先在上方新增陀螺。';
+ renderManualAbilityPartOptions();
+}
+function renderManualAbilityPartOptions(){
+ const selector=$('manualAbilityPart'),b=getBey($('manualAbilityBey').value);
+ if(!selector)return;
+ const kinds=b?.system==='CX'?['blade','lockChip','mainBlade','assistBlade','ratchet','bit']:['blade','ratchet','bit'];
+ const names={blade:'完整戰刃',lockChip:'CX 鎖定紋章',mainBlade:'CX 主刃',assistBlade:'CX 輔助刃',ratchet:'固鎖',bit:'軸心'};
+ const before=selector.value;
+ selector.innerHTML=kinds.map(kind=>opt(kind,names[kind],before)).join('');
+ renderManualAbilityValues();
+}
+function renderManualAbilityValues(){
+ const b=getBey($('manualAbilityBey')?.value);
+ const kind=$('manualAbilityPart')?.value;
+ const r=customAbilities[b?.id]?.parts?.[kind];
+ const frm=$('manualAbilityForm');if(!frm)return;
+ for(const name of ['attack','defense','stamina','dash','burst']){
+  const input=frm.elements[name];
+  input.value=Number.isFinite(r?.stats?.[name])?r.stats[name]:(['dash','burst'].includes(name)&&kind!=='bit'?0:'');
+  input.required=kind==='bit'||!['dash','burst'].includes(name);
+  input.disabled=['dash','burst'].includes(name)&&kind!=='bit';
+ }
+ frm.elements.partType.value=r?.type||'balance';
+ frm.elements.sourceUrl.value=r?.sourceUrl||'';
+}
+$('manualAbilityBey')?.addEventListener('change',renderManualAbilityPartOptions);
+$('manualAbilityPart')?.addEventListener('change',renderManualAbilityValues);
+$('manualAbilityForm')?.addEventListener('submit',event=>{
+ event.preventDefault();
+ const frm=event.currentTarget,b=getBey($('manualAbilityBey').value),kind=$('manualAbilityPart').value;
+ if(!b||!L.ownId(b.id)){notify('請先選擇本機新增陀螺');return}
+ const stats={};
+ for(const k of ['attack','defense','stamina','dash','burst']){
+  const input=frm.elements[k];stats[k]=input.disabled?0:Number(input.value);
+  if(!input.disabled&&input.value===''){notify('請先完整填寫能力值，未知值不能自動假設為 0');return}
+ }
+ try{
+  const rec=L.sanitizeAbility(b.id,kind,{stats,type:frm.elements.partType.value,
+   sourceUrl:frm.elements.sourceUrl.value},b);
+  const entry=customAbilities[b.id]||{id:b.id,name:b.name,system:b.system,spinDirection:b.spinDirection,parts:{}};
+  entry.parts[kind]=rec;customAbilities[b.id]=entry;
+  window.BBX_PART_STATS.beys[b.id]=entry;
+  save();renderManualAbilityValues();renderCompleteness();
+  $('manualAbilityStatus').textContent=b.name+'／'+kind+' 已保存自填分數。資料尚未經原廠核實。';
+  window.dispatchEvent(new Event('bbx-inventory-updated'));
+ }catch(error){notify('無法保存能力：'+error.message)}
+});
+
+
+/* GitHub Issue -> owner-reviewed PR workflow. No access tokens in static Pages. */
+function renderGitHubSync(){
+ const select=$('syncBey');if(!select)return;
+ const current=select.value,additions=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id));
+ select.innerHTML='<option value="">選擇要送審的收藏</option>'+additions.map(b=>opt(b.id,b.name,current)).join('');
+ $('syncHint').textContent=additions.length?
+  '送出後會開啟 GitHub Issue。請登入本人帳號確認。成功處理後將建立待審核 Pull Request，需自行審核合併。':
+  '沒有待同步的新收藏。已上傳的資料不會重複送出。';
+}
+$('syncSubmit')?.addEventListener('click',()=>{
+ const b=DB.beys.find(row=>row.id===$('syncBey').value&&!seedIds.has(row.id));
+ if(!b){notify('請先選擇尚未同步的本機收藏');return}
+ try{
+  const bey=L.sanitizeBey(b),ability=customAbilities[b.id]||null;
+  const payload={schema:'BBX966-ADD-V2',bey,ability},json=JSON.stringify(payload);
+  if(json.length>5700)throw Error('資料太多，請匯出 JSON 備份交由 GitHub 審核');
+  const title='[COLLECTION-SYNC] '+bey.name+' '+bey.id;
+  const fence=String.fromCharCode(96).repeat(3);
+  const body='使用者提出收藏同步請求。此資料會公開於 GitHub，請以 Hey966 本人帳號確認。\n\n'+
+   fence+'bbx966-json\n'+json+'\n'+fence+'\n\n請確認產品版別與能力來源，未查證數值應保留待審狀態。';
+  const url='https://github.com/Hey966/BEYBLADE-X/issues/new?title='+encodeURIComponent(title)+
+   '&body='+encodeURIComponent(body);
+  const newTab=window.open(url,'_blank','noopener,noreferrer');
+  if(!newTab)window.location.assign(url);
+ }catch(error){notify('無法送審：'+error.message)}
+});
+
 /* Controlled access to live inventory and deck slots for the dedicated analysis module. */
 window.BBX_COLLECTION_API={
  getBeys:()=>DB.beys.slice(),
@@ -201,17 +327,21 @@ $('detailContent').addEventListener('click',handleAbilityClick);
 
 function renderCompleteness(){
  const el=$('dataCompleteness');if(!el)return;
- const owned=DB.beys.filter(b=>!b.id.startsWith('LOCAL-'));
+ const owned=DB.beys.filter(b=>seedIds.has(b.id));
  const pending=owned.filter(b=>b.imageStatus!=='verified_png');
  const missing=(window.BBX_PART_PHYSICS?.unverified||[]).filter(x=>x.status!=='resolved');
+ const userPending=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id)&&!window.BBX_PART_STATS?.beys?.[b.id]?.parts?.blade);
  const conflicts=(window.BBX_PART_PHYSICS?.statConflicts||[]).filter(x=>x.status==='unresolved');
- el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突。</p>'+
+ const catalogRecords=Object.values(window.BBX_PART_STATS?.beys||{})
+  .filter(x=>!L.ownId(x.id)).flatMap(x=>Object.values(x.parts||{}));
+ const packageVerified=catalogRecords.filter(p=>p.verification?.status==='verified-from-product-packaging').length;
+ el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突，另有 '+userPending.length+' 顆本機新增收藏尚未登錄戰刃能力。原有 '+catalogRecords.length+' 筆零件數據中，具原廠包裝可追溯核對的有 '+packageVerified+' 筆；其他不能視為官方實測。</p>'+
  '<div class="completeness-links">'+pending.map(b=>'<div><strong>'+esc(b.name)+'</strong>：完整透明圖待核對'+
  (b.wholeReferencePage?.startsWith('https://')?' · <a href="'+esc(b.wholeReferencePage)+'" target="_blank" rel="noopener noreferrer">'+esc(b.wholeReferenceNote||'查看同款商品參考')+'</a>':'')+'</div>').join('')+'</div>'+
  '<p>BX／UX 不使用的 CX 子零件，不列入缺圖。缺乏原始秤重或有爭議的能力值，仍保留待查證狀態。</p>'+
  '<p><a href="https://github.com/Hey966/BEYBLADE-X/blob/main/docs/missing-data-audit-2026-11-18.md" target="_blank" rel="noopener noreferrer">查看逐項查核報告</a></p>';
 }
-function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();}
+function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();renderManualAbilityOptions();renderGitHubSync();}
 $('search').oninput=renderCollection;$('marketFilter').onchange=renderCollection;
 all();
 })();

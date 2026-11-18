@@ -9,9 +9,13 @@ const physics=JSON.parse(read('data/part-physics.json'));
 const image=JSON.parse(read('data/image-status.json'));
 const count={};
 for(const row of image.results)count[row.status]=(count[row.status]||0)+1;
-assert.equal(coll.beys.length,19);
-assert.equal(image.results.length,133);
-assert.deepEqual(count,{ready:92,not_applicable:36,awaiting_verified_photo:3,needs_manual_review:2});
+assert.ok(coll.beys.length>=19);
+assert.equal(coll.beys.filter(b=>b.id.startsWith('OWN-')).length,19);
+assert.equal(image.results.length,coll.beys.length*7);
+assert.equal(count.ready,92);
+assert.ok(count.not_applicable>=36);
+assert.ok(count.awaiting_verified_photo>=3);
+assert.equal(count.needs_manual_review,2);
 const beys=Object.fromEntries(coll.beys.map(b=>[b.id,b]));
 for(const row of image.results){
  const bey=beys[row.id];assert.ok(bey,row.id);
@@ -25,13 +29,17 @@ for(const bey of coll.beys){
  assert.ok(abilities.beys[bey.id]);
  const rows=image.results.filter(r=>r.id===bey.id);
  assert.equal(rows.length,7);
- for(const part of ['blade','ratchet','bit'])assert.equal(rows.find(r=>r.part===part).status,'ready');
+ for(const part of ['blade','ratchet','bit']){
+  const state=rows.find(r=>r.part===part)?.status;
+  if(bey.id.startsWith('OWN-'))assert.equal(state,'ready');
+  else assert.equal(state,'awaiting_verified_photo');
+ }
 }
 assert.equal(coll.beys.filter(b=>b.imageStatus==='blade_only_exact_photo').length,5);
 const candidates=coll.beys.filter(b=>b.wholeReferencePage);
 assert.equal(candidates.length,5);
 for(const b of candidates)assert.match(b.wholeReferencePage,/^https:\/\//);
-assert.equal(physics.unverified.filter(r=>r.status==='still_unverified').length,2);
+assert.ok(physics.unverified.filter(r=>r.status==='still_unverified').length>=2);
 assert.equal(physics.statConflicts.filter(r=>r.status==='unresolved').length,1);
 const browser={window:{}};vm.runInNewContext(read('data.js'),browser);
 assert.equal(JSON.stringify(browser.window.BBX_SEED),JSON.stringify(coll));
