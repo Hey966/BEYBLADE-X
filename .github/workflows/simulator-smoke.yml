@@ -22,6 +22,8 @@ on:
       - 'sim-camera.js'
       - 'collection-local.js'
       - 'tests/local-collection-smoke.cjs'
+      - 'tests/owner-sync-workflow-smoke.cjs'
+      - '.github/workflows/import-collected-top.yml'
       - 'sim-quality.js'
       - 'tests/sim-quality-smoke.cjs'
       - 'tests/stadium-camera-smoke.cjs'
@@ -79,6 +81,8 @@ jobs:
         run: node tests/stadium-camera-smoke.cjs
       - name: Validate backup migration, user-authored stats and GitHub sync wiring
         run: node tests/local-collection-smoke.cjs
+      - name: Dry-run owner-reviewed GitHub synchronization
+        run: node tests/owner-sync-workflow-smoke.cjs
       - name: Verify WebGL quality modes and controls
         run: node tests/sim-quality-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization
