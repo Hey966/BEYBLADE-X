@@ -948,3 +948,9 @@ button.analysis-reference-hero .analysis-result-image{
  .sim-camera-controls button{font-size:11px;min-height:37px;padding:5px 3px}
  .sim-camera-tip{font-size:10px}
 }
+
+/* Rendering quality is separate from playback and physics. */
+.sim-quality-summary{margin:0 0 13px;padding:8px 10px;border-left:3px solid #70d7dc;
+ border-radius:4px;background:#183548;color:#c7e4ec;font-size:11px;line-height:1.6}
+.sim-control-grid #simQuality{font-weight:650}
+@media(max-width:720px){.sim-quality-summary{font-size:10px;padding:8px 9px}}

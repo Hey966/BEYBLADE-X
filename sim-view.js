@@ -16,9 +16,89 @@ function create(container,status,api){
  let currentArena='xtreme',lastState=null,lastFinishAge=0,lastCoastAge=0;
  let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null,rimFull=null,rimOpen=null;
  let rendered=[null,null],visualBuilds=[null,null],renderVersion=0,orbit=null;
+ let qualityMode='ultra',quality=root.BBX_SIM_QUALITY?.profile('ultra')||null,lights=null;
  const imageCache=new Map();
  let activeBattle=null,eventCursor=0,fx=[],trails=[[],[]],fx3D=null,fxSprites=[],trailLines=[];
  const colors=['#55efff','#ff9b45'];
+ function assignMaterialQuality(material){
+  const role=material?.userData?.qualityRole;if(!role||!quality)return;
+  if(role==='blade'){
+   material.metalness=quality.metalness;material.roughness=quality.roughness;
+   material.clearcoat=quality.clearcoat;material.clearcoatRoughness=quality.id==='ultra'?.12:.28;
+  }else if(role==='under'){
+   material.metalness=quality.metalness*.5;material.roughness=quality.roughness+.13;
+  }else if(role==='ratchet'){
+   material.metalness=quality.metalness*.28;material.roughness=quality.roughness+.15;
+  }else if(role==='guard'){
+   material.opacity=quality.guardOpacity;material.roughness=quality.id==='ultra'?.16:.34;
+   material.clearcoat=quality.clearcoat;material.clearcoatRoughness=.16;
+  }else if(role==='shell'){
+   material.roughness=quality.id==='ultra'?.37:.52;
+  }else if(role==='floor'){
+   material.roughness=quality.id==='ultra'?.40:.59;
+  }else if(role==='rail'){
+   material.roughness=quality.id==='ultra'?.24:.38;
+  }
+  material.needsUpdate=true;
+ }
+ function applyQuality(){
+  if(!renderer||!THREE||!world||!quality)return;
+  const dpr=root.BBX_SIM_QUALITY?.resolutionScale(qualityMode,root.devicePixelRatio||1)||1;
+  renderer.setPixelRatio(dpr);
+  renderer.shadowMap.enabled=quality.shadows;
+  renderer.shadowMap.type=THREE.PCFShadowMap;
+  renderer.shadowMap.needsUpdate=true;
+  renderer.toneMapping=quality.toneMapping?THREE.ACESFilmicToneMapping:THREE.NoToneMapping;
+  renderer.toneMappingExposure=quality.exposure;
+  if(lights){
+   lights.hemi.intensity=quality.hemisphere;
+   lights.key.intensity=quality.keyIntensity;
+   lights.key.castShadow=quality.shadows;
+   lights.fill.intensity=quality.fillIntensity;
+   lights.rim.intensity=quality.rimIntensity;
+   const size=Math.max(256,quality.shadowSize);
+   if(lights.key.shadow.mapSize.x!==size){
+    lights.key.shadow.map?.dispose?.();
+    lights.key.shadow.map=null;
+    lights.key.shadow.mapSize.set(size,size);
+   }
+   lights.key.shadow.radius=quality.id==='ultra'?1.6:2.5;
+  }
+  world.traverse(obj=>{
+   const materials=obj.material?[].concat(obj.material):[];
+   materials.forEach(assignMaterialQuality);
+  });
+  rendered.forEach(node=>{
+   if(!node)return;
+   if(node.shadow)node.shadow.visible=quality.contactShadow&&node.root.visible;
+   if(node.spinBlur)node.spinBlur.visible=false;
+  });
+  if(status)status.textContent=quality.label+'畫質｜BX-10 近似 3D｜360° 自由觀看（外形非官方 CAD）';
+  drawOrRender();
+ }
+ function setQuality(mode){
+  qualityMode=root.BBX_SIM_QUALITY?.normalize(mode)||'ultra';
+  quality=root.BBX_SIM_QUALITY?.profile(qualityMode)||quality;
+  if(renderer&&THREE)applyQuality();
+  return true;
+ }
+ function groundShadow(spec){
+  const canvas=document.createElement('canvas');canvas.width=64;canvas.height=64;
+  const context=canvas.getContext('2d');
+  const gradient=context.createRadialGradient(32,32,2,32,32,31);
+  gradient.addColorStop(0,'rgba(22,37,53,.86)');
+  gradient.addColorStop(.40,'rgba(22,37,53,.43)');
+  gradient.addColorStop(1,'rgba(22,37,53,0)');
+  context.fillStyle=gradient;context.fillRect(0,0,64,64);
+  const texture=new THREE.CanvasTexture(canvas);
+  const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:0,
+   depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1});
+  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(.50,.50),material);
+  shadow.rotation.x=-Math.PI/2;
+  shadow.scale.setScalar(Math.max(.6,(spec.radius||.18)/.18));
+  shadow.renderOrder=1;shadow.visible=false;world.add(shadow);
+  return shadow;
+ }
  function updateEffects(state,finalAge){
   if(!state||state!==activeBattle||state.elapsed<(activeBattle?._previousRenderElapsed||0)){
    activeBattle=state;eventCursor=0;fx=[];trails=[[],[]];
@@ -127,7 +207,9 @@ function create(container,status,api){
   visualBuilds=[builds?.[0]||null,builds?.[1]||null];
   renderVersion++;
   if(THREE&&world){
-   rendered.forEach(node=>{if(node){world.remove(node.root);dispose(node.root)}});
+   rendered.forEach(node=>{if(node){world.remove(node.root);dispose(node.root);
+    if(node.shadow){world.remove(node.shadow);dispose(node.shadow);}
+   }});
    rendered=visualBuilds.map((b,i)=>b?makeTop(b,i,renderVersion):null);
   }
   drawOrRender();
@@ -355,10 +437,13 @@ function create(container,status,api){
  }
  function makeTop(spec,i,version){
   const g=new THREE.Group(),parts=getParts(spec),heightCode=Number(spec.ratchetHeight)||60;
-  const metallic=new THREE.MeshStandardMaterial({color:modelColor(spec.name),metalness:.78,roughness:.26});
+  const metallic=new THREE.MeshPhysicalMaterial({color:modelColor(spec.name),metalness:.78,roughness:.26,clearcoat:.0});
+  metallic.userData.qualityRole='blade';
   const under=new THREE.MeshStandardMaterial({color:modelColor(spec.config.bit),metalness:.34,roughness:.33});
+  under.userData.qualityRole='under';
   const ringMaterial=new THREE.MeshStandardMaterial({color:modelColor(spec.config.ratchet),
    metalness:.10,roughness:.44,transparent:true,opacity:.88,side:THREE.DoubleSide});
+  ringMaterial.userData.qualityRole='ratchet';
   const body=new THREE.Group(),ratchet=new THREE.Group(),bit=new THREE.Group();
   const shapeIndex=spec.mode==='cx'?8:10;
   const blade=new THREE.Mesh(new THREE.CylinderGeometry(.142,.113,.042,shapeIndex),metallic);
@@ -403,6 +488,11 @@ function create(container,status,api){
   const bitBody=new THREE.Mesh(new THREE.CylinderGeometry(.035,.015,.06,8),under);
   bitBody.position.y=.034;bit.add(bitBody);
   g.add(body,ratchet,bit);
+  const spinBlur=new THREE.Mesh(new THREE.RingGeometry(.108,.158,80),
+   new THREE.MeshBasicMaterial({color:0xe9f2f6,transparent:true,opacity:0,
+    depthWrite:false,side:THREE.DoubleSide}));
+  spinBlur.rotation.x=-Math.PI/2;spinBlur.position.y=.183;spinBlur.visible=false;
+  body.add(spinBlur);
   // The blade image is up to 0.164 model units from its centre. Match its
   // displayed outer radius to the same per-build radius used for physics.
   // The small inset avoids alpha edges appearing to intersect on contact.
@@ -432,13 +522,18 @@ function create(container,status,api){
    img.src=p.src;
   }
   g.position.set(i===0?-.4: .4,0,0);
+  g.traverse(obj=>{
+   if(obj.isMesh){obj.castShadow=!obj.material?.transparent;obj.receiveShadow=true;}
+   if(obj.material)[].concat(obj.material).forEach(assignMaterialQuality);
+  });
   world.add(g);
-  return{root:g,blade:body,ratchet,bit};
+  const shadow=groundShadow(spec);
+  return{root:g,blade:body,ratchet,bit,spinBlur,shadow};
  }
  async function init3D(){
   try{
-   const T=await import(THREE_CDN);const gl=new T.WebGLRenderer({antialias:true,powerPreference:'low-power'});
-   gl.setPixelRatio(Math.min(1.7,root.devicePixelRatio||1));
+   const T=await import(THREE_CDN);const gl=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+   gl.setPixelRatio(root.BBX_SIM_QUALITY?.resolutionScale(qualityMode,root.devicePixelRatio||1)||1);
    gl.setClearColor(0x112f61,1);gl.outputColorSpace=T.SRGBColorSpace;
    const scene=new T.Scene();
    scene.background=new T.Color(0x112f61);
@@ -446,8 +541,15 @@ function create(container,status,api){
    const cam=new T.PerspectiveCamera(44,1,.1,25);
    const initial=root.BBX_STADIUM_CAMERA?.project?.(root.BBX_STADIUM_CAMERA.defaults);
    cam.position.set(initial?.x||0,initial?.y||3.5,initial?.z||2.45);cam.lookAt(0,.02,0);
-   scene.add(new T.HemisphereLight(0xf8fcff,0x5b789f,3.1));
+   const hemi=new T.HemisphereLight(0xf8fcff,0x5b789f,3.1);scene.add(hemi);
    const key=new T.DirectionalLight(0xfffbec,3.15);key.position.set(-2.2,4.2,2.8);scene.add(key);
+   key.shadow.camera.left=-2.4;key.shadow.camera.right=2.4;
+   key.shadow.camera.top=2.4;key.shadow.camera.bottom=-2.4;
+   key.shadow.camera.near=.4;key.shadow.camera.far=12;
+   key.shadow.bias=-.00022;key.shadow.normalBias=.016;
+   const fill=new T.DirectionalLight(0xb9ddff,0);fill.position.set(2.8,2.4,-2.1);scene.add(fill);
+   const rimLight=new T.PointLight(0xe7f8ff,0,8);rimLight.position.set(-1.4,1.6,-1.2);scene.add(rimLight);
+   lights={hemi,key,fill,rim:rimLight};
    const backgroundGrid=new T.GridHelper(8,24,0x6999cf,0x3061a2);
    backgroundGrid.position.y=-.29;
    scene.add(backgroundGrid);
@@ -455,11 +557,14 @@ function create(container,status,api){
    // Official BX-10-inspired white base and translucent, chamfered guard.
    // Visual-only normalized dimensions; not a manufacturer's CAD mesh.
    const shell=new T.MeshStandardMaterial({color:0xedf2f5,metalness:.04,roughness:.49,side:T.DoubleSide});
+   shell.userData.qualityRole='shell';
    const bright=new T.MeshStandardMaterial({color:0xffffff,metalness:.05,roughness:.38,side:T.DoubleSide});
    const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.03,roughness:.59,side:T.DoubleSide});
+   mat.userData.qualityRole='floor';
    const metal=new T.MeshStandardMaterial({color:0xaebfca,metalness:.10,roughness:.46});
-   const clear=new T.MeshStandardMaterial({color:0xf5fcff,metalness:.04,roughness:.26,
+   const clear=new T.MeshPhysicalMaterial({color:0xf5fcff,metalness:.04,roughness:.26,
     transparent:true,opacity:.20,depthWrite:false,side:T.DoubleSide});
+   clear.userData.qualityRole='guard';
    // White octagonal outer chassis with the centre carved away.
    const corners=[[-1.38,-1.48],[1.38,-1.48],[1.80,-1.12],[1.80,1.13],
     [1.40,1.48],[-1.40,1.48],[-1.80,1.13],[-1.80,-1.12]];
@@ -469,12 +574,12 @@ function create(container,status,api){
    const hole=new T.Path();hole.absarc(0,0,1.315,0,TAU,true);hull.holes.push(hole);
    const base=new T.Mesh(new T.ExtrudeGeometry(hull,{depth:.13,bevelEnabled:true,
     bevelThickness:.018,bevelSize:.018,bevelSegments:2,curveSegments:64}),shell);
-   base.rotation.x=-Math.PI/2;base.position.y=-.145;group.add(base);
+   base.rotation.x=-Math.PI/2;base.position.y=-.145;base.receiveShadow=true;group.add(base);
    // Radially sloped battle basin. Lower centre, gently rising outside.
    const bowlPoints=[[0,-.012],[.25,-.012],[.55,-.009],[.74,-.004],
     [.91,.007],[1.05,.027],[1.19,.055],[1.32,.082]];
    const bowl=new T.Mesh(new T.LatheGeometry(bowlPoints.map(([r,y])=>new T.Vector2(r,y)),120),mat);
-   group.add(bowl);
+   bowl.receiveShadow=true;group.add(bowl);
    const groove=new T.Mesh(new T.TorusGeometry(1.29,.014,10,116),metal);
    groove.rotation.x=Math.PI/2;groove.position.y=.089;group.add(groove);
    // Real BX-10 guard is polygonal, mostly clear, and open over the battle bowl.
@@ -517,6 +622,7 @@ function create(container,status,api){
    // The official green toothed rail has a pronounced inward entry bend at rear.
    const railMat=new T.MeshStandardMaterial({color:0x26a844,metalness:.12,roughness:.38,
     emissive:0x135523,emissiveIntensity:.22});
+   railMat.userData.qualityRole='rail';
    const railRadius=theta=>{
     const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
     return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
@@ -583,7 +689,7 @@ function create(container,status,api){
     sparkCtx.stroke();
    }
    const sparkTexture=new T.CanvasTexture(sparkCanvas);
-   for(let i=0;i<32;i++){
+   for(let i=0;i<80;i++){
     const material=new T.SpriteMaterial({map:sparkTexture,
       color:0xffe9ae,blending:T.AdditiveBlending,transparent:true,depthWrite:false});
     const sprite=new T.Sprite(material);
@@ -592,12 +698,13 @@ function create(container,status,api){
    }
    scene.add(group);
    THREE=T;renderer=gl;world=scene;camera=cam;stadium=group;rail=guide;pockets=pocketGroup;floorMaterial=mat;
+   applyQuality();
    container.replaceChildren(gl.domElement);
    gl.domElement.className='sim-three-canvas';
    orbit=root.BBX_STADIUM_CAMERA?.create(gl.domElement,cam,()=>renderState(lastState,{finalAge:lastFinishAge}))||null;
    setArena(currentArena);
    setBuilds(visualBuilds);
-   status.textContent='BX-10 正式盤近似 3D｜拖曳可 360° 旋轉，雙指／滾輪可縮放';
+   status.textContent=quality.label+'畫質｜BX-10 近似 3D｜拖曳可 360° 旋轉，雙指／滾輪可縮放';
    renderState(lastState,{finalAge:lastFinishAge});
   }catch(error){
    status.textContent='3D 載入失敗，已改用相同物理狀態的 2D 畫面。';
@@ -620,6 +727,8 @@ function create(container,status,api){
    const t=state?.tops?.[i],mesh=rendered[i];
    if(!mesh)continue;
    mesh.root.visible=!!t;
+   if(mesh.shadow)mesh.shadow.visible=!!t&&!!quality?.contactShadow;
+   if(mesh.spinBlur)mesh.spinBlur.visible=false;
    if(!t)continue;
    const terminal=state.done?state.terminal:null;
    const loser=terminal?.loser===i,finish=terminal?.finish;
@@ -630,6 +739,18 @@ function create(container,status,api){
    }
    const slope=Math.min(1,Math.max(0,(Math.hypot(x,z)-.70)/.62));
    mesh.root.position.set(x,.007+.094*slope*slope+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
+   if(mesh.shadow){
+    mesh.shadow.position.set(x,.011+.094*slope*slope,z);
+    mesh.shadow.material.opacity=(quality?.contactOpacity||0)*
+     Math.max(.08,1-Math.max(0,Number(t.height)||0)/1.2);
+    mesh.shadow.scale.setScalar(Math.max(.6,(mesh.root.scale.x||1)*(1+Math.max(0,Number(t.height)||0)*.38)));
+   }
+   if(mesh.spinBlur){
+    const spinning=Math.max(0,Number(t.spin)||0);
+    mesh.spinBlur.visible=!!quality?.spinBlur&&spinning>11&&!(loser&&finish==='burst');
+    mesh.spinBlur.material.opacity=mesh.spinBlur.visible?
+     Math.min(.34,Math.max(0,(spinning-11)/76*.35)):0;
+   }
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
    // Tilt direction comes from impact recoil and axial precession. Blade
    // heading only spins the top; it must not create unrelated body shaking.
@@ -668,21 +789,23 @@ function create(container,status,api){
   if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>0)?0.50:.22);
   for(let i=0;i<trailLines.length;i++){
    const line=trailLines[i],points=trails[i]||[];
-   line.visible=!!state&&!state.done&&points.length>=2;
+   line.visible=!!state&&!state.done&&points.length>=2&&quality?.trailLimit>0;
+   line.material.opacity=quality?.id==='ultra'?.87:quality?.id==='balanced'?.72:.46;
    if(line.visible){
     line.geometry.dispose();
-    line.geometry=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(p.x,.13,p.y)));
+    line.geometry=new THREE.BufferGeometry().setFromPoints(points.slice(-quality.trailLimit).map(p=>new THREE.Vector3(p.x,.13,p.y)));
    }
   }
   const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
   // Each physics event generates a short cluster of real spatial particles,
   // instead of a single nearly static flash at the collision point.
   const particles=[];
-  for(const event of fx.slice(-5)){
-   const count=event.kind==='hit'?8:event.kind==='dash'?6:event.kind==='finish'?10:event.kind==='wall'?5:3;
+  for(const event of fx.slice(-9)){
+   const base=event.kind==='hit'?8:event.kind==='dash'?6:event.kind==='finish'?10:event.kind==='wall'?5:3;
+   const count=Math.max(1,Math.ceil(base*(quality?.sparkScale||1)));
    for(let k=0;k<count;k++)particles.push({event,k,count});
   }
-  const visible=particles.slice(-fxSprites.length);
+  const visible=particles.slice(-Math.min(fxSprites.length,quality?.sparkBudget||28));
   for(let i=0;i<fxSprites.length;i++){
    const sprite=fxSprites[i],part=visible[i];
    if(!part){sprite.visible=false;continue}
@@ -716,11 +839,14 @@ function create(container,status,api){
  init3D();
  draw2D(null);
  return{
-  render:renderState,setArena,setBuilds,setCameraView,
+  render:renderState,setArena,setBuilds,setCameraView,setQuality,getQuality:()=>qualityMode,
   getCameraState:()=>orbit?.getState?.()||null,getVisuals:visualNames,
   destroy(){
    orbit?.destroy();
-   rendered.forEach(n=>{if(n){world?.remove(n.root);dispose(n.root)}});
+   rendered.forEach(n=>{if(n){
+    world?.remove(n.root);dispose(n.root);
+    if(n.shadow){world?.remove(n.shadow);dispose(n.shadow);}
+   }});
    renderer?.dispose();container.replaceChildren();
   }
  };

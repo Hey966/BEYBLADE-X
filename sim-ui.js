@@ -20,6 +20,26 @@ const buildDefault=id=>({mode:'whole',blade:id,chip:cx[0]?.id||'',main:cx[0]?.id
 const selections=[first.map(buildDefault),second.map(buildDefault)];
 let runtime=null,showed=null,frameToken=0,frameRequest=0,batchCancel=false,latestBatch=null;
 const viewer=V.create($('simArena'),$('simRenderStatus'),api);
+const qualityKey='bbx-render-quality-v1';
+const qualityNotes={
+ performance:'省電模式：降低 3D 解析度，關閉動態陰影與旋轉殘影。適合手機省電。',
+ balanced:'平衡模式：中等解析度與陰影、基本金屬高光和碰撞特效。',
+ ultra:'極致模式：最高 2× 解析度、2048 陰影、金屬高光、接觸陰影及高速旋轉殘影。'
+};
+const qualityInput=$('simQuality');
+try{
+ const saved=root.localStorage?.getItem(qualityKey);
+ if(Object.prototype.hasOwnProperty.call(qualityNotes,saved))qualityInput.value=saved;
+}catch(_error){/* Private browsing may block storage. */}
+function syncQuality(save=false){
+ const mode=Object.prototype.hasOwnProperty.call(qualityNotes,qualityInput.value)?qualityInput.value:'ultra';
+ qualityInput.value=mode;
+ viewer.setQuality?.(mode);
+ $('simQualitySummary').textContent=qualityNotes[mode]+' 僅影響 3D 渲染，不更改對戰結果；WebGL 不可用時仍使用 2D。';
+ if(save)try{root.localStorage?.setItem(qualityKey,mode)}catch(_error){/* Keep session value only. */}
+}
+qualityInput?.addEventListener('change',()=>syncQuality(true));
+syncQuality();
 const audio=root.BBX_SIM_AUDIO?.create?.()||null;
 function syncSoundButton(){
  const on=audio?.isEnabled?.()!==false;

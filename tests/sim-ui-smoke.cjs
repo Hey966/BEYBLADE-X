@@ -72,12 +72,18 @@ for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  nodes[id]={id,value,checked:id==='simSeedAuto',innerHTML:'',textContent:'',disabled:false,hidden:true,style:{},
   events:{},classList:{toggle(){}},addEventListener(type,handler){(this.events[type]??=[]).push(handler)}};
 }
-const renderEvents=[],arenaCalls=[],modelCalls=[],cameraCalls=[];
+const renderEvents=[],arenaCalls=[],modelCalls=[],cameraCalls=[],qualityCalls=[];
+const localPrefs=new Map();
+browser.localStorage={
+ getItem:key=>localPrefs.get(key)??null,
+ setItem:(key,value)=>{localPrefs.set(key,String(value));}
+};
 browser.BBX_COLLECTION_API={getBeys:()=>db.beys,getBey:id=>db.beys.find(b=>b.id===id)};
 browser.BBX_PART_STATS=abilities;
 browser.BBX_SIM_VIEW={create:()=>({
  setArena:value=>arenaCalls.push(value),
  setCameraView:value=>{cameraCalls.push(value);return true},
+ setQuality:value=>{qualityCalls.push(value);return true},
  setBuilds:items=>modelCalls.push(items.map(x=>x?.name)),
  getVisuals:spec=>[{name:'戰刃',value:spec.name,image:'images/reference/example.png'}],
  render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0,coast:options?.coastAge||0,lean:state?.tops?.[0]?.tilt??0})
@@ -95,6 +101,18 @@ function fire(id,type='click',value){
  for(const handler of nodes[id].events[type]||[])handler({target:{closest:()=>null}});
 }
 assert(modelCalls.length>0);
+assert.equal(nodes.simQuality.value,'ultra','first-run quality should select Ultra');
+assert.equal(qualityCalls[0],'ultra','Ultra profile must apply on initialization');
+const buildsBeforeQuality=modelCalls.length;
+const rendersBeforeQuality=renderEvents.length;
+for(const mode of ['performance','balanced','ultra']){
+ fire('simQuality','change',mode);
+ assert.equal(qualityCalls.at(-1),mode,'quality mode should apply immediately');
+ assert.equal(localPrefs.get('bbx-render-quality-v1'),mode,'quality choice should persist');
+ assert.equal(modelCalls.length,buildsBeforeQuality,'quality must not rebuild Beyblade parts');
+ assert.equal(renderEvents.length,rendersBeforeQuality,'quality control must not progress simulation in the UI');
+}
+assert(nodes.simQualitySummary.textContent.includes('2048'),'ultra status describes real 2048 shadow map');
 for(const [id,kind] of [['simCameraTop','top'],['simCameraFront','front'],['simCameraReset','reset']]){
  fire(id);
  assert.equal(cameraCalls.at(-1),kind,'camera preset should reach 3D renderer');
@@ -107,6 +125,7 @@ assert.equal(nodes.simSeedAuto.checked,false,'manual seed input must enable dete
 assert.equal(nodes.simSeed.value,'123456');
 fire('simSettingsReset');
 assert.equal(nodes.simSeedAuto.checked,true,'reset should re-enable fresh seeds');
+assert.equal(nodes.simQuality.value,'ultra','reset match settings must not reset independent quality preference');
 assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),
  'visible five-metric ratings must be shown for each current build');
 assert(nodes.simActiveParts.innerHTML.includes('查看各零件來源數值'),
