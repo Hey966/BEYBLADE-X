@@ -15,7 +15,7 @@ function coastRotation(top,age){
 function create(container,status,api){
  let currentArena='xtreme',lastState=null,lastFinishAge=0,lastCoastAge=0;
  let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null,rimFull=null,rimOpen=null;
- let rendered=[null,null],visualBuilds=[null,null],renderVersion=0;
+ let rendered=[null,null],visualBuilds=[null,null],renderVersion=0,orbit=null;
  const imageCache=new Map();
  let activeBattle=null,eventCursor=0,fx=[],trails=[[],[]],fx3D=null,fxSprites=[],trailLines=[];
  const colors=['#55efff','#ff9b45'];
@@ -122,7 +122,8 @@ function create(container,status,api){
   return getParts(spec).map(p=>({name:p.name,value:spec?.parts?.find(q=>q.key===p.kind)?.code||getBey(p.owner)?.name||'',
    image:p.src,owner:p.owner,kind:p.kind}));
  }
- function setBuilds(builds){
+ function setCameraView(preset){if(!orbit)return false;orbit.preset(preset);return true}
+  function setBuilds(builds){
   visualBuilds=[builds?.[0]||null,builds?.[1]||null];
   renderVersion++;
   if(THREE&&world){
@@ -427,8 +428,9 @@ function create(container,status,api){
    const scene=new T.Scene();
    scene.background=new T.Color(0x112f61);
    scene.fog=new T.Fog(0x112f61,5.2,10);
-   const cam=new T.PerspectiveCamera(43,1,.1,25);
-   cam.position.set(0,3.5,2.45);cam.lookAt(0,0,0);
+   const cam=new T.PerspectiveCamera(44,1,.1,25);
+   const initial=root.BBX_STADIUM_CAMERA?.project?.(root.BBX_STADIUM_CAMERA.defaults);
+   cam.position.set(initial?.x||0,initial?.y||3.5,initial?.z||2.45);cam.lookAt(0,.02,0);
    scene.add(new T.HemisphereLight(0xf8fcff,0x5b789f,3.1));
    const key=new T.DirectionalLight(0xfffbec,3.15);key.position.set(-2.2,4.2,2.8);scene.add(key);
    const backgroundGrid=new T.GridHelper(8,24,0x6999cf,0x3061a2);
@@ -536,9 +538,10 @@ function create(container,status,api){
    THREE=T;renderer=gl;world=scene;camera=cam;stadium=group;rail=guide;pockets=pocketGroup;floorMaterial=mat;
    container.replaceChildren(gl.domElement);
    gl.domElement.className='sim-three-canvas';
+   orbit=root.BBX_STADIUM_CAMERA?.create(gl.domElement,cam,()=>renderState(lastState,{finalAge:lastFinishAge}))||null;
    setArena(currentArena);
    setBuilds(visualBuilds);
-   status.textContent='3D 即時畫面｜白色立體盤・亮綠導軌・零件貼圖（外形近似）';
+   status.textContent='BX-10 正式盤近似 3D｜拖曳可 360° 旋轉，雙指／滾輪可縮放';
    renderState(lastState,{finalAge:lastFinishAge});
   }catch(error){
    status.textContent='3D 載入失敗，已改用相同物理狀態的 2D 畫面。';
@@ -646,17 +649,20 @@ function create(container,status,api){
    const power=Math.max(.35,Math.min(2.2,Number(recent.strength)||.7));
    const shake=(impact?.035:.012)*power*t;
    const zoom=(impact?.22:.11)*t;
-   camera.position.set(shake*Math.sin(now*93),3.5-zoom+shake*Math.sin(now*123),2.45-zoom+shake*Math.cos(now*107));
-  }else camera.position.set(0,3.5,2.45);
-  camera.lookAt(0,0,0);
+   if(orbit)orbit.apply({x:shake*Math.sin(now*93),y:-zoom+shake*Math.sin(now*123),z:-zoom+shake*Math.cos(now*107)});
+   else camera.position.set(shake*Math.sin(now*93),3.5-zoom,2.45-zoom);
+  }else if(orbit)orbit.apply();
+  else camera.position.set(0,3.5,2.45);
+  if(!orbit)camera.lookAt(0,0,0);
   renderer.render(world,camera);
  }
  init3D();
  draw2D(null);
  return{
-  render:renderState,setArena,setBuilds,
-  getVisuals:visualNames,
+  render:renderState,setArena,setBuilds,setCameraView,
+  getCameraState:()=>orbit?.getState?.()||null,getVisuals:visualNames,
   destroy(){
+   orbit?.destroy();
    rendered.forEach(n=>{if(n){world?.remove(n.root);dispose(n.root)}});
    renderer?.dispose();container.replaceChildren();
   }
