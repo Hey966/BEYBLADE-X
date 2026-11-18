@@ -348,6 +348,7 @@ for(let power of [10500,14000]){
  }
 }
 assert(attackSelfKOs<14,'strong attack Bits should not routinely self-KO');
+console.log('BX-10 KO calibration',JSON.stringify({attackKnockouts,attackSelfKOs}));
 assert(attackKnockouts>=10,'raised lip must still allow opponent knockouts');
 let clippingFrames=0,checkedFrames=0;
 for(let seed=1;seed<=24;seed++){
