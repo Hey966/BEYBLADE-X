@@ -57,7 +57,9 @@ function showPart(owner,kind){
   (Number.isFinite(r.weightG)?'<span>重量：'+html(r.weightG)+' g</span>':'')+'</div>'+
   '<div class="ability-bars">'+lines+'</div>'+
   '<p class="ability-explain">'+html(desc)+(topstat&&v(r.stats,topstat)>0?' 這個配件的主要數值偏向'+html(roles[topstat])+'。':'')+'</p>'+
-  '<p class="analysis-note">圖表為來源資料所列數值，不是勝率。不同零件類別的數值不能直接等同實戰表現。</p>'+
+  '<p class="analysis-note">'+(r.verification?.status==='user-entered-unverified'?
+   '這是使用者自行輸入的能力，尚未經原廠核實。不應當成官方性能數值。':
+   '圖表為公開目錄所列數值，不是勝率。不同零件的數值不能直接等同實戰表現。')+'</p>'+
   (r.sourceUrl?.startsWith('https://')?'<a class="ability-source" target="_blank" rel="noopener noreferrer" href="'+html(r.sourceUrl)+'">查看公開零件能力來源 ↗</a>':'')+'</div>';
  dlg.showModal();
 }
