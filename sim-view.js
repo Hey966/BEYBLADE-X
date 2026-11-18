@@ -159,7 +159,7 @@ function create(container,status,api){
    fallback.width=Math.round(width*dpr);fallback.height=Math.round(height*dpr)
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
-  const cx=width/2,cy=height/2,radius=Math.min(width*.45,height*.44);
+  const cx=width/2,cy=height/2,radius=Math.min(width*.345,height*.325);
   // Arena reference: white shell, bright lime rail and dark blue floor grid.
   const backdrop=ctx.createLinearGradient(0,0,0,height);
   backdrop.addColorStop(0,'#24508a');backdrop.addColorStop(.5,'#123b78');
@@ -173,34 +173,49 @@ function create(container,status,api){
   const shake=lastImpact?Math.min(4.4,1.1+(lastImpact.strength||.7)*2.4)*(1-(stamp-lastImpact.t)/.27):0;
   ctx.save();
   if(shake)ctx.translate(Math.sin(stamp*103)*shake,Math.cos(stamp*127)*shake);
-  ctx.fillStyle='#aabdc9';
-  ctx.beginPath();ctx.ellipse(cx,cy+radius*.13,radius*1.13,radius*1.02,0,0,TAU);ctx.fill();
-  ctx.fillStyle='#fafcff';
-  ctx.beginPath();ctx.arc(cx,cy,radius*1.08,0,TAU);ctx.fill();
-  ctx.lineWidth=6;ctx.strokeStyle='#a1b4c4';ctx.stroke();
-  ctx.fillStyle=currentArena==='xtreme'?'#eef3f7':'#bdcfdb';
-  ctx.beginPath();ctx.arc(cx,cy,radius*.91,0,TAU);ctx.fill();
-  ctx.lineWidth=2;ctx.strokeStyle='#9aafc0';ctx.stroke();
+  // Same official front zones in 2D and 3D; the fallback remains non-orbiting.
+  const corners2D=[[-1.38,-1.48],[1.38,-1.48],[1.80,-1.12],[1.80,1.13],
+   [1.40,1.48],[-1.40,1.48],[-1.80,1.13],[-1.80,-1.12]];
+  const k=radius/1.32;
+  ctx.beginPath();
+  corners2D.forEach(([x,z],i)=>i?ctx.lineTo(cx+x*k,cy+z*k):ctx.moveTo(cx+x*k,cy+z*k));
+  ctx.closePath();ctx.fillStyle='#e5edf1';
+  ctx.shadowColor='rgba(8,15,27,.42)';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+  ctx.lineWidth=5;ctx.strokeStyle='#b7c7d2';ctx.stroke();
+  const bowlColor=ctx.createRadialGradient(cx,cy,radius*.03,cx,cy,radius);
+  bowlColor.addColorStop(0,currentArena==='xtreme'?'#ecf3f6':'#c8d7dd');
+  bowlColor.addColorStop(1,currentArena==='xtreme'?'#ffffff':'#e1eaef');
+  ctx.beginPath();ctx.arc(cx,cy,radius,0,TAU);
+  ctx.fillStyle=bowlColor;ctx.fill();
+  ctx.lineWidth=3;ctx.strokeStyle='#c1cfd8';ctx.stroke();
+  const zones2D=root.BBX_SIM_CORE?.STADIUM_ZONES||[];
   if(currentArena==='xtreme'){
-   ctx.strokeStyle='#a7ed43';ctx.lineWidth=8;
-   ctx.shadowColor='#a6ff4d';ctx.shadowBlur=12;
-   ctx.beginPath();ctx.arc(cx,cy,radius*.96,0,TAU);ctx.stroke();
-   ctx.shadowBlur=0;
-   for(const [i,angle] of [-.70,.65,2.45].entries()){
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,radius*.95,angle-.19,angle+.19);ctx.closePath();
-    ctx.fillStyle=i===0?'rgba(161,244,63,.20)':'rgba(69,107,139,.20)';ctx.fill();
+   for(const z of zones2D){
+    const a=z.theta-z.halfWidth,b=z.theta+z.halfWidth;
+    ctx.beginPath();ctx.arc(cx,cy,radius*1.22,a,b);
+    ctx.arc(cx,cy,radius*.99,b,a,true);ctx.closePath();
+    ctx.fillStyle=z.kind==='extreme'?'#706671':'#6c8190';ctx.fill();
+    ctx.strokeStyle=z.kind==='extreme'?'#cd8170':'#e2d188';
+    ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,radius*.99,a,b);ctx.stroke();
    }
-   // Brighter raised wall segments; leave physical gaps at the pocket mouths.
-   ctx.strokeStyle='#fefefe';ctx.lineWidth=5;
-   ctx.shadowColor='rgba(55,81,104,.42)';ctx.shadowBlur=4;
-   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
-    ctx.beginPath();ctx.arc(cx,cy,radius*1.025,from,to);ctx.stroke();
+   ctx.beginPath();
+   for(let i=0;i<=160;i++){
+    const t=i*TAU/160,back=Math.atan2(Math.sin(t+Math.PI/2),Math.cos(t+Math.PI/2));
+    const rr=radius*(1.17-.17*Math.exp(-Math.pow(back/.20,4)))/1.32;
+    if(i===0)ctx.moveTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
+    else ctx.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
    }
-   ctx.shadowBlur=0;
+   ctx.strokeStyle='#2fad47';ctx.lineWidth=7;ctx.shadowColor='rgba(34,160,68,.25)';
+   ctx.shadowBlur=7;ctx.stroke();ctx.shadowBlur=0;
+   const arcs=zones2D.map(z=>[z.theta-z.halfWidth,z.theta+z.halfWidth]).sort((a,b)=>a[0]-b[0]);
+   let from=0;ctx.lineWidth=7;ctx.strokeStyle='#fbfdff';
+   for(const [a,b] of [...arcs,[TAU,TAU]]){
+    if(a>from){ctx.beginPath();ctx.arc(cx,cy,radius*1.04,from,a);ctx.stroke()}
+    from=Math.max(from,b);
+   }
   }else{
-   ctx.strokeStyle='#5b829b';ctx.lineWidth=4;
-   ctx.beginPath();ctx.arc(cx,cy,radius*.94,0,TAU);ctx.stroke();
+   ctx.lineWidth=7;ctx.strokeStyle='#fbfdff';
+   ctx.beginPath();ctx.arc(cx,cy,radius*1.04,0,TAU);ctx.stroke();
   }
   ctx.setLineDash([2,9]);ctx.strokeStyle='rgba(45,64,89,.3)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,radius*.65,0,TAU);ctx.stroke();ctx.setLineDash([]);
@@ -319,7 +334,7 @@ function create(container,status,api){
   }
   ctx.restore();
   ctx.font='11px system-ui';ctx.fillStyle='#bcd7e9';
-  ctx.fillText(currentArena==='xtreme'?'Xtreme 模擬盤｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
+  ctx.fillText(currentArena==='xtreme'?'BX-10 正式盤（外形近似）｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
   if(state?.done){
    const labels={spin:'持久勝利',burst:'爆裂勝利',over:'擊飛勝利',extreme:'極限勝利',draw:'平手'};
    ctx.font='bold 15px system-ui';ctx.fillStyle='#ffddab';
