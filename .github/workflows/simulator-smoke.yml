@@ -7,6 +7,9 @@ on:
       - 'bit-types.js'
       - 'blade-types.js'
       - 'tests/blade-type-labels.cjs'
+      - 'tests/site-official-audit.cjs'
+      - 'style.css'
+      - 'index.html'
       - 'app.js'
       - 'analysis.js'
       - 'tests/bit-type-labels.cjs'
@@ -49,6 +52,8 @@ jobs:
           python-version: '3.12'
       - name: Verify offline Hasbro packaging corrections and sync guards
         run: python tests/test_part_sync_overrides.py
+      - name: Check official rules, source integrity, layout and model units
+        run: node tests/site-official-audit.cjs
       - name: Verify Blade and CX subcomponent classifications
         run: node tests/blade-type-labels.cjs
       - name: Verify Bit classifications across collection and UI

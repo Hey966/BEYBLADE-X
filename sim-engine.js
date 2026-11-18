@@ -153,7 +153,9 @@ function validateDeck(deck){
    inventory.add(id);
    // Official 3on3 rule: different colors of the same part model still repeat.
    // Special lock-chip exceptions are handled separately, subject to tournament rules.
-   if(deck.length===3&&!model.startsWith("lockChip:")){
+   const chipCode=model.startsWith("lockChip:")?model.slice("lockChip:".length):"";
+    const restrictedChip=/^(VALKYRIE|EMPEROR|ワルキューレ|エンペラー|戰神|帝王)$/iu.test(chipCode);
+    if(deck.length===3&&(!model.startsWith("lockChip:")||restrictedChip)){
     if(models.has(model))throw Error("三顆不能重複使用同型號零件（即使顏色不同）："+model);
     models.add(model);
    }
@@ -162,7 +164,7 @@ function validateDeck(deck){
  return true;
 }
 function initTop(spec,side,opts,rng){
- // SP is a user-controlled simulation input, not a calibrated Beybattle Pass measurement.
+ // The user-controlled 0-14000 model input is not official BEYBATTLEPASS SP, Newtons, or RPM.
  const power=cap(opts.power??10500,0,14000),angle=cap(opts.angle??0,-35,35)*Math.PI/180;
  const launcherProxy=opts.type==='string'?1.04:1; // uncalibrated launcher model
  const launching=power/14000,sign=side===0?1:-1;
@@ -209,7 +211,7 @@ function createBattle(left,right,settings={}){
   if(finish==="spin"&&loser!==null)state.tops[loser].spin=0;
   if(finish==="draw")state.tops.forEach(top=>{top.spin=0});
   state.points=finish==="extreme"?3:finish==="over"||finish==="burst"?2:finish==="spin"?1:0;
-  record("finish",winner,finish==="extreme"?"Xtreme Finish":finish==="over"?"Over Finish":finish==="burst"?"Burst Finish":finish==="spin"?"Spin Finish":"平手",{x:loser===null?0:+state.tops[loser].x.toFixed(3),y:loser===null?0:+state.tops[loser].y.toFixed(3),result:finish});
+  record("finish",winner,finish==="extreme"?"極限終結（Xtreme Finish）":finish==="over"?"擊飛終結（Over／Knockout Finish）":finish==="burst"?"爆裂終結（Burst Finish）":finish==="spin"?"持久終結（Spin／Survivor Finish）":"平手",{x:loser===null?0:+state.tops[loser].x.toFixed(3),y:loser===null?0:+state.tops[loser].y.toFixed(3),result:finish});
  }
  function move(dt){
   if(state.done)return;
