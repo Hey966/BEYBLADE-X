@@ -282,8 +282,8 @@ function create(container,status,api){
    }
    ctx.beginPath();
    for(let i=0;i<=160;i++){
-    const t=i*TAU/160,back=Math.atan2(Math.sin(t+Math.PI/2),Math.cos(t+Math.PI/2));
-    const rr=radius*(1.17-.17*Math.exp(-Math.pow(back/.20,4)))/1.32;
+    const t=i*TAU/160;
+    const rr=radius*(root.BBX_SIM_CORE?.stadiumRailRadius?.(t)||1.17)/1.32;
     if(i===0)ctx.moveTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
     else ctx.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
    }
@@ -623,10 +623,7 @@ function create(container,status,api){
    const railMat=new T.MeshStandardMaterial({color:0x26a844,metalness:.12,roughness:.38,
     emissive:0x135523,emissiveIntensity:.22});
    railMat.userData.qualityRole='rail';
-   const railRadius=theta=>{
-    const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
-    return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
-   };
+   const railRadius=root.BBX_SIM_CORE?.stadiumRailRadius||(()=>1.17);
    const railCurve=new T.CatmullRomCurve3(Array.from({length:150},(_,i)=>{
     const theta=i*TAU/150,r=railRadius(theta);
     return new T.Vector3(Math.cos(theta)*r,.101,Math.sin(theta)*r);
@@ -665,7 +662,9 @@ function create(container,status,api){
    // Effects are purely visual. Physics remains in sim-engine.js.
    fx3D=new T.Group();scene.add(fx3D);
    for(let i=0;i<2;i++){
-    const geo=new T.BufferGeometry().setFromPoints([new T.Vector3(),new T.Vector3()]);
+    const geo=new T.BufferGeometry(),data=new Float32Array(36*3);
+    geo.setAttribute('position',new T.BufferAttribute(data,3).setUsage(T.DynamicDrawUsage));
+    geo.setDrawRange(0,0);
     const line=new T.Line(geo,new T.LineBasicMaterial({
       color:i===0?0x45eeff:0xff9861,transparent:true,opacity:.85,depthWrite:false
     }));
@@ -792,8 +791,10 @@ function create(container,status,api){
    line.visible=!!state&&!state.done&&points.length>=2&&quality?.trailLimit>0;
    line.material.opacity=quality?.id==='ultra'?.87:quality?.id==='balanced'?.72:.46;
    if(line.visible){
-    line.geometry.dispose();
-    line.geometry=new THREE.BufferGeometry().setFromPoints(points.slice(-quality.trailLimit).map(p=>new THREE.Vector3(p.x,.13,p.y)));
+    const attribute=line.geometry.getAttribute('position'),sample=points.slice(-Math.min(36,quality.trailLimit));
+    for(let j=0;j<sample.length;j++)attribute.setXYZ(j,sample[j].x,.13,sample[j].y);
+    attribute.needsUpdate=true;
+    line.geometry.setDrawRange(0,sample.length);
    }
   }
   const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
@@ -847,6 +848,7 @@ function create(container,status,api){
     world?.remove(n.root);dispose(n.root);
     if(n.shadow){world?.remove(n.shadow);dispose(n.shadow);}
    }});
+   if(world)dispose(world);
    renderer?.dispose();container.replaceChildren();
   }
  };
