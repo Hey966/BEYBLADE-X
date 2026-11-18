@@ -649,6 +649,8 @@ button.analysis-reference-hero .analysis-result-image{
 #sim .section-header{margin-bottom:15px}
 .sim-disclaimer{font-size:12px;line-height:1.8;color:#afc8d5;border:1px solid #566c73;background:#183039;padding:12px 15px;border-radius:9px;margin-bottom:18px}
 .sim-disclaimer strong{color:#e9f2f5}
+.sim-disclaimer summary{cursor:pointer;font-weight:700;color:#d9edf2}
+.sim-disclaimer p{margin:9px 0 0;line-height:1.7}
 .sim-topgrid{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(370px,1.1fr);gap:15px;align-items:start}
 .sim-panel{background:linear-gradient(145deg,#172738,#101924 76%);border:1px solid #34475a;border-radius:12px;padding:17px;margin:0 0 17px;min-width:0}
 .sim-panel h3{margin:0 0 14px;color:#ecf7fb;font-size:17px}
@@ -673,7 +675,7 @@ button.analysis-reference-hero .analysis-result-image{
 .sim-arena{position:relative;height:clamp(270px,35vw,470px);width:100%;overflow:hidden;border:1px solid #48667c;border-radius:11px;background:radial-gradient(circle,#354f63,#0d1d2c 77%)}
 .sim-arena canvas{display:block;width:100%;height:100%}
 .sim-technical-status{font-size:11px;color:#94aaba;line-height:1.6;margin:8px 0}
-.sim-playback-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:13px}
+.sim-playback-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:11px;margin-bottom:9px}
 .sim-message{color:#cbebf5;background:#18313f;border:1px solid #456a7a;border-radius:6px;padding:11px;line-height:1.6;font-size:12px}
 .sim-message.sim-error{background:#421f26;border-color:#8e4451;color:#ffc9d4}
 .sim-events{margin:10px 0 0;padding-left:19px;font-size:11px;color:#a7bfd1;line-height:1.8;max-height:132px;overflow:auto}
@@ -713,6 +715,7 @@ button.analysis-reference-hero .analysis-result-image{
   .sim-launch-row{gap:8px}
   .sim-launch-row>div{padding:9px}
   .sim-playback-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sim-playback-controls button{min-height:46px;font-size:14px}
   .sim-teams{grid-template-columns:1fr}
   .sim-batch-controls button{flex:1 1 35%}
   .sim-section-heading{align-items:flex-start;flex-direction:column}
@@ -858,7 +861,7 @@ button.analysis-reference-hero .analysis-result-image{
 @media(max-width:720px){
   .sim-arena{height:clamp(270px,86vw,405px)}
   .sim-finish-overlay{font-size:12px}
-  .sim-active-parts{gap:6px}
+  .sim-active-parts{grid-template-columns:1fr;gap:9px}
   .sim-visual-side{padding:6px}
   .sim-piece-preview{padding:3px 1px;min-width:32px}
   .sim-piece-preview img{height:44px}

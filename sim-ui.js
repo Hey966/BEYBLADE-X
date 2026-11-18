@@ -36,7 +36,7 @@ function options(ids,selected,part){
 function card(team,index){
  const b=selections[team][index],type=b.mode==='cx';
  const sub=(label,field,list,key)=>'<label>'+label+'<select data-team="'+team+'" data-index="'+index+'" data-part="'+field+'">'+options(list,b[field],key)+'</select></label>';
- return '<article class="sim-build-card"><div class="sim-build-title"><strong>'+(team===0?'我方':'對手')+'・'+(index+1)+' 號</strong><span>原廠能力資料</span></div>'+
+ return '<article class="sim-build-card"><div class="sim-build-title"><strong>'+(team===0?'我方':'對手')+'・'+(index+1)+' 號</strong><span>發售版本能力資料</span></div>'+
   '<label>上層形式<select data-team="'+team+'" data-index="'+index+'" data-part="mode"><option value="whole"'+(!type?' selected':'')+'>BX／UX／CX 原廠完整戰刃</option><option value="cx"'+(type?' selected':'')+'>CX 模組自訂</option></select></label>'+
   (type?sub('CX 鎖定紋章','chip',cx,'lockChip')+sub('CX 主刃','main',cx,'mainBlade')+sub('CX 輔助刃','assist',cx,'assistBlade'):
    sub('原廠戰刃','blade',beys,'blade'))+
@@ -76,13 +76,14 @@ function buildVisualPreview(specs,preview=true){
   const effective='<div class="sim-stat-grid" aria-label="目前配置實際參與對戰的能力">'+
    statNames.map(([label,key])=>'<span>'+clean(label)+' <b>'+statNum(spec.vector[key])+'</b></span>').join('')+'</div>';
   const statHeading=p=>p.part==='bit'?'軸心 '+bitLabel(spec.tipProfile?.code,spec.config.bit):p.part==='factoryBlade'?'完整戰刃 '+bladeFrom(p.owner,'blade'):bladeKinds.has(p.part)?(partNames[p.part]||p.part)+' '+bladeFrom(p.owner,p.part):(partNames[p.part]||p.part);
-  const source='<details class="sim-part-stats"><summary>查看各零件原始數值</summary>'+
+  const source='<details class="sim-part-stats"><summary>查看各零件來源數值</summary>'+
    (spec.partStats||[]).map(p=>'<div class="sim-part-stat-row"><b>'+clean(statHeading(p))+'</b> '+
     statNames.map(([label,key])=>clean(label)+':'+statNum(p[key])).join(' / ')+
     (p.part==='ratchet'?' / 高度:'+statNum(p.height):'')+
     ' / 同型號重量:'+(p.weightG===null||p.weightG===undefined?'未確認':
      Number(p.weightG).toFixed(1)+' g'+
      ((p.weightMethod||'').includes('derived')||(p.weightMethod||'').includes('sum')?'（組件推算）':''))+
+    (p.sourceUrl?.startsWith('https://')?'<div class="sim-source-links"><a href="'+clean(p.sourceUrl)+'" target="_blank" rel="noopener noreferrer">查看此零件公開能力目錄</a>（非官方實測值）</div>':'')+
     (p.verification?'<div class="sim-source-links">數值已核對 Hasbro 包裝：'+
      '<a href="'+clean(p.verification.sourceImage)+'" target="_blank" rel="noopener noreferrer">查看包裝背面</a>'+
      '（原目錄攻'+statNum(p.verification.originalCatalog.attack)+
@@ -154,8 +155,8 @@ function syncPower(i,source){
  const value=spValue($(source==='number'?'simPower'+i+'Number':'simPower'+i).value);
  $('simPower'+i).value=String(value);
  $('simPower'+i+'Number').value=String(value);
- $('simPower'+i+'Display').textContent=value.toLocaleString('zh-TW')+' SP';
- if(runtime)clearMatch('發射力道已變更，請重新開始。');
+ $('simPower'+i+'Display').textContent=value.toLocaleString('zh-TW');
+ if(runtime)clearMatch('模擬發射強度已變更，請重新開始。');
 }
 function settings(){
  // Randomize only initial conditions between new matches, never a finish.
@@ -209,12 +210,12 @@ function renderEvents(events){
 function showFinal(battle){
  const winner=battle.winner;
  const name=battle.finish==='extreme'?'極限勝利 +3':battle.finish==='over'?'擊飛勝利 +2':
-  battle.finish==='burst'?'爆裂勝利 +2':battle.finish==='spin'?'迴轉勝利 +1':'平手';
+  battle.finish==='burst'?'爆裂勝利 +2':battle.finish==='spin'?'持久勝利 +1':'平手';
  if(winner!==null)runtime.points[winner]+=battle.points;
  runtime.history.push({round:runtime.round+1,winner,finish:battle.finish,points:battle.points,
   collisions:battle.collisionCount,railEvents:battle.railCount,seed:battle.seed,seconds:battle.elapsed});
  if(winner!==null)runtime.deckIndex++;
- runtime.complete=Math.max(...runtime.points)>=4||runtime.round>=23;
+ runtime.complete=Math.max(...runtime.points)>=4;
  if(runtime.complete){
   const finalWinner=runtime.points[0]>runtime.points[1]?'我方':runtime.points[1]>runtime.points[0]?'對手':'平手';
   report('本場 '+(winner===null?'平手':winner===0?'我方':'對手')+'：'+name+'。比賽完成：'+finalWinner+'。');
@@ -345,7 +346,7 @@ $('simSettingsReset').addEventListener('click',()=>{
   $('simPower'+i).value='10500';
   $('simPower'+i+'Number').value='10500';
   $('simAngle'+i).value='0';
-  $('simPower'+i+'Display').textContent='10,500 SP';
+  $('simPower'+i+'Display').textContent='10,500';
   $('simAngle'+i+'Display').textContent='0°';
  }
  renderTeams();
