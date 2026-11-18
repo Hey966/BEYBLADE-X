@@ -28,7 +28,7 @@ function restore(raw){
   Object.assign(catalog,customAbilities);
  }
 }
-function storedData(){return{format:'BBX-966-BACKUP',version:VERSION,additions:DB.beys.filter(b=>L.ownId(b.id)),decks,slots,customAbilities};}
+function storedData(){return{format:'BBX-966-BACKUP',version:VERSION,additions:DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id)),decks,slots,customAbilities};}
 try{const local=JSON.parse(localStorage.getItem(KEY)||'null');if(local)restore(local)}
 catch(e){console.warn('本機備份損壞，未自動載入',e)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(storedData()));return true}
@@ -210,7 +210,7 @@ $('addForm').onsubmit=e=>{
 function renderManualAbilityOptions(){
  const select=$('manualAbilityBey');if(!select)return;
  const previous=select.value;
- const added=DB.beys.filter(b=>L.ownId(b.id));
+ const added=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id));
  select.innerHTML='<option value="">選擇新收藏</option>'+added.map(b=>opt(b.id,b.name,previous)).join('');
  const status=$('manualAbilityStatus');if(!added.length)status.textContent='尚未新增本機收藏。先在上方新增陀螺。';
  renderManualAbilityPartOptions();
@@ -261,6 +261,34 @@ $('manualAbilityForm')?.addEventListener('submit',event=>{
  }catch(error){notify('無法保存能力：'+error.message)}
 });
 
+
+/* GitHub Issue -> owner-reviewed PR workflow. No access tokens in static Pages. */
+function renderGitHubSync(){
+ const select=$('syncBey');if(!select)return;
+ const current=select.value,additions=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id));
+ select.innerHTML='<option value="">選擇要送審的收藏</option>'+additions.map(b=>opt(b.id,b.name,current)).join('');
+ $('syncHint').textContent=additions.length?
+  '送出後會開啟 GitHub Issue。請登入本人帳號確認。成功處理後將建立待審核 Pull Request，需自行審核合併。':
+  '沒有待同步的新收藏。已上傳的資料不會重複送出。';
+}
+$('syncSubmit')?.addEventListener('click',()=>{
+ const b=DB.beys.find(row=>row.id===$('syncBey').value&&!seedIds.has(row.id));
+ if(!b){notify('請先選擇尚未同步的本機收藏');return}
+ try{
+  const bey=L.sanitizeBey(b),ability=customAbilities[b.id]||null;
+  const payload={schema:'BBX966-ADD-V2',bey,ability},json=JSON.stringify(payload);
+  if(json.length>5700)throw Error('資料太多，請匯出 JSON 備份交由 GitHub 審核');
+  const title='[COLLECTION-SYNC] '+bey.name+' '+bey.id;
+  const fence=String.fromCharCode(96).repeat(3);
+  const body='使用者提出收藏同步請求。此資料會公開於 GitHub，請以 Hey966 本人帳號確認。\n\n'+
+   fence+'bbx966-json\n'+json+'\n'+fence+'\n\n請確認產品版別與能力來源，未查證數值應保留待審狀態。';
+  const url='https://github.com/Hey966/BEYBLADE-X/issues/new?title='+encodeURIComponent(title)+
+   '&body='+encodeURIComponent(body);
+  const newTab=window.open(url,'_blank','noopener,noreferrer');
+  if(!newTab)window.location.assign(url);
+ }catch(error){notify('無法送審：'+error.message)}
+});
+
 /* Controlled access to live inventory and deck slots for the dedicated analysis module. */
 window.BBX_COLLECTION_API={
  getBeys:()=>DB.beys.slice(),
@@ -299,10 +327,10 @@ $('detailContent').addEventListener('click',handleAbilityClick);
 
 function renderCompleteness(){
  const el=$('dataCompleteness');if(!el)return;
- const owned=DB.beys.filter(b=>!b.id.startsWith('LOCAL-'));
+ const owned=DB.beys.filter(b=>seedIds.has(b.id));
  const pending=owned.filter(b=>b.imageStatus!=='verified_png');
  const missing=(window.BBX_PART_PHYSICS?.unverified||[]).filter(x=>x.status!=='resolved');
- const userPending=DB.beys.filter(b=>L.ownId(b.id)&&!window.BBX_PART_STATS?.beys?.[b.id]?.parts?.blade);
+ const userPending=DB.beys.filter(b=>L.ownId(b.id)&&!seedIds.has(b.id)&&!window.BBX_PART_STATS?.beys?.[b.id]?.parts?.blade);
  const conflicts=(window.BBX_PART_PHYSICS?.statConflicts||[]).filter(x=>x.status==='unresolved');
  el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突，另有 '+userPending.length+' 顆本機新增收藏尚未登錄戰刃能力。</p>'+
  '<div class="completeness-links">'+pending.map(b=>'<div><strong>'+esc(b.name)+'</strong>：完整透明圖待核對'+
@@ -310,7 +338,7 @@ function renderCompleteness(){
  '<p>BX／UX 不使用的 CX 子零件，不列入缺圖。缺乏原始秤重或有爭議的能力值，仍保留待查證狀態。</p>'+
  '<p><a href="https://github.com/Hey966/BEYBLADE-X/blob/main/docs/missing-data-audit-2026-11-18.md" target="_blank" rel="noopener noreferrer">查看逐項查核報告</a></p>';
 }
-function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();renderManualAbilityOptions();}
+function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();renderManualAbilityOptions();renderGitHubSync();}
 $('search').oninput=renderCollection;$('marketFilter').onchange=renderCollection;
 all();
 })();
