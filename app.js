@@ -1,7 +1,8 @@
 /* BEYBLADE X personal collection, v1.0. All browser edits are local until exported. */
 (() => {
 'use strict';
-const VERSION = 1, KEY = 'beyblade-x-966-v1';
+const VERSION = 2, KEY = 'beyblade-x-966-v1', L=window.BBX_LOCAL;
+if(!L){document.body.textContent='收藏資料驗證工具未載入，請重新整理。';return;}
 const seed = window.BBX_SEED;
 if (!seed || !Array.isArray(seed.beys)) { document.body.textContent='無法讀取收藏資料。'; return; }
 const clone = x => JSON.parse(JSON.stringify(x));
@@ -13,14 +14,25 @@ const bladeLabel=(code,owner,kind='blade')=>window.BBX_BLADE_TYPES?.label?.(code
 const bladeSuffix=(code,owner,kind='blade')=>window.BBX_BLADE_TYPES?.suffix?.(code,owner,kind)||'';
 const loc = m => m==='US'?'美版':m==='JP'?'日版':'其他';
 const pmap = () => new Map(DB.packages.map(p=>[p.id,p]));
-let DB=clone(seed), decks=[], filter='ALL', partFilter='ratchet', active='collection', slots=[blank(),blank(),blank()];
+let DB=clone(seed),decks=[],customAbilities={},filter='ALL',partFilter='ratchet',active='collection',slots=[blank(),blank(),blank()];
 function blank(){return{mode:'whole',blade:'',chip:'',main:'',assist:'',ratchet:'',bit:''};}
-try { const x=JSON.parse(localStorage.getItem(KEY)||'null'); if(x&&x.version===VERSION){
- if(Array.isArray(x.additions)) DB.beys.push(...x.additions.filter(b=>b&&typeof b.id==='string'&&!DB.beys.some(o=>o.id===b.id)));
- if(Array.isArray(x.decks)) decks=x.decks.filter(d=>d&&Array.isArray(d.slots)).slice(0,100);
- if(Array.isArray(x.slots)&&x.slots.length===3) slots=x.slots;
- }}catch(e){console.warn('備份資料無法解析',e)}
-function save(){try {localStorage.setItem(KEY,JSON.stringify({version:VERSION,additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots}));return true}catch(e){notify('本機儲存失敗，請匯出備份');return false}}
+const seedIds=new Set(seed.beys.map(b=>b.id));
+function restore(raw){
+ const result=L.parseBackup(raw,seedIds);
+ DB=clone(seed);
+ DB.beys.push(...result.additions);DB.packages.push(...result.packages);
+ decks=result.decks;slots=result.slots;customAbilities=result.customAbilities;
+ const catalog=window.BBX_PART_STATS?.beys;
+ if(catalog){
+  for(const id of Object.keys(catalog))if(L.ownId(id))delete catalog[id];
+  Object.assign(catalog,customAbilities);
+ }
+}
+function storedData(){return{format:'BBX-966-BACKUP',version:VERSION,additions:DB.beys.filter(b=>L.ownId(b.id)),decks,slots,customAbilities};}
+try{const local=JSON.parse(localStorage.getItem(KEY)||'null');if(local)restore(local)}
+catch(e){console.warn('本機備份損壞，未自動載入',e)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(storedData()));return true}
+ catch(e){notify('本機儲存失敗，請匯出備份');return false}}
 let toastTimer;
 function notify(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
 function nav(v){if(!['collection','parts','builder','counter','sim','data'].includes(v))return;active=v;document.querySelectorAll('.view').forEach(n=>n.classList.toggle('active',n.id===v));document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n.dataset.nav===v));if(v==='builder')renderSlots();if(v==='parts')renderParts();if(v==='data')renderCompleteness();window.scrollTo({top:0,behavior:'smooth'});}
@@ -158,11 +170,41 @@ function renderSaved(){$('savedDecks').innerHTML=decks.length?decks.map(d=>`<div
  $('savedDecks').querySelectorAll('[data-load]').forEach(n=>n.onclick=()=>{const d=decks.find(x=>x.id===n.dataset.load);if(d){slots=clone(d.slots);$('deckName').value=d.name;save();renderSlots();notify('已載入配置')}});
  $('savedDecks').querySelectorAll('[data-remove]').forEach(n=>n.onclick=()=>{if(!confirm('確定刪除這筆配置嗎？'))return;decks=decks.filter(x=>x.id!==n.dataset.remove);save();renderSaved()});}
 function download(obj,filename){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
-$('export').onclick=()=>download({format:'BBX-966-BACKUP',version:VERSION,exportedAt:new Date().toISOString(),base:seed.beys.map(b=>b.id),additions:DB.beys.filter(b=>b.id.startsWith('LOCAL-')),decks,slots},`BEYBLADE-X-backup-${new Date().toISOString().slice(0,10)}.json`);
-$('import').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const obj=JSON.parse(await f.text());if(obj.format!=='BBX-966-BACKUP'||!Array.isArray(obj.decks)||!Array.isArray(obj.additions))throw new Error('備份格式不符');if(!confirm('匯入將覆蓋本機資料，確定繼續？'))return;DB=clone(seed);DB.beys.push(...obj.additions.filter(b=>b&&typeof b.id==='string'&&!DB.beys.some(x=>x.id===b.id)));decks=obj.decks.slice(0,100);slots=Array.isArray(obj.slots)&&obj.slots.length===3?obj.slots:[blank(),blank(),blank()];save();all();notify('已匯入備份');}catch(err){notify(`匯入失敗：${err.message}`)}finally{e.target.value=''}};
-$('addForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target);const name=String(f.get('name')||'').trim(),blade=String(f.get('blade')||'').trim();if(!name||!blade)return;const sys=f.get('system'),market=f.get('market'),id=`LOCAL-${Date.now()}`;const pkgId=`PKG-${id}`;DB.packages.push({id:pkgId,title:'手動新增',manufacturer:market==='US'?'Hasbro':'Takara Tomy',market,count:1,productCode:'手動新增'});
- DB.beys.push({id,name,packageId:pkgId,ownMarket:market,system:sys,spinDirection:'R',type:null,blade,lockChip:sys==='CX'?'未登記':null,mainBlade:sys==='CX'?blade:null,assistBlade:sys==='CX'?'未登記':null,ratchet:String(f.get('ratchet')||'').trim(),bit:String(f.get('bit')||'').trim(),currentBuild:null,imagePath:null,imageStatus:'pending_user_photo',manufacturerBeyCode:null});
- save();all();e.target.reset();notify('已新增至本機。請匯出備份以保存。')};
+$('export').onclick=()=>download({...storedData(),exportedAt:new Date().toISOString(),base:seed.beys.map(b=>b.id),packages:DB.packages.filter(p=>p.id.startsWith('PKG-LOCAL-'))},`BEYBLADE-X-backup-${new Date().toISOString().slice(0,10)}.json`);
+$('import').onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  if(f.size>1_500_000)throw Error('備份超過 1.5 MB，請確認來源');
+  const obj=JSON.parse(await f.text());
+  const checked=L.parseBackup(obj,seedIds);
+  if(!confirm('即將匯入 '+checked.additions.length+' 顆新增收藏及 '+checked.decks.length+' 筆配置。這會覆蓋本機記錄，繼續嗎？'))return;
+  restore(obj);save();all();renderManualAbilityOptions();notify('已通過驗證並匯入備份');
+ }catch(err){notify('匯入失敗：'+err.message)}
+ finally{e.target.value=''}
+};
+function toggleCXInputs(){
+ const on=$('addForm').elements.system.value==='CX';
+ const group=$('addCXFields');
+ group.hidden=!on;
+ for(const el of group.querySelectorAll('input'))el.required=on;
+}
+$('addForm').elements.system.addEventListener('change',toggleCXInputs);
+toggleCXInputs();
+$('addForm').onsubmit=e=>{
+ e.preventDefault();const f=new FormData(e.target);
+ const id='LOCAL-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+ try{
+  const bey=L.sanitizeBey({
+   id,name:f.get('name'),blade:f.get('blade'),system:f.get('system'),
+   spinDirection:f.get('spinDirection'),ownMarket:f.get('market'),ratchet:f.get('ratchet'),bit:f.get('bit'),
+   lockChip:f.get('lockChip'),mainBlade:f.get('mainBlade'),assistBlade:f.get('assistBlade')
+  });
+  if(bey.system==='CX'&&(!bey.lockChip||!bey.mainBlade||!bey.assistBlade))throw Error('CX 必須填寫紋章、主刃與輔助刃');
+  DB.packages.push(L.makePackage(bey));DB.beys.push(bey);
+  save();all();renderManualAbilityOptions();e.target.reset();toggleCXInputs();
+  notify('已新增至本機。請填入有來源的能力數值，再用於分析。');
+ }catch(error){notify('無法新增：'+error.message)}
+};
 /* Controlled access to live inventory and deck slots for the dedicated analysis module. */
 window.BBX_COLLECTION_API={
  getBeys:()=>DB.beys.slice(),
