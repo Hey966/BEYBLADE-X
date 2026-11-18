@@ -48,4 +48,7 @@ assert.ok(app.includes("new Event('bbx-inventory-updated')"));
 assert.ok(work.includes("github.event.issue.user.login == github.repository_owner"),'GitHub writes must require owner');
 assert.ok(work.includes('pulls.create'),'GitHub sync should create a reviewable PR');
 assert.ok(!app.includes('GITHUB_TOKEN')&&!app.includes('ghp_'),'never embed GitHub token in public JS');
-console.log('Validated strict backup migration, manual spin/CX/ratings, published-record dedupe and owner-reviewed PR sync');
+assert.ok(read('tools/create_png_assets.py').includes('manifest_ids'),'image generator must retain user-synced missing photo slots');
+assert.ok(read('tools/sync_part_abilities.py').includes('previous=old.get("beys",{})'),'part synchronizer must retain user-entered scores');
+assert.ok(read('index.html').includes('sim-engine.js?v=20261118-audit-v2'),'browser needs refreshed physics bundle');
+console.log('Validated strict local migrations, owner sync, catalog/image preservation and refreshed physics assets');
