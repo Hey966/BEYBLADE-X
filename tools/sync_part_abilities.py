@@ -84,6 +84,8 @@ def main():
  sources=json.loads((ROOT/"data/image-sources.json").read_text(encoding="utf-8"))
  by_id={x["id"]:(pack.get("market"),x) for pack in sources.get("packages",[]) for x in pack.get("items",[])}
  cached={}
+ old_path=ROOT/"data/part-abilities.json"
+ old=json.loads(old_path.read_text(encoding="utf-8")) if old_path.exists() else {"beys":{}}
  result={
   "schemaVersion":1,
   "generatedAt":datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -129,6 +131,16 @@ def main():
     }
   else:
    entry["missingSource"]=True
+   # Preserve only explicitly marked user-supplied stats. Do not estimate.
+   previous=old.get("beys",{}).get(bid,{})
+   for kind,part in previous.get("parts",{}).items():
+    if part.get("verification",{}).get("status")=="user-entered-unverified":
+     entry["parts"][kind]=part
+     result["summary"]["partRecords"]+=1
+     if all(isinstance(part.get("stats",{}).get(key),(int,float)) for key in ("attack","defense","stamina")):
+      result["summary"]["numericRecords"]+=1
+   expected=6 if bey.get("system")=="CX" else 3
+   result["summary"]["missingRecords"]+=max(0,expected-len(entry["parts"]))
   result["beys"][bid]=entry
  # Validate the upstream extract BEFORE writing. Keep last known-good files
  # intact when the remote catalog cannot be read or its structure changes.
