@@ -7,9 +7,9 @@ const TAU=Math.PI*2, DT=1/120, R=1.32, RIM_LIP_HEIGHT=.065, MAX_TIME=65;
 // Real BX-10: two front-side Over pockets, one front-centre Xtreme pocket.
 // Front corresponds to positive simulation Y and render Z.
 const STADIUM_ZONES=Object.freeze([
- Object.freeze({kind:"over",theta:.61,halfWidth:.29}),
- Object.freeze({kind:"extreme",theta:Math.PI/2,halfWidth:.31}),
- Object.freeze({kind:"over",theta:Math.PI-.61,halfWidth:.29})
+ Object.freeze({kind:"over",theta:.61,halfWidth:.37}),
+ Object.freeze({kind:"extreme",theta:Math.PI/2,halfWidth:.47}),
+ Object.freeze({kind:"over",theta:Math.PI-.61,halfWidth:.37})
 ]);
 function stadiumPocket(theta,arena){
  if(arena!=="xtreme")return null;
