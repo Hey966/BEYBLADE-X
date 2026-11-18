@@ -208,13 +208,14 @@ function fmt(n){return Number(n||0).toFixed(1)}
 function updateScore(){
  if(!runtime){$('simScore').textContent='我方 0 : 0 對手';$('simRound').textContent='尚未開始';return}
  $('simScore').textContent='我方 '+runtime.points[0]+' : '+runtime.points[1]+' 對手';
- $('simRound').textContent=runtime.complete?'比賽結束':'第 '+(runtime.round+1)+' 回合・'+(runtime.teams.length===3?'3 on 3':'1 on 1');
+ $('simRound').textContent=runtime.complete?'比賽結束':'第 '+(runtime.round+1)+' 回合・'+(runtime.teams[0].length===3?'3 on 3':'1 on 1');
 }
 function stopAnimation(){
  frameToken++;if(frameRequest)cancelAnimationFrame(frameRequest);
  frameRequest=0;
 }
 function clearMatch(message){
+ invalidateBatch('對戰設定已變更，舊批次結果已清除。');
  audio?.stop?.();
  stopAnimation();runtime=null;showed=null;updateScore();
  $('simNext').disabled=true;$('simPause').disabled=true;$('simPause').textContent='暫停';
@@ -392,13 +393,7 @@ function rerollMatch(){
   for(let k=0;k<deck.length;k++)selections[i][k]=deck[k];
  }
  // Cancel an in-progress batch, otherwise its old results could be shown for new parts.
- batchCancel=true;++runStamp;latestBatch=null;
- $('simBatchRun').disabled=false;
- $('simBatchCancel').disabled=true;
- $('simBatchDownload').disabled=true;
- $('simBatchBar').style.width='0%';
- $('simBatchProgress').textContent='已更換配件，請重新執行批次模擬。';
- $('simBatchOutput').textContent='新配置尚未執行批次模擬。';
+ invalidateBatch('已更換配件，請重新執行批次模擬。');
  renderTeams();
  clearMatch('雙方已隨機重新搭配'+count+' 顆陀螺的戰刃、固鎖與軸心（含 CX 模組）。比分已清零，場地與發射設定保留。請按開始新對戰。');
 }
@@ -461,6 +456,13 @@ $('simSoundVolume')?.addEventListener('input',()=>{
 syncSoundButton();
 
 let runStamp=0;
+function invalidateBatch(message){
+ batchCancel=true;++runStamp;latestBatch=null;
+ $('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;
+ $('simBatchDownload').disabled=true;$('simBatchBar').style.width='0%';
+ $('simBatchProgress').textContent=message||'尚無可使用的批次資料。';
+ $('simBatchOutput').textContent='請用目前的配件及設定重新執行批次模擬。';
+}
 function renderBatch(result){
  latestBatch=result;
  const total=result.trials,w=result.win,loss=result.loss,draw=result.draw;
@@ -471,7 +473,7 @@ function renderBatch(result){
   '<p>平均碰撞 '+fmt(result.collisions/Math.max(1,total))+' 次；平均 Xtreme Line 觸發 '+fmt(result.rails/Math.max(1,total))+' 次／完整比賽。</p>'+
   '<p>終結方式：'+Object.entries(result.finishes).map(([k,v])=>clean(k)+' '+v+' 次').join('、')+'</p>'+
   '<p>這是模型模擬頻率，不是實戰測得的勝率。</p>';
- $('simBatchDownload').disabled=false;
+ $('simBatchDownload').disabled=result.trials===0;
 }
 $('simBatchRun').addEventListener('click',async()=>{
  let teams;
@@ -500,12 +502,13 @@ $('simBatchRun').addEventListener('click',async()=>{
    $('simBatchBar').style.width=(result.trials/count*100).toFixed(1)+'%';
    await new Promise(resolve=>setTimeout(resolve,0));
   }
+  if(batchCancel||runStamp!==stamp)return;
   renderBatch(result);
-  $('simBatchProgress').textContent=batchCancel?'已取消。保留 '+result.trials+' 場結果。':'批次模擬完成：'+result.trials+' 場。';
- }catch(error){report('批次模擬失敗：'+error.message,true)}
- finally{$('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;}
+  $('simBatchProgress').textContent='批次模擬完成：'+result.trials+' 場。';
+ }catch(error){if(runStamp===stamp)report('批次模擬失敗：'+error.message,true)}
+ finally{if(runStamp===stamp){$('simBatchRun').disabled=false;$('simBatchCancel').disabled=true;}}
 });
-$('simBatchCancel').addEventListener('click',()=>{batchCancel=true});
+$('simBatchCancel').addEventListener('click',()=>invalidateBatch('批次模擬已取消，舊統計已清除。'));
 $('simBatchDownload').addEventListener('click',()=>{
  if(!latestBatch)return;
  const blob=new Blob([JSON.stringify(latestBatch,null,2)],{type:'application/json'});
