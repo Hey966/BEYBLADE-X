@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-17T06:45:48.072109+00:00",
+  "generatedAt": "2026-11-18T05:37:03.658093+00:00",
   "method": "Release-specific independent catalog numeric fields (defaultStatus); not measured winning probabilities.",
   "sources": {
     "US": "https://beyblade.phstudy.org/data/hasbro.json",
