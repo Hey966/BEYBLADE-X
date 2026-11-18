@@ -299,6 +299,12 @@ function start(){
  }catch(error){report(error.message,true)}
 }
 $('simStart').addEventListener('click',start);
+for(const [id,preset] of [['simCameraReset','reset'],['simCameraTop','top'],['simCameraFront','front']]){
+ $(id)?.addEventListener('click',()=>{
+  if(!viewer.setCameraView?.(preset))
+   report('目前為 2D 備援畫面。360° 旋轉需要瀏覽器支援 WebGL 3D。',true);
+ });
+}
 $('simNext').addEventListener('click',()=>{
  if(!runtime||runtime.complete||!runtime.battle?.done)return;
  runtime.round++;beginRound();

@@ -15,7 +15,7 @@ function coastRotation(top,age){
 function create(container,status,api){
  let currentArena='xtreme',lastState=null,lastFinishAge=0,lastCoastAge=0;
  let THREE=null,renderer=null,world=null,camera=null,stadium=null,rail=null,pockets=null,floorMaterial=null,rimFull=null,rimOpen=null;
- let rendered=[null,null],visualBuilds=[null,null],renderVersion=0;
+ let rendered=[null,null],visualBuilds=[null,null],renderVersion=0,orbit=null;
  const imageCache=new Map();
  let activeBattle=null,eventCursor=0,fx=[],trails=[[],[]],fx3D=null,fxSprites=[],trailLines=[];
  const colors=['#55efff','#ff9b45'];
@@ -122,7 +122,8 @@ function create(container,status,api){
   return getParts(spec).map(p=>({name:p.name,value:spec?.parts?.find(q=>q.key===p.kind)?.code||getBey(p.owner)?.name||'',
    image:p.src,owner:p.owner,kind:p.kind}));
  }
- function setBuilds(builds){
+ function setCameraView(preset){if(!orbit)return false;orbit.preset(preset);return true}
+  function setBuilds(builds){
   visualBuilds=[builds?.[0]||null,builds?.[1]||null];
   renderVersion++;
   if(THREE&&world){
@@ -158,7 +159,7 @@ function create(container,status,api){
    fallback.width=Math.round(width*dpr);fallback.height=Math.round(height*dpr)
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
-  const cx=width/2,cy=height/2,radius=Math.min(width*.45,height*.44);
+  const cx=width/2,cy=height/2,radius=Math.min(width*.345,height*.325);
   // Arena reference: white shell, bright lime rail and dark blue floor grid.
   const backdrop=ctx.createLinearGradient(0,0,0,height);
   backdrop.addColorStop(0,'#24508a');backdrop.addColorStop(.5,'#123b78');
@@ -172,34 +173,49 @@ function create(container,status,api){
   const shake=lastImpact?Math.min(4.4,1.1+(lastImpact.strength||.7)*2.4)*(1-(stamp-lastImpact.t)/.27):0;
   ctx.save();
   if(shake)ctx.translate(Math.sin(stamp*103)*shake,Math.cos(stamp*127)*shake);
-  ctx.fillStyle='#aabdc9';
-  ctx.beginPath();ctx.ellipse(cx,cy+radius*.13,radius*1.13,radius*1.02,0,0,TAU);ctx.fill();
-  ctx.fillStyle='#fafcff';
-  ctx.beginPath();ctx.arc(cx,cy,radius*1.08,0,TAU);ctx.fill();
-  ctx.lineWidth=6;ctx.strokeStyle='#a1b4c4';ctx.stroke();
-  ctx.fillStyle=currentArena==='xtreme'?'#eef3f7':'#bdcfdb';
-  ctx.beginPath();ctx.arc(cx,cy,radius*.91,0,TAU);ctx.fill();
-  ctx.lineWidth=2;ctx.strokeStyle='#9aafc0';ctx.stroke();
+  // Same official front zones in 2D and 3D; the fallback remains non-orbiting.
+  const corners2D=[[-1.38,-1.48],[1.38,-1.48],[1.80,-1.12],[1.80,1.13],
+   [1.40,1.48],[-1.40,1.48],[-1.80,1.13],[-1.80,-1.12]];
+  const k=radius/1.32;
+  ctx.beginPath();
+  corners2D.forEach(([x,z],i)=>i?ctx.lineTo(cx+x*k,cy+z*k):ctx.moveTo(cx+x*k,cy+z*k));
+  ctx.closePath();ctx.fillStyle='#e5edf1';
+  ctx.shadowColor='rgba(8,15,27,.42)';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+  ctx.lineWidth=5;ctx.strokeStyle='#b7c7d2';ctx.stroke();
+  const bowlColor=ctx.createRadialGradient(cx,cy,radius*.03,cx,cy,radius);
+  bowlColor.addColorStop(0,currentArena==='xtreme'?'#ecf3f6':'#c8d7dd');
+  bowlColor.addColorStop(1,currentArena==='xtreme'?'#ffffff':'#e1eaef');
+  ctx.beginPath();ctx.arc(cx,cy,radius,0,TAU);
+  ctx.fillStyle=bowlColor;ctx.fill();
+  ctx.lineWidth=3;ctx.strokeStyle='#c1cfd8';ctx.stroke();
+  const zones2D=root.BBX_SIM_CORE?.STADIUM_ZONES||[];
   if(currentArena==='xtreme'){
-   ctx.strokeStyle='#a7ed43';ctx.lineWidth=8;
-   ctx.shadowColor='#a6ff4d';ctx.shadowBlur=12;
-   ctx.beginPath();ctx.arc(cx,cy,radius*.96,0,TAU);ctx.stroke();
-   ctx.shadowBlur=0;
-   for(const [i,angle] of [-.70,.65,2.45].entries()){
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,radius*.95,angle-.19,angle+.19);ctx.closePath();
-    ctx.fillStyle=i===0?'rgba(161,244,63,.20)':'rgba(69,107,139,.20)';ctx.fill();
+   for(const z of zones2D){
+    const a=z.theta-z.halfWidth,b=z.theta+z.halfWidth;
+    ctx.beginPath();ctx.arc(cx,cy,radius*1.22,a,b);
+    ctx.arc(cx,cy,radius*.99,b,a,true);ctx.closePath();
+    ctx.fillStyle=z.kind==='extreme'?'#706671':'#6c8190';ctx.fill();
+    ctx.strokeStyle=z.kind==='extreme'?'#cd8170':'#e2d188';
+    ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,radius*.99,a,b);ctx.stroke();
    }
-   // Brighter raised wall segments; leave physical gaps at the pocket mouths.
-   ctx.strokeStyle='#fefefe';ctx.lineWidth=5;
-   ctx.shadowColor='rgba(55,81,104,.42)';ctx.shadowBlur=4;
-   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
-    ctx.beginPath();ctx.arc(cx,cy,radius*1.025,from,to);ctx.stroke();
+   ctx.beginPath();
+   for(let i=0;i<=160;i++){
+    const t=i*TAU/160,back=Math.atan2(Math.sin(t+Math.PI/2),Math.cos(t+Math.PI/2));
+    const rr=radius*(1.17-.17*Math.exp(-Math.pow(back/.20,4)))/1.32;
+    if(i===0)ctx.moveTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
+    else ctx.lineTo(cx+Math.cos(t)*rr,cy+Math.sin(t)*rr);
    }
-   ctx.shadowBlur=0;
+   ctx.strokeStyle='#2fad47';ctx.lineWidth=7;ctx.shadowColor='rgba(34,160,68,.25)';
+   ctx.shadowBlur=7;ctx.stroke();ctx.shadowBlur=0;
+   const arcs=zones2D.map(z=>[z.theta-z.halfWidth,z.theta+z.halfWidth]).sort((a,b)=>a[0]-b[0]);
+   let from=0;ctx.lineWidth=7;ctx.strokeStyle='#fbfdff';
+   for(const [a,b] of [...arcs,[TAU,TAU]]){
+    if(a>from){ctx.beginPath();ctx.arc(cx,cy,radius*1.04,from,a);ctx.stroke()}
+    from=Math.max(from,b);
+   }
   }else{
-   ctx.strokeStyle='#5b829b';ctx.lineWidth=4;
-   ctx.beginPath();ctx.arc(cx,cy,radius*.94,0,TAU);ctx.stroke();
+   ctx.lineWidth=7;ctx.strokeStyle='#fbfdff';
+   ctx.beginPath();ctx.arc(cx,cy,radius*1.04,0,TAU);ctx.stroke();
   }
   ctx.setLineDash([2,9]);ctx.strokeStyle='rgba(45,64,89,.3)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,radius*.65,0,TAU);ctx.stroke();ctx.setLineDash([]);
@@ -318,7 +334,7 @@ function create(container,status,api){
   }
   ctx.restore();
   ctx.font='11px system-ui';ctx.fillStyle='#bcd7e9';
-  ctx.fillText(currentArena==='xtreme'?'Xtreme 模擬盤｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
+  ctx.fillText(currentArena==='xtreme'?'BX-10 正式盤（外形近似）｜Xtreme Line':'練習圓盤｜無 Xtreme Line',12,19);
   if(state?.done){
    const labels={spin:'持久勝利',burst:'爆裂勝利',over:'擊飛勝利',extreme:'極限勝利',draw:'平手'};
    ctx.font='bold 15px system-ui';ctx.fillStyle='#ffddab';
@@ -426,77 +442,119 @@ function create(container,status,api){
    gl.setClearColor(0x112f61,1);gl.outputColorSpace=T.SRGBColorSpace;
    const scene=new T.Scene();
    scene.background=new T.Color(0x112f61);
-   scene.fog=new T.Fog(0x112f61,5.2,10);
-   const cam=new T.PerspectiveCamera(43,1,.1,25);
-   cam.position.set(0,3.5,2.45);cam.lookAt(0,0,0);
+   scene.fog=new T.Fog(0x112f61,7.5,14);
+   const cam=new T.PerspectiveCamera(44,1,.1,25);
+   const initial=root.BBX_STADIUM_CAMERA?.project?.(root.BBX_STADIUM_CAMERA.defaults);
+   cam.position.set(initial?.x||0,initial?.y||3.5,initial?.z||2.45);cam.lookAt(0,.02,0);
    scene.add(new T.HemisphereLight(0xf8fcff,0x5b789f,3.1));
    const key=new T.DirectionalLight(0xfffbec,3.15);key.position.set(-2.2,4.2,2.8);scene.add(key);
    const backgroundGrid=new T.GridHelper(8,24,0x6999cf,0x3061a2);
    backgroundGrid.position.y=-.29;
    scene.add(backgroundGrid);
    const group=new T.Group();
-   const shell=new T.MeshStandardMaterial({color:0xf1f5f8,metalness:.14,roughness:.31});
-   const bright=new T.MeshStandardMaterial({color:0xf9fcff,metalness:.11,roughness:.26});
-   const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.13,roughness:.38});
-   const frame=new T.Mesh(new T.CylinderGeometry(1.45,1.53,.20,12),shell);
-   frame.position.y=-.15;frame.rotation.y=Math.PI/12;group.add(frame);
-   const basin=new T.Mesh(new T.CylinderGeometry(1.32,1.34,.095,112),bright);
-   basin.position.y=-.045;group.add(basin);
-   const floor=new T.Mesh(new T.CylinderGeometry(1.29,1.29,.014,112),mat);
-   floor.position.y=.011;group.add(floor);
-   // The launch halves are simulation-only. Keep the physical stadium visually continuous.
-   // Raised retaining wall. The full rim is used for the plain practice dish;
-   // the Xtreme dish has three openings aligned with the simulated pockets.
-   // Torus centre is at the same normalized height as RIM_LIP_HEIGHT in physics.
-   const rimMat=new T.MeshStandardMaterial({color:0xfafcff,metalness:.27,roughness:.24});
-   rimFull=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),rimMat);
-   rimFull.rotation.x=Math.PI/2;rimFull.position.y=.065;
+   // Official BX-10-inspired white base and translucent, chamfered guard.
+   // Visual-only normalized dimensions; not a manufacturer's CAD mesh.
+   const shell=new T.MeshStandardMaterial({color:0xedf2f5,metalness:.04,roughness:.49,side:T.DoubleSide});
+   const bright=new T.MeshStandardMaterial({color:0xffffff,metalness:.05,roughness:.38,side:T.DoubleSide});
+   const mat=new T.MeshStandardMaterial({color:0xeaf0f4,metalness:.03,roughness:.59,side:T.DoubleSide});
+   const metal=new T.MeshStandardMaterial({color:0xaebfca,metalness:.10,roughness:.46});
+   const clear=new T.MeshStandardMaterial({color:0xf5fcff,metalness:.04,roughness:.26,
+    transparent:true,opacity:.20,depthWrite:false,side:T.DoubleSide});
+   // White octagonal outer chassis with the centre carved away.
+   const corners=[[-1.38,-1.48],[1.38,-1.48],[1.80,-1.12],[1.80,1.13],
+    [1.40,1.48],[-1.40,1.48],[-1.80,1.13],[-1.80,-1.12]];
+   const hull=new T.Shape();
+   corners.forEach(([x,z],i)=>i?hull.lineTo(x,-z):hull.moveTo(x,-z));
+   hull.closePath();
+   const hole=new T.Path();hole.absarc(0,0,1.315,0,TAU,true);hull.holes.push(hole);
+   const base=new T.Mesh(new T.ExtrudeGeometry(hull,{depth:.13,bevelEnabled:true,
+    bevelThickness:.018,bevelSize:.018,bevelSegments:2,curveSegments:64}),shell);
+   base.rotation.x=-Math.PI/2;base.position.y=-.145;group.add(base);
+   // Radially sloped battle basin. Lower centre, gently rising outside.
+   const bowlPoints=[[0,-.012],[.25,-.012],[.55,-.009],[.74,-.004],
+    [.91,.007],[1.05,.027],[1.19,.055],[1.32,.082]];
+   const bowl=new T.Mesh(new T.LatheGeometry(bowlPoints.map(([r,y])=>new T.Vector2(r,y)),120),mat);
+   group.add(bowl);
+   const groove=new T.Mesh(new T.TorusGeometry(1.29,.014,10,116),metal);
+   groove.rotation.x=Math.PI/2;groove.position.y=.089;group.add(groove);
+   // Real BX-10 guard is polygonal, mostly clear, and open over the battle bowl.
+   const upperGuard=new T.Mesh(new T.ShapeGeometry(hull,64),clear);
+   upperGuard.rotation.x=-Math.PI/2;upperGuard.position.y=.265;group.add(upperGuard);
+   for(let i=0;i<corners.length;i++){
+    const [x1,z1]=corners[i],[x2,z2]=corners[(i+1)%corners.length];
+    const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);
+    const wall=new T.Mesh(new T.BoxGeometry(len,.28,.024),clear);
+    wall.position.set((x1+x2)/2,.115,(z1+z2)/2);
+    wall.rotation.y=-Math.atan2(dz,dx);group.add(wall);
+   }
+   for(let i=0;i<4;i++){
+    const theta=(i+.5)*TAU/4;
+    const clip=new T.Mesh(new T.BoxGeometry(.13,.12,.13),metal);
+    clip.position.set(Math.cos(theta)*1.59,.11,Math.sin(theta)*1.39);
+    clip.rotation.y=-theta;group.add(clip);
+   }
+   // Three visible front apertures share exactly the simulator's zone angles.
+   const zones=root.BBX_SIM_CORE?.STADIUM_ZONES||[
+    {kind:'over',theta:.61,halfWidth:.29},{kind:'extreme',theta:Math.PI/2,halfWidth:.31},
+    {kind:'over',theta:Math.PI-.61,halfWidth:.29}];
+   const rimMaterial=new T.MeshStandardMaterial({color:0xfafcff,metalness:.04,roughness:.36});
+   rimFull=new T.Mesh(new T.TorusGeometry(1.37,.073,14,128),rimMaterial);
+   rimFull.rotation.x=-Math.PI/2;rimFull.position.y=.135;
    rimFull.visible=currentArena!=='xtreme';group.add(rimFull);
    rimOpen=new T.Group();
-   for(const [from,to] of [[-Math.PI,-1.16],[-.24,.19],[1.11,2.174],[2.726,Math.PI]]){
-    const rimGeo=new T.TorusGeometry(1.37,.073,14,Math.max(8,Math.ceil((to-from)*32)),to-from);
-    rimGeo.rotateZ(from);
-    const segment=new T.Mesh(rimGeo,rimMat);
-    segment.rotation.x=Math.PI/2;segment.position.y=.065;
-    rimOpen.add(segment);
+   const openings=zones.map(z=>[z.theta-z.halfWidth,z.theta+z.halfWidth]).sort((a,b)=>a[0]-b[0]);
+   let cursor=0;
+   for(const [a,b] of [...openings,[TAU,TAU]]){
+    if(a>cursor){
+     const rimGeo=new T.TorusGeometry(1.37,.073,14,Math.max(8,Math.ceil((a-cursor)*45)),a-cursor);
+     rimGeo.rotateZ(-a);
+     const part=new T.Mesh(rimGeo,rimMaterial);
+     part.rotation.x=-Math.PI/2;part.position.y=.135;rimOpen.add(part);
+    }
+    cursor=Math.max(cursor,b);
    }
    rimOpen.visible=currentArena==='xtreme';group.add(rimOpen);
-   const groove=new T.Mesh(new T.TorusGeometry(1.29,.026,10,112),
-    new T.MeshStandardMaterial({color:0x9db3c5,metalness:.38,roughness:.42}));
-   groove.rotation.x=Math.PI/2;groove.position.y=.02;group.add(groove);
-   // Light green Xtreme line: only visible on Xtreme stadium.
-   const guide=new T.Mesh(new T.TorusGeometry(1.17,.038,12,116),
-    new T.MeshStandardMaterial({color:0xb6f344,emissive:0x69b626,
-      emissiveIntensity:.84,metalness:.19,roughness:.2}));
-   guide.rotation.x=Math.PI/2;guide.position.y=.075;group.add(guide);
+   // The official green toothed rail has a pronounced inward entry bend at rear.
+   const railMat=new T.MeshStandardMaterial({color:0x26a844,metalness:.12,roughness:.38,
+    emissive:0x135523,emissiveIntensity:.22});
+   const railRadius=theta=>{
+    const back=Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2));
+    return 1.17-.17*Math.exp(-Math.pow(back/.20,4));
+   };
+   const railCurve=new T.CatmullRomCurve3(Array.from({length:150},(_,i)=>{
+    const theta=i*TAU/150,r=railRadius(theta);
+    return new T.Vector3(Math.cos(theta)*r,.101,Math.sin(theta)*r);
+   }),true,'centripetal');
+   const guide=new T.Mesh(new T.TubeGeometry(railCurve,220,.036,9,true),railMat);
+   const teeth=new T.InstancedMesh(new T.BoxGeometry(.042,.020,.025),railMat,76);
+   const tooth=new T.Object3D();
+   for(let i=0;i<76;i++){
+    const t=i*TAU/76,r=railRadius(t);
+    tooth.position.set(Math.cos(t)*r,.102,Math.sin(t)*r);
+    tooth.rotation.set(0,-t,0);tooth.updateMatrix();teeth.setMatrixAt(i,tooth.matrix);
+   }
+   teeth.instanceMatrix.needsUpdate=true;guide.add(teeth);group.add(guide);
    const pocketGroup=new T.Group();
-   const darkPocket=new T.MeshStandardMaterial({color:0x6b8397,metalness:.28,roughness:.43});
-   for(const [j,theta] of [-.70,.65,2.45].entries()){
-    const pocket=new T.Mesh(new T.RingGeometry(1.13,1.40,20,1,theta-.22,.44),
-     new T.MeshBasicMaterial({color:j===0?0x97de3a:0x7b96ae,transparent:true,
-       opacity:j===0?.8:.57,side:T.DoubleSide,depthWrite:false}));
-    pocket.rotation.x=-Math.PI/2;pocket.position.y=.049;pocketGroup.add(pocket);
-    const rimPost=new T.Mesh(new T.BoxGeometry(.24,.115,.20),bright);
-    rimPost.position.set(Math.cos(theta)*1.47,.08,Math.sin(theta)*1.47);
-    rimPost.rotation.y=-theta;pocketGroup.add(rimPost);
+   for(const zone of zones){
+    const begin=-zone.theta-zone.halfWidth,width=zone.halfWidth*2;
+    const floor=new T.Mesh(new T.RingGeometry(1.28,1.61,24,1,begin,width),
+     new T.MeshStandardMaterial({color:0x4d6170,metalness:.01,roughness:.75,
+      side:T.DoubleSide}));
+    floor.rotation.x=-Math.PI/2;floor.position.y=.007;pocketGroup.add(floor);
+    const accent=new T.Mesh(new T.RingGeometry(1.29,1.35,24,1,begin,width),
+     new T.MeshBasicMaterial({color:zone.kind==='extreme'?0xc75e57:0xe5c56c,
+      transparent:true,opacity:.72,depthWrite:false,side:T.DoubleSide}));
+    accent.rotation.x=-Math.PI/2;accent.position.y=.013;pocketGroup.add(accent);
+    const gate=new T.Mesh(new T.BoxGeometry(zone.kind==='extreme'?.34:.29,.06,.09),metal);
+    gate.position.set(Math.cos(zone.theta)*1.56,.025,Math.sin(zone.theta)*1.56);
+    gate.rotation.y=-zone.theta;pocketGroup.add(gate);
    }
    group.add(pocketGroup);
-   const frontGuide=new T.Mesh(new T.BoxGeometry(1.85,.052,.075),
-     new T.MeshStandardMaterial({color:0xbbf64d,emissive:0x5aaa20,emissiveIntensity:.75}));
-   frontGuide.position.set(0,.03,1.35);pocketGroup.add(frontGuide);
-   for(let j=0;j<68;j++){
-    const theta=j*TAU/68;
-    const tick=new T.Mesh(new T.BoxGeometry(.02,.003,.011),
-     new T.MeshBasicMaterial({color:j%8===0?0x52697c:0xaac0ce}));
-    tick.position.set(Math.cos(theta)*.86,.021,Math.sin(theta)*.86);
-    tick.rotation.y=-theta;group.add(tick);
-   }
-   // Embossed white side panels echo the stepped stadium shell.
-   for(let j=0;j<8;j++){
-    const theta=j*TAU/8;
-    const arm=new T.Mesh(new T.BoxGeometry(.16,.045,.27),shell);
-    arm.position.set(Math.cos(theta)*1.42,.055,Math.sin(theta)*1.42);
-    arm.rotation.y=-theta;group.add(arm);
+   for(let i=0;i<8;i++){
+    const theta=i*TAU/8;
+    const tab=new T.Mesh(new T.BoxGeometry(.13,.040,.16),bright);
+    tab.position.set(Math.cos(theta)*1.46,.040,Math.sin(theta)*1.46);
+    tab.rotation.y=-theta;group.add(tab);
    }
    // Effects are purely visual. Physics remains in sim-engine.js.
    fx3D=new T.Group();scene.add(fx3D);
@@ -536,9 +594,10 @@ function create(container,status,api){
    THREE=T;renderer=gl;world=scene;camera=cam;stadium=group;rail=guide;pockets=pocketGroup;floorMaterial=mat;
    container.replaceChildren(gl.domElement);
    gl.domElement.className='sim-three-canvas';
+   orbit=root.BBX_STADIUM_CAMERA?.create(gl.domElement,cam,()=>renderState(lastState,{finalAge:lastFinishAge}))||null;
    setArena(currentArena);
    setBuilds(visualBuilds);
-   status.textContent='3D 即時畫面｜白色立體盤・亮綠導軌・零件貼圖（外形近似）';
+   status.textContent='BX-10 正式盤近似 3D｜拖曳可 360° 旋轉，雙指／滾輪可縮放';
    renderState(lastState,{finalAge:lastFinishAge});
   }catch(error){
    status.textContent='3D 載入失敗，已改用相同物理狀態的 2D 畫面。';
@@ -569,7 +628,8 @@ function create(container,status,api){
    if(loser&&(finish==='over'||finish==='extreme')){
     x+=t.x/dist*age*.7;z+=t.y/dist*age*.7;
    }
-   mesh.root.position.set(x,.016+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
+   const slope=Math.min(1,Math.max(0,(Math.hypot(x,z)-.70)/.62));
+   mesh.root.position.set(x,.007+.094*slope*slope+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
    // Tilt direction comes from impact recoil and axial precession. Blade
    // heading only spins the top; it must not create unrelated body shaking.
@@ -605,7 +665,7 @@ function create(container,status,api){
     mesh.root.position.y+=Math.max(0,.02-bladeLow);
    }
   }
-  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>2)?1.45:.84);
+  if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>0)?0.50:.22);
   for(let i=0;i<trailLines.length;i++){
    const line=trailLines[i],points=trails[i]||[];
    line.visible=!!state&&!state.done&&points.length>=2;
@@ -646,17 +706,20 @@ function create(container,status,api){
    const power=Math.max(.35,Math.min(2.2,Number(recent.strength)||.7));
    const shake=(impact?.035:.012)*power*t;
    const zoom=(impact?.22:.11)*t;
-   camera.position.set(shake*Math.sin(now*93),3.5-zoom+shake*Math.sin(now*123),2.45-zoom+shake*Math.cos(now*107));
-  }else camera.position.set(0,3.5,2.45);
-  camera.lookAt(0,0,0);
+   if(orbit)orbit.apply({x:shake*Math.sin(now*93),y:-zoom+shake*Math.sin(now*123),z:-zoom+shake*Math.cos(now*107)});
+   else camera.position.set(shake*Math.sin(now*93),3.5-zoom,2.45-zoom);
+  }else if(orbit)orbit.apply();
+  else camera.position.set(0,3.5,2.45);
+  if(!orbit)camera.lookAt(0,0,0);
   renderer.render(world,camera);
  }
  init3D();
  draw2D(null);
  return{
-  render:renderState,setArena,setBuilds,
-  getVisuals:visualNames,
+  render:renderState,setArena,setBuilds,setCameraView,
+  getCameraState:()=>orbit?.getState?.()||null,getVisuals:visualNames,
   destroy(){
+   orbit?.destroy();
    rendered.forEach(n=>{if(n){world?.remove(n.root);dispose(n.root)}});
    renderer?.dispose();container.replaceChildren();
   }
