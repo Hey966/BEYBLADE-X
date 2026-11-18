@@ -178,7 +178,7 @@ $('import').onchange=async e=>{
   const obj=JSON.parse(await f.text());
   const checked=L.parseBackup(obj,seedIds);
   if(!confirm('即將匯入 '+checked.additions.length+' 顆新增收藏及 '+checked.decks.length+' 筆配置。這會覆蓋本機記錄，繼續嗎？'))return;
-  restore(obj);save();all();renderManualAbilityOptions();notify('已通過驗證並匯入備份');
+  restore(obj);save();all();window.dispatchEvent(new Event('bbx-inventory-updated'));notify('已通過驗證並匯入備份');
  }catch(err){notify('匯入失敗：'+err.message)}
  finally{e.target.value=''}
 };
@@ -202,9 +202,65 @@ $('addForm').onsubmit=e=>{
   if(bey.system==='CX'&&(!bey.lockChip||!bey.mainBlade||!bey.assistBlade))throw Error('CX 必須填寫紋章、主刃與輔助刃');
   DB.packages.push(L.makePackage(bey));DB.beys.push(bey);
   save();all();renderManualAbilityOptions();e.target.reset();toggleCXInputs();
+  window.dispatchEvent(new Event('bbx-inventory-updated'));
   notify('已新增至本機。請填入有來源的能力數值，再用於分析。');
  }catch(error){notify('無法新增：'+error.message)}
 };
+/* Optional, explicitly user-entered part scores. Never invent missing catalog ratings. */
+function renderManualAbilityOptions(){
+ const select=$('manualAbilityBey');if(!select)return;
+ const previous=select.value;
+ const added=DB.beys.filter(b=>L.ownId(b.id));
+ select.innerHTML='<option value="">選擇新收藏</option>'+added.map(b=>opt(b.id,b.name,previous)).join('');
+ const status=$('manualAbilityStatus');if(!added.length)status.textContent='尚未新增本機收藏。先在上方新增陀螺。';
+ renderManualAbilityPartOptions();
+}
+function renderManualAbilityPartOptions(){
+ const selector=$('manualAbilityPart'),b=getBey($('manualAbilityBey').value);
+ if(!selector)return;
+ const kinds=b?.system==='CX'?['blade','lockChip','mainBlade','assistBlade','ratchet','bit']:['blade','ratchet','bit'];
+ const names={blade:'完整戰刃',lockChip:'CX 鎖定紋章',mainBlade:'CX 主刃',assistBlade:'CX 輔助刃',ratchet:'固鎖',bit:'軸心'};
+ const before=selector.value;
+ selector.innerHTML=kinds.map(kind=>opt(kind,names[kind],before)).join('');
+ renderManualAbilityValues();
+}
+function renderManualAbilityValues(){
+ const b=getBey($('manualAbilityBey')?.value);
+ const kind=$('manualAbilityPart')?.value;
+ const r=customAbilities[b?.id]?.parts?.[kind];
+ const frm=$('manualAbilityForm');if(!frm)return;
+ for(const name of ['attack','defense','stamina','dash','burst']){
+  const input=frm.elements[name];
+  input.value=Number.isFinite(r?.stats?.[name])?r.stats[name]:(['dash','burst'].includes(name)&&kind!=='bit'?0:'');
+  input.required=kind==='bit'||!['dash','burst'].includes(name);
+  input.disabled=['dash','burst'].includes(name)&&kind!=='bit';
+ }
+ frm.elements.partType.value=r?.type||'balance';
+ frm.elements.sourceUrl.value=r?.sourceUrl||'';
+}
+$('manualAbilityBey')?.addEventListener('change',renderManualAbilityPartOptions);
+$('manualAbilityPart')?.addEventListener('change',renderManualAbilityValues);
+$('manualAbilityForm')?.addEventListener('submit',event=>{
+ event.preventDefault();
+ const frm=event.currentTarget,b=getBey($('manualAbilityBey').value),kind=$('manualAbilityPart').value;
+ if(!b||!L.ownId(b.id)){notify('請先選擇本機新增陀螺');return}
+ const stats={};
+ for(const k of ['attack','defense','stamina','dash','burst']){
+  const input=frm.elements[k];stats[k]=input.disabled?0:Number(input.value);
+  if(!input.disabled&&input.value===''){notify('請先完整填寫能力值，未知值不能自動假設為 0');return}
+ }
+ try{
+  const rec=L.sanitizeAbility(b.id,kind,{stats,type:frm.elements.partType.value,
+   sourceUrl:frm.elements.sourceUrl.value},b);
+  const entry=customAbilities[b.id]||{id:b.id,name:b.name,system:b.system,spinDirection:b.spinDirection,parts:{}};
+  entry.parts[kind]=rec;customAbilities[b.id]=entry;
+  window.BBX_PART_STATS.beys[b.id]=entry;
+  save();renderManualAbilityValues();renderCompleteness();
+  $('manualAbilityStatus').textContent=b.name+'／'+kind+' 已保存自填分數。資料尚未經原廠核實。';
+  window.dispatchEvent(new Event('bbx-inventory-updated'));
+ }catch(error){notify('無法保存能力：'+error.message)}
+});
+
 /* Controlled access to live inventory and deck slots for the dedicated analysis module. */
 window.BBX_COLLECTION_API={
  getBeys:()=>DB.beys.slice(),
@@ -246,14 +302,15 @@ function renderCompleteness(){
  const owned=DB.beys.filter(b=>!b.id.startsWith('LOCAL-'));
  const pending=owned.filter(b=>b.imageStatus!=='verified_png');
  const missing=(window.BBX_PART_PHYSICS?.unverified||[]).filter(x=>x.status!=='resolved');
+ const userPending=DB.beys.filter(b=>L.ownId(b.id)&&!window.BBX_PART_STATS?.beys?.[b.id]?.parts?.blade);
  const conflicts=(window.BBX_PART_PHYSICS?.statConflicts||[]).filter(x=>x.status==='unresolved');
- el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突。</p>'+
+ el.innerHTML='<p>完整陀螺透明圖：'+(owned.length-pending.length)+' / '+owned.length+' 顆。待核對 '+pending.length+' 顆。另有 '+missing.length+' 筆戰刃參考重量尚未查證，以及 '+conflicts.length+' 筆能力數值來源衝突，另有 '+userPending.length+' 顆本機新增收藏尚未登錄戰刃能力。</p>'+
  '<div class="completeness-links">'+pending.map(b=>'<div><strong>'+esc(b.name)+'</strong>：完整透明圖待核對'+
  (b.wholeReferencePage?.startsWith('https://')?' · <a href="'+esc(b.wholeReferencePage)+'" target="_blank" rel="noopener noreferrer">'+esc(b.wholeReferenceNote||'查看同款商品參考')+'</a>':'')+'</div>').join('')+'</div>'+
  '<p>BX／UX 不使用的 CX 子零件，不列入缺圖。缺乏原始秤重或有爭議的能力值，仍保留待查證狀態。</p>'+
  '<p><a href="https://github.com/Hey966/BEYBLADE-X/blob/main/docs/missing-data-audit-2026-11-18.md" target="_blank" rel="noopener noreferrer">查看逐項查核報告</a></p>';
 }
-function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();}
+function all(){countStats();renderFilters();renderCollection();renderParts();renderSlots();renderSaved();renderCompleteness();renderManualAbilityOptions();}
 $('search').oninput=renderCollection;$('marketFilter').onchange=renderCollection;
 all();
 })();
