@@ -522,7 +522,10 @@ function create(container,status,api){
    img.src=p.src;
   }
   g.position.set(i===0?-.4: .4,0,0);
-  g.traverse(obj=>{if(obj.isMesh){obj.castShadow=!obj.material?.transparent;obj.receiveShadow=true}});
+  g.traverse(obj=>{
+   if(obj.isMesh){obj.castShadow=!obj.material?.transparent;obj.receiveShadow=true;}
+   if(obj.material)[].concat(obj.material).forEach(assignMaterialQuality);
+  });
   world.add(g);
   const shadow=groundShadow(spec);
   return{root:g,blade:body,ratchet,bit,spinBlur,shadow};
@@ -724,6 +727,8 @@ function create(container,status,api){
    const t=state?.tops?.[i],mesh=rendered[i];
    if(!mesh)continue;
    mesh.root.visible=!!t;
+   if(mesh.shadow)mesh.shadow.visible=!!t&&!!quality?.contactShadow;
+   if(mesh.spinBlur)mesh.spinBlur.visible=false;
    if(!t)continue;
    const terminal=state.done?state.terminal:null;
    const loser=terminal?.loser===i,finish=terminal?.finish;
@@ -734,6 +739,18 @@ function create(container,status,api){
    }
    const slope=Math.min(1,Math.max(0,(Math.hypot(x,z)-.70)/.62));
    mesh.root.position.set(x,.007+.094*slope*slope+Math.max(0,Number(t.height)||0)+(loser&&finish==='burst'?age*.014:0),z);
+   if(mesh.shadow){
+    mesh.shadow.position.set(x,.011+.094*slope*slope,z);
+    mesh.shadow.material.opacity=(quality?.contactOpacity||0)*
+     Math.max(.08,1-Math.max(0,Number(t.height)||0)/1.2);
+    mesh.shadow.scale.setScalar(Math.max(.6,(mesh.root.scale.x||1)*(1+Math.max(0,Number(t.height)||0)*.38)));
+   }
+   if(mesh.spinBlur){
+    const spinning=Math.max(0,Number(t.spin)||0);
+    mesh.spinBlur.visible=!!quality?.spinBlur&&spinning>11&&!(loser&&finish==='burst');
+    mesh.spinBlur.material.opacity=mesh.spinBlur.visible?
+     Math.min(.34,Math.max(0,(spinning-11)/76*.35)):0;
+   }
    mesh.root.rotation.y=t.heading+(terminal?.winner===i?coastRotation(t,lastCoastAge):0);
    // Tilt direction comes from impact recoil and axial precession. Blade
    // heading only spins the top; it must not create unrelated body shaking.
@@ -772,21 +789,23 @@ function create(container,status,api){
   if(rail)rail.material.emissiveIntensity=(state?.tops?.some(t=>t.railCooldown>0)?0.50:.22);
   for(let i=0;i<trailLines.length;i++){
    const line=trailLines[i],points=trails[i]||[];
-   line.visible=!!state&&!state.done&&points.length>=2;
+   line.visible=!!state&&!state.done&&points.length>=2&&quality?.trailLimit>0;
+   line.material.opacity=quality?.id==='ultra'?.87:quality?.id==='balanced'?.72:.46;
    if(line.visible){
     line.geometry.dispose();
-    line.geometry=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(p.x,.13,p.y)));
+    line.geometry=new THREE.BufferGeometry().setFromPoints(points.slice(-quality.trailLimit).map(p=>new THREE.Vector3(p.x,.13,p.y)));
    }
   }
   const now=(Number(state?.elapsed)||0)+(state?.done?lastFinishAge:0);
   // Each physics event generates a short cluster of real spatial particles,
   // instead of a single nearly static flash at the collision point.
   const particles=[];
-  for(const event of fx.slice(-5)){
-   const count=event.kind==='hit'?8:event.kind==='dash'?6:event.kind==='finish'?10:event.kind==='wall'?5:3;
+  for(const event of fx.slice(-9)){
+   const base=event.kind==='hit'?8:event.kind==='dash'?6:event.kind==='finish'?10:event.kind==='wall'?5:3;
+   const count=Math.max(1,Math.ceil(base*(quality?.sparkScale||1)));
    for(let k=0;k<count;k++)particles.push({event,k,count});
   }
-  const visible=particles.slice(-fxSprites.length);
+  const visible=particles.slice(-Math.min(fxSprites.length,quality?.sparkBudget||28));
   for(let i=0;i<fxSprites.length;i++){
    const sprite=fxSprites[i],part=visible[i];
    if(!part){sprite.visible=false;continue}
