@@ -186,6 +186,53 @@ assert(renderEvents.some(r=>r.coast>=4),
 fire('simMatchType','change','3');
 assert.equal((nodes.simTeam0.innerHTML.match(/sim-build-card/g)||[]).length,3);
 assert.equal((nodes.simTeam1.innerHTML.match(/sim-build-card/g)||[]).length,3);
+
+function currentSelection(side,index,part){
+ const markup=nodes['simTeam'+side].innerHTML;
+ const marker='data-team="'+side+'" data-index="'+index+'" data-part="'+part+'"';
+ const start=markup.indexOf(marker);
+ assert(start>=0,'missing select '+marker);
+ const end=markup.indexOf('</select>',start);
+ const match=markup.slice(start,end).match(/<option value="([^"]+)" selected/);
+ assert(match,'no selected '+marker);
+ return match[1];
+}
+function currentDeckKey(side,count){
+ return Array.from({length:count},(_,index)=>{
+  const mode=currentSelection(side,index,'mode');
+  const partNames=mode==='cx'?['chip','main','assist','ratchet','bit']:['blade','ratchet','bit'];
+  return mode+' '+partNames.map(p=>currentSelection(side,index,p)).join('/');
+ }).join('::');
+}
+assert(html.includes('>隨機配裝</button>'),'the old Reset action should be visibly renamed');
+let previousLeft=currentDeckKey(0,3),previousRight=currentDeckKey(1,3);
+for(let attempt=0;attempt<6;attempt++){
+ fire('simReset');
+ assert.notEqual(currentDeckKey(0,3),previousLeft,'our 3v3 deck must visibly change');
+ assert.notEqual(currentDeckKey(1,3),previousRight,'opponent 3v3 deck must visibly change');
+ assert.equal(nodes.simScore.textContent,'我方 0 : 0 對手','random reset clears match points');
+ assert.equal(nodes.simNext.disabled,true,'next round must be unavailable before a new start');
+ assert.equal(nodes.simPause.disabled,true,'random reset stops existing match');
+ assert(nodes.simActiveParts.innerHTML.includes('sim-stat-grid'),'new parts must update preview');
+ fire('simStart');
+ assert.equal(nodes.simPause.disabled,false,'new 3v3 deck must pass same-model checks and launch');
+ previousLeft=currentDeckKey(0,3);previousRight=currentDeckKey(1,3);
+}
+fire('simMatchType','change','1');
+fire('simArenaType','change','plain');
+fire('simPower0Number','change','12345');
+const soloBefore=[currentDeckKey(0,1),currentDeckKey(1,1)];
+fire('simReset');
+assert.notEqual(currentDeckKey(0,1),soloBefore[0],'our 1v1 build should change');
+assert.notEqual(currentDeckKey(1,1),soloBefore[1],'opponent 1v1 build should change');
+assert.equal(nodes.simArenaType.value,'plain','randomize must keep stadium');
+assert.equal(nodes.simPower0Number.value,'12345','randomize must keep launch settings');
+assert.equal(nodes.simMatchType.value,'1','randomize must keep match mode');
+fire('simStart');
+assert.equal(nodes.simPause.disabled,false,'new 1v1 parts must pass validation and launch');
+fire('simReset');
+assert.equal(nodes.simPause.disabled,true,'re-randomization must terminate a running battle');
+
 console.log(JSON.stringify({
  passed:true,stadiumSwap:arenaCalls.includes('plain'),reset:true,
  newBladePreview:true,finishBeforeScoring:true,visualFrame,scoredFrame,threeDeck:true

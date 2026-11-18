@@ -102,7 +102,7 @@
     <button class="primary" id="simStart" type="button">開始新對戰</button>
     <button id="simPause" type="button" disabled>暫停</button>
     <button id="simNext" type="button" disabled>下一回合</button>
-    <button id="simReset" type="button">重設</button>
+    <button id="simReset" type="button" title="隨機更換雙方陀螺配件並清除比分，保留發射設定">隨機配裝</button>
    </div>
    <p id="simTime" class="sim-technical-status">0.0s / 65.0s（模型時間）</p>
    <p id="simMessage" class="sim-message" role="status">雙方從上方投放。前段高速移動、後段持續旋轉並逐漸慢下來。撞擊仍可能爆裂或擊飛。</p>
@@ -144,6 +144,6 @@
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261118-completeness-v1"></script><script src="data/part-abilities.js?v=20261117-hasbro-box-v24"></script><script src="data/part-physics.js?v=20261118-completeness-v1"></script><script src="bit-types.js?v=20261118-bit-type-labels-v1"></script><script src="blade-types.js?v=20261118-blade-type-labels-v1"></script><script src="app.js?v=20261118-completeness-v1"></script><script src="analysis.js?v=20261118-mobile-official-v1"></script>
-<script src="sim-engine.js?v=20261118-mobile-official-v1"></script><script src="sim-view.js?v=20261118-mobile-official-v1"></script><script src="sim-audio.js?v=20261117-hasbro-box-v24"></script><script src="sim-ui.js?v=20261118-mobile-official-v1"></script>
+<script src="sim-engine.js?v=20261118-mobile-official-v1"></script><script src="sim-view.js?v=20261118-mobile-official-v1"></script><script src="sim-audio.js?v=20261117-hasbro-box-v24"></script><script src="sim-ui.js?v=20261118-random-reset-v1"></script>
 </body>
 </html>

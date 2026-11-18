@@ -308,7 +308,75 @@ $('simPause').addEventListener('click',()=>{
  runtime.paused=!runtime.paused;$('simPause').textContent=runtime.paused?'繼續':'暫停';
  audio?.update?.(runtime.battle.tops,runtime.paused);
 });
-$('simReset').addEventListener('click',()=>clearMatch('已清空。種子與設定不變，可再次重現結果。'));
+
+/* Draw from actual owned and numerically available parts.
+ * Never treat the opponent as consuming our physical inventory.
+ * For a 3-top deck, use the simulator's official same-model checks. */
+const randomPools=()=>{
+ const byKind=part=>beys.filter(b=>abilities.beys?.[b.id]?.parts?.[part]?.available).map(b=>b.id);
+ return {
+  blade:byKind('blade'),
+  ratchet:byKind('ratchet'),
+  bit:byKind('bit'),
+  chip:cx.filter(b=>abilities.beys?.[b.id]?.parts?.lockChip?.available).map(b=>b.id),
+  main:cx.filter(b=>abilities.beys?.[b.id]?.parts?.mainBlade?.available).map(b=>b.id),
+  assist:cx.filter(b=>abilities.beys?.[b.id]?.parts?.assistBlade?.available).map(b=>b.id)
+ };
+};
+const randomPart=pool=>pool[Math.floor(Math.random()*pool.length)]||'';
+const visibleConfig=config=>config.mode==='cx'?
+ ['cx',config.chip,config.main,config.assist,config.ratchet,config.bit].join('|'):
+ ['whole',config.blade,config.ratchet,config.bit].join('|');
+function randomDeck(count,previous,pools,db){
+ const canCX=pools.chip.length&&pools.main.length&&pools.assist.length;
+ if(!pools.blade.length||!pools.ratchet.length||!pools.bit.length)return null;
+ const original=previous.slice(0,count).map(visibleConfig).join('::');
+ for(let attempt=0;attempt<400;attempt++){
+  const deck=Array.from({length:count},()=>{
+   const mode=canCX&&Math.random()<.35?'cx':'whole';
+   return {
+    mode,
+    blade:randomPart(pools.blade),
+    chip:canCX?randomPart(pools.chip):'',
+    main:canCX?randomPart(pools.main):'',
+    assist:canCX?randomPart(pools.assist):'',
+    ratchet:randomPart(pools.ratchet),
+    bit:randomPart(pools.bit)
+   };
+  });
+  if(deck.map(visibleConfig).join('::')===original)continue;
+  try{
+   const built=deck.map(x=>C.makeBuild(x,db,abilities));
+   C.validateDeck(built);
+   return deck;
+  }catch(_error){/* retry with a new legal combination */}
+ }
+ return null;
+}
+function rerollMatch(){
+ const count=Number($('simMatchType').value);
+ const pools=randomPools(),db={beys:api.getBeys()};
+ const left=randomDeck(count,selections[0],pools,db);
+ const right=randomDeck(count,selections[1],pools,db);
+ if(!left||!right){
+  report('現有零件不足以產生符合 '+count+' 對 '+count+' 規則的隨機配置，原本配置已保留。',true);
+  return;
+ }
+ for(const [i,deck] of [[0,left],[1,right]]){
+  for(let k=0;k<deck.length;k++)selections[i][k]=deck[k];
+ }
+ // Cancel an in-progress batch, otherwise its old results could be shown for new parts.
+ batchCancel=true;++runStamp;latestBatch=null;
+ $('simBatchRun').disabled=false;
+ $('simBatchCancel').disabled=true;
+ $('simBatchDownload').disabled=true;
+ $('simBatchBar').style.width='0%';
+ $('simBatchProgress').textContent='已更換配件，請重新執行批次模擬。';
+ $('simBatchOutput').textContent='新配置尚未執行批次模擬。';
+ renderTeams();
+ clearMatch('雙方已隨機重新搭配'+count+' 顆陀螺的戰刃、固鎖與軸心（含 CX 模組）。比分已清零，場地與發射設定保留。請按開始新對戰。');
+}
+$('simReset').addEventListener('click',rerollMatch);
 $('simMatchType').addEventListener('change',()=>{
  renderTeams();clearMatch('已切換'+$('simMatchType').value+'對'+$('simMatchType').value+'模式。');
 });
