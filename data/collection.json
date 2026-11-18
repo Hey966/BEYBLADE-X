@@ -191,7 +191,9 @@
         "newHero": "images/reference/g3084-02-blade.png",
         "sourceType": "exact_release_upper_blade",
         "correctedAt": "2026-11-15"
-      }
+      },
+      "wholeReferencePage": "https://www.maziply.com/products/beyblade-x-gill-shark-4-70o-pearl-tiger-3-60u-dual-pack-set",
+      "wholeReferenceNote": "同款 Gill Shark 4-70O 原商品照"
     },
     {
       "id": "OWN-G3084-03",
@@ -256,7 +258,9 @@
         "newHero": "images/reference/g3084-04-blade.png",
         "sourceType": "exact_release_upper_blade",
         "correctedAt": "2026-11-15"
-      }
+      },
+      "wholeReferencePage": "https://www.entertainmentearth.com/product/beyblade-x-sterling-wolf-380fb-ux-starter-pack-set/hsg1674",
+      "wholeReferenceNote": "同款 Sterling Wolf 3-80FB 商品照"
     },
     {
       "id": "OWN-G3084-05",
@@ -295,7 +299,9 @@
         "newHero": "images/reference/g3084-05-blade.png",
         "sourceType": "exact_release_upper_blade",
         "correctedAt": "2026-11-15"
-      }
+      },
+      "wholeReferencePage": "https://www.mrtoys.com.au/action-figures/beyblade/beyblade-x-fort-hornet-r-760t-80326.html",
+      "wholeReferenceNote": "同配色 Fort Hornet R 7-60T 商品照"
     },
     {
       "id": "OWN-G3084-06",
@@ -443,7 +449,9 @@
         "bit": "images/reference/g3063-01-bit.png"
       },
       "displayImagePath": "images/reference/g3063-01-blade.png",
-      "referenceImageUrl": null
+      "referenceImageUrl": null,
+      "wholeReferencePage": "https://www.galaxus.nl/en/s12/product/hasbro-beyblade-x-mister-fantastic-9-65a-doctor-doom-0-80lo-comics-manga-76630366",
+      "wholeReferenceNote": "G3063 Mister Fantastic／Doctor Doom 套組圖（單顆待審）"
     },
     {
       "id": "OWN-G3063-02",
@@ -472,7 +480,9 @@
         "bit": "images/reference/g3063-02-bit.png"
       },
       "displayImagePath": "images/reference/g3063-02-blade.png",
-      "referenceImageUrl": null
+      "referenceImageUrl": null,
+      "wholeReferencePage": "https://www.galaxus.nl/en/s12/product/hasbro-beyblade-x-mister-fantastic-9-65a-doctor-doom-0-80lo-comics-manga-76630366",
+      "wholeReferenceNote": "G3063 Mister Fantastic／Doctor Doom 套組圖（單顆待審）"
     },
     {
       "id": "OWN-G2734-01",

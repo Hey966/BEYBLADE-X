@@ -626,12 +626,22 @@
     {
       "owner": "OWN-G3063-01",
       "name": "Mister Fantastic",
-      "part": "blade"
+      "part": "blade",
+      "status": "still_unverified",
+      "lastSearchedOn": "2026-11-18",
+      "verifiedWeightG": null,
+      "reason": "未找到該款實物戰刃獨立秤重；不能以近似模具或整盒商品重量代替。",
+      "sourcePage": "https://beybladewiki.com/zh/toys/part/blade-mister-fantastic"
     },
     {
       "owner": "OWN-G3063-02",
       "name": "Doctor Doom",
-      "part": "blade"
+      "part": "blade",
+      "status": "still_unverified",
+      "lastSearchedOn": "2026-11-18",
+      "verifiedWeightG": null,
+      "reason": "未找到該款實物戰刃獨立秤重；不能以近似模具或整盒商品重量代替。",
+      "sourcePage": "https://beybladewiki.com/toys/part/blade-doctor-doom"
     }
   ],
   "summary": {
@@ -661,7 +671,10 @@
       },
       "source": "https://beybladewiki.com/toys/part/main-blade-brush",
       "independentReleaseUrl": "https://beyblade.phstudy.org/p/en-US/Series/SR-PRD-085683-03.html",
-      "note": "Both public sources explicitly name BXG-57-03 red EVA-02 main blade but print different Attack and Defense values; no package photo independently resolves it. Keep edition-specific phstudy numeric values without substituting generic Brush."
+      "note": "Both public sources explicitly name BXG-57-03 red EVA-02 main blade but print different Attack and Defense values; no package photo independently resolves it. Keep edition-specific phstudy numeric values without substituting generic Brush.",
+      "lastReviewedOn": "2026-11-18",
+      "officialProductPage": "https://beyblade.takaratomy.co.jp/beyblade-x/lineup/cx00-eva.html",
+      "evidenceNeeded": "官方 CX-00 EVA-02 BXG-57-03 原廠零件能力印刷圖，或該版商品包裝照片"
     }
   ],
   "resolvedDifferences": [
