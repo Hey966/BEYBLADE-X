@@ -72,9 +72,10 @@ function parseBackup(raw,seedIds){
  if(raw.format==='BBX-966-BACKUP'&&![1,2].includes(raw.version))throw Error('不支援此版本的備份');
  if(!Array.isArray(raw.additions)||!Array.isArray(raw.decks))throw Error('備份缺少收藏或配置清單');
  if(raw.additions.length>100||raw.decks.length>100)throw Error('備份數量超過上限');
- const additions=[],known=new Set(seedIds||[]),packageIds=new Set();
+ const additions=[],existing=new Set(seedIds||[]),known=new Set(existing),packageIds=new Set();
  for(const row of raw.additions){
   const b=sanitizeBey(row);
+  if(existing.has(b.id))continue; // Already synchronized to the published GitHub catalog.
   if(known.has(b.id))throw Error('重複收藏編號：'+b.id);
   known.add(b.id);additions.push(b);packageIds.add(b.packageId);
  }
@@ -90,6 +91,7 @@ function parseBackup(raw,seedIds){
  if(raw.customAbilities!=null){
   if(typeof raw.customAbilities!=='object'||Array.isArray(raw.customAbilities))throw Error('能力欄位格式不正確');
   for(const [owner,entry] of Object.entries(raw.customAbilities)){
+   if(existing.has(owner))continue;
    const b=additions.find(x=>x.id===owner);
    if(!b||!entry||typeof entry!=='object')throw Error('能力紀錄找不到所屬陀螺');
    const parts={};
