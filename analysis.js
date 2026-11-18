@@ -607,5 +607,5 @@ $('counterResults')?.addEventListener('click',e=>{
  api.useSuggestion(lastCounter.map(toSlots),'能力壓制 '+lastCounter.length+' 顆配置');
 });
 renderOpponentEntries();
-if($('autoResults'))$('autoResults').textContent='可從 19 顆已登錄陀螺的零件庫，挑選攻擊、防禦、持久、平衡配置。';
+if($('autoResults'))$('autoResults').textContent='可從 '+rows().length+' 顆具有零件能力紀錄的陀螺挑選攻擊、防禦、持久、平衡配置。未核實項目仍應謹慎參考。';
 })();
