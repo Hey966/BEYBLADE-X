@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#080d17">
   <meta name="description" content="BEYBLADE X 個人收藏圖鑑、配件管理、3 顆組裝模擬器。">
   <title>BEYBLADE X｜戰鬥陀螺收藏智慧中心</title>
-  <link rel="stylesheet" href="style.css?v=20261118-bx10-orbit-v1">
+  <link rel="stylesheet" href="style.css?v=20261118-ultra-v1">
 </head>
 <body>
   <header class="site-head">
@@ -81,7 +81,9 @@
      <label class="sim-seed-auto"><input type="checkbox" id="simSeedAuto" checked>每次新對戰使用新種子</label>
     </div>
     <label>畫面播放倍率<select id="simSpeed"><option value="1">1× 新版對戰節奏</option><option value="2">2× 快轉</option><option value="4">4× 快轉</option></select></label>
+    <label for="simQuality">3D 畫質<select id="simQuality" aria-describedby="simQualitySummary"><option value="performance">省電模式</option><option value="balanced">平衡模式</option><option value="ultra" selected>極致模式</option></select></label>
    </div>
+   <p class="sim-quality-summary" id="simQualitySummary" role="status" aria-live="polite">極致模式：高解析度、動態陰影、金屬反光、接觸陰影及高速旋轉殘影。需支援 WebGL。</p>
    <div class="sim-launch-row">
     <div><strong>我方發射</strong>
      <label>發射器<select id="simLauncher0"><option value="winder">拉條式</option><option value="string">拉線式</option></select></label>
@@ -150,6 +152,6 @@
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js?v=20261118-completeness-v1"></script><script src="data/part-abilities.js?v=20261117-hasbro-box-v24"></script><script src="data/part-physics.js?v=20261118-completeness-v1"></script><script src="bit-types.js?v=20261118-bit-type-labels-v1"></script><script src="blade-types.js?v=20261118-blade-type-labels-v1"></script><script src="app.js?v=20261118-completeness-v1"></script><script src="analysis.js?v=20261118-mobile-official-v1"></script>
-<script src="sim-engine.js?v=20261118-bx10-orbit-v1"></script><script src="sim-camera.js?v=20261118-bx10-orbit-v1"></script><script src="sim-view.js?v=20261118-bx10-orbit-v1"></script><script src="sim-audio.js?v=20261117-hasbro-box-v24"></script><script src="sim-ui.js?v=20261118-bx10-orbit-v1"></script>
+<script src="sim-engine.js?v=20261118-bx10-orbit-v1"></script><script src="sim-camera.js?v=20261118-bx10-orbit-v1"></script><script src="sim-quality.js?v=20261118-ultra-v1"></script><script src="sim-view.js?v=20261118-ultra-v1"></script><script src="sim-audio.js?v=20261117-hasbro-box-v24"></script><script src="sim-ui.js?v=20261118-ultra-v1"></script>
 </body>
 </html>
