@@ -134,7 +134,7 @@
 </section>
 <section id="data" class="view"><div class="section-header"><div><span class="eyebrow">06 / DATABASE CONTROL</span><h2>資料管理</h2></div><p class="hint">先在瀏覽器記錄，之後可匯出交由 GitHub 更新。</p></div>
       <div class="two-col"><article class="panel"><h3>備份與還原</h3><p>匯出包含收藏、新增項目與組裝配置的 JSON。匯入會覆蓋本機記錄。</p><div class="stack-buttons"><button class="primary" id="export">↓ 匯出完整備份</button><label class="file-button">↑ 匯入 JSON 備份<input id="import" type="file" accept=".json,application/json" hidden></label></div></article><article class="panel"><h3>新增收藏</h3><p>可以先在此新增一顆。要讓所有裝置同步，仍需提交到 GitHub。</p><form id="addForm" class="add-form"><label>名稱<input name="name" required placeholder="例如：Dran Sword"></label><div class="form-grid"><label>系列<select name="system"><option>BX</option><option>UX</option><option>CX</option></select></label><label>版本<select name="market"><option value="JP">日版</option><option value="US">美版</option></select></label></div><div class="form-grid"><label>固鎖<input name="ratchet" required placeholder="3-60"></label><label>軸心<input name="bit" required placeholder="F"></label></div><label>戰刃名稱<input name="blade" required placeholder="完整戰刃名稱"></label><button class="ghost" type="submit">＋ 新增至本機收藏</button></form></article></div>
-      <article class="panel full-note"><h3>資料同步說明</h3><p><strong>GitHub 上的資料</strong>是公開網站的共同版本。本頁新增與保存的配置僅儲存在目前瀏覽器。換手機、無痕瀏覽或清除網站資料後，可能無法保留。請定期匯出備份。若你把新陀螺照片與備份交給我，可以協助核對並更新儲存庫。</p></article>
+      <article class="panel full-note"><h3>資料完整性與待補項目</h3><div id="dataCompleteness">正在核對收藏資料。</div></article><article class="panel full-note"><h3>資料同步說明</h3><p><strong>GitHub 上的資料</strong>是公開網站的共同版本。本頁新增與保存的配置僅儲存在目前瀏覽器。換手機、無痕瀏覽或清除網站資料後，可能無法保留。請定期匯出備份。若你把新陀螺照片與備份交給我，可以協助核對並更新儲存庫。</p></article>
     </section>
     <footer><span>BEYBLADE X / PRIVATE COLLECTION</span><span>19 ORIGINAL TOPS • FIRST EDITION</span><a href="https://github.com/Hey966/BEYBLADE-X" target="_blank" rel="noopener noreferrer">GITHUB ↗</a></footer>
   </main>
@@ -143,7 +143,7 @@
   <dialog id="abilityDialog"><button class="dialog-close" aria-label="關閉能力詳情" id="closeAbility">×</button><div id="abilityContent"></div></dialog>
   <dialog id="sourceDialog"><button class="dialog-close" aria-label="關閉原始陀螺" id="closeSource">×</button><div id="sourceContent"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="data.js?v=20261115-clean3"></script><script src="data/part-abilities.js?v=20261117-hasbro-box-v24"></script><script src="data/part-physics.js?v=20261117-hasbro-box-v24"></script><script src="bit-types.js?v=20261118-bit-type-labels-v1"></script><script src="blade-types.js?v=20261118-blade-type-labels-v1"></script><script src="app.js?v=20261118-mobile-official-v1"></script><script src="analysis.js?v=20261118-mobile-official-v1"></script>
+  <script src="data.js?v=20261118-completeness-v1"></script><script src="data/part-abilities.js?v=20261117-hasbro-box-v24"></script><script src="data/part-physics.js?v=20261118-completeness-v1"></script><script src="bit-types.js?v=20261118-bit-type-labels-v1"></script><script src="blade-types.js?v=20261118-blade-type-labels-v1"></script><script src="app.js?v=20261118-completeness-v1"></script><script src="analysis.js?v=20261118-mobile-official-v1"></script>
 <script src="sim-engine.js?v=20261118-mobile-official-v1"></script><script src="sim-view.js?v=20261118-mobile-official-v1"></script><script src="sim-audio.js?v=20261117-hasbro-box-v24"></script><script src="sim-ui.js?v=20261118-mobile-official-v1"></script>
 </body>
 </html>
