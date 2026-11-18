@@ -843,7 +843,10 @@ function create(container,status,api){
   getCameraState:()=>orbit?.getState?.()||null,getVisuals:visualNames,
   destroy(){
    orbit?.destroy();
-   rendered.forEach(n=>{if(n){world?.remove(n.root);dispose(n.root)}});
+   rendered.forEach(n=>{if(n){
+    world?.remove(n.root);dispose(n.root);
+    if(n.shadow){world?.remove(n.shadow);dispose(n.shadow);}
+   }});
    renderer?.dispose();container.replaceChildren();
   }
  };
