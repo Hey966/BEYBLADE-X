@@ -1,0 +1,110 @@
+name: Owner-reviewed collection import
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+jobs:
+  prepare-import:
+    if: github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, '[COLLECTION-SYNC]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs=require('fs'),vm=require('vm');
+            const {owner,repo}=context.repo,issue=context.payload.issue;
+            const note=async message=>github.rest.issues.createComment({owner,repo,issue_number:issue.number,body:message});
+            try{
+              const body=issue.body||'',fence=String.fromCharCode(96).repeat(3);
+              if(body.length>12000)throw Error('提交資料過長');
+              const start=body.indexOf(fence+'bbx966-json');
+              if(start<0)throw Error('找不到 JSON 同步資料');
+              const finish=body.indexOf(fence,start+fence.length+12);
+              if(finish<0)throw Error('JSON 程式區塊不完整');
+              const request=JSON.parse(body.slice(start+fence.length+12,finish).trim());
+              if(request.schema!=='BBX966-ADD-V2')throw Error('同步規格版本錯誤');
+              const sandbox={window:{}};
+              vm.runInNewContext(fs.readFileSync('collection-local.js','utf8'),sandbox);
+              const L=sandbox.window.BBX_LOCAL,added=L.sanitizeBey(request.bey);
+              const load=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+              const collection=load('data/collection.json'),abilities=load('data/part-abilities.json');
+              const images=load('data/image-status.json'),physics=load('data/part-physics.json');
+              if(collection.beys.some(b=>b.id===added.id))throw Error('同編號收藏已存在於公開資料庫');
+              if(images.results.some(row=>row.id===added.id))throw Error('圖片資料已存在相同編號');
+              if(added.system==='CX'&&(!added.lockChip||!added.mainBlade||!added.assistBlade))throw Error('CX 三個子零件不完整');
+              const entry={id:added.id,name:added.name,system:added.system,
+                spinDirection:added.spinDirection,parts:{}};
+              if(request.ability){
+                const proposed=request.ability.parts||{};
+                if(typeof proposed!=='object'||Array.isArray(proposed))throw Error('能力資料格式錯誤');
+                for(const [kind,part] of Object.entries(proposed))
+                  entry.parts[kind]=L.sanitizeAbility(added.id,kind,part,added);
+              }
+              collection.beys.push(added);collection.packages.push(L.makePackage(added));
+              collection.summary.beyCount=collection.beys.length;
+              collection.summary.packageCount=collection.packages.length;
+              collection.summary.bySystem[added.system]=(collection.summary.bySystem[added.system]||0)+1;
+              const maker=added.ownMarket==='US'?'Hasbro':'Takara Tomy';
+              collection.summary.byManufacturer[maker]=(collection.summary.byManufacturer[maker]||0)+1;
+              abilities.beys[added.id]=entry;
+              abilities.summary.totalBeys=Object.keys(abilities.beys).length;
+              const allParts=Object.values(abilities.beys).flatMap(b=>Object.values(b.parts||{}));
+              abilities.summary.partRecords=allParts.length;
+              abilities.summary.numericRecords=allParts.filter(p=>
+                ['attack','defense','stamina'].every(k=>Number.isFinite(p.stats?.[k]))).length;
+              abilities.summary.missingRecords=collection.beys.reduce((n,b)=>
+                n+(b.system==='CX'?6:3)-Object.keys(abilities.beys[b.id]?.parts||{}).length,0);
+              physics.unverified.push({owner:added.id,name:added.name,part:'blade',
+                status:'still_unverified',verifiedWeightG:null,
+                reason:'使用者新增收藏，尚無可核實的獨立戰刃重量。'});
+              physics.summary.ownedBeys=collection.beys.length;
+              physics.summary.unverifiedEntries=physics.unverified.length;
+              for(const part of ['whole','blade','ratchet','bit','lockChip','mainBlade','assistBlade']){
+                const na=added.system!=='CX'&&['lockChip','mainBlade','assistBlade'].includes(part);
+                images.results.push({id:added.id,part,status:na?'not_applicable':'awaiting_verified_photo',
+                  reason:na?'BX／UX 沒有 CX 專用零件':'自行新增收藏，照片尚未核實'});
+              }
+              const json=o=>JSON.stringify(o,null,2)+'\n';
+              const changes={
+                'data/collection.json':json(collection),
+                'data.js':'window.BBX_SEED = '+JSON.stringify(collection)+';\n',
+                'data/part-abilities.json':json(abilities),
+                'data/part-abilities.js':'window.BBX_PART_STATS = '+JSON.stringify(abilities)+';\n',
+                'data/part-physics.json':json(physics),
+                'data/part-physics.js':'window.BBX_PART_PHYSICS = '+JSON.stringify(physics)+';\n',
+                'data/image-status.json':json(images)
+              };
+              const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+              const base=(await github.rest.git.getCommit({owner,repo,commit_sha:main})).data.tree.sha;
+              const files=[];
+              for(const [path,content] of Object.entries(changes)){
+                const blob=(await github.rest.git.createBlob({owner,repo,content,encoding:'utf-8'})).data.sha;
+                files.push({path,mode:'100644',type:'blob',sha:blob});
+              }
+              const tree=(await github.rest.git.createTree({owner,repo,base_tree:base,tree:files})).data.sha;
+              const commit=(await github.rest.git.createCommit({owner,repo,
+                message:'Propose owner-provided Beyblade collection '+added.id,
+                tree,parents:[main]})).data.sha;
+              const branch='collection-sync/issue-'+issue.number;
+              await github.rest.git.createRef({owner,repo,ref:'refs/heads/'+branch,sha:commit});
+              let link;
+              try{
+                const pr=(await github.rest.pulls.create({owner,repo,title:'Review imported Beyblade: '+added.name,
+                  head:branch,base:'main',
+                  body:'Source: #'+issue.number+'\n\nAdded user-entered collection, selected ability values, and pending photo/weight statuses. Values are unverified until evidence is reviewed.'})).data;
+                link=pr.html_url;
+              }catch(error){
+                link='https://github.com/'+owner+'/'+repo+'/compare/main...'+branch+'?expand=1';
+                await note('分支已建立，但 Actions 無法自動建立 PR。請由本人開啟比較連結並手動建立 PR：'+link+'\n原因：'+error.message);
+                return;
+              }
+              await note('已建立待審核 Pull Request：'+link+'\n請檢查型號、來源及圖片狀態，確認後再合併。');
+            }catch(error){
+              await note('同步請求未匯入：'+error.message);
+              core.setFailed(error.message);
+            }
