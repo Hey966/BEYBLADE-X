@@ -177,6 +177,7 @@ function syncPower(i,source){
  $('simPower'+i+'Number').value=String(value);
  $('simPower'+i+'Display').textContent=value.toLocaleString('zh-TW');
  if(runtime)clearMatch('模擬發射強度已變更，請重新開始。');
+ else invalidateBatch('發射強度已變更，請重新統計。');
 }
 function settings(){
  // Randomize only initial conditions between new matches, never a finish.
@@ -421,7 +422,7 @@ for(const i of [0,1]){
  $('simAngle'+i).addEventListener('input',()=>{
   $('simAngle'+i+'Display').textContent=$('simAngle'+i).value+'°';
   if(runtime)clearMatch('角度已變更，請重新開始。');
-  else{renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
+  else{invalidateBatch('發射角度已變更，請重新統計。');renderLaunchPreview();report('已更新發射傾斜與移動方向預覽。');}
  });
 }
 $('simSettingsReset').addEventListener('click',()=>{
@@ -465,14 +466,14 @@ function invalidateBatch(message){
 }
 function renderBatch(result){
  latestBatch=result;
- const total=result.trials,w=result.win,loss=result.loss,draw=result.draw;
+ const total=result.trials,w=result.win,loss=result.loss,draw=result.draw,unresolved=result.unresolved||0;
  $('simBatchOutput').innerHTML='<div class="sim-batch-bars">'+
-  [['我方',w,'friendly'],['對手',loss,'hostile'],['平手',draw,'neutral']].map(([label,num,kind])=>
+  [['我方',w,'friendly'],['對手',loss,'hostile'],['平手',draw,'neutral'],['未決勝',unresolved,'neutral']].map(([label,num,kind])=>
    '<div><span>'+label+' '+num+' / '+total+'（'+(100*num/Math.max(1,total)).toFixed(1)+'%）</span>'+
    '<div class="sim-progress"><i class="'+kind+'" style="width:'+(100*num/Math.max(1,total))+'%"></i></div></div>').join('')+'</div>'+
   '<p>平均碰撞 '+fmt(result.collisions/Math.max(1,total))+' 次；平均 Xtreme Line 觸發 '+fmt(result.rails/Math.max(1,total))+' 次／完整比賽。</p>'+
   '<p>終結方式：'+Object.entries(result.finishes).map(([k,v])=>clean(k)+' '+v+' 次').join('、')+'</p>'+
-  '<p>這是模型模擬頻率，不是實戰測得的勝率。</p>';
+  '<p>「未決勝」表示達回合上限或連續平局，未達 4 分。此為未校正模型的模擬頻率，不是實戰測得勝率。</p>';
  $('simBatchDownload').disabled=result.trials===0;
 }
 $('simBatchRun').addEventListener('click',async()=>{
@@ -482,7 +483,7 @@ $('simBatchRun').addEventListener('click',async()=>{
  batchCancel=false;latestBatch=null;
  const opts=settings(),count=Number($('simBatchCount').value);
  const base=opts.seed;
- const result={version:C.VERSION,trials:0,target:count,win:0,loss:0,draw:0,collisions:0,rails:0,finishes:{},model:"uncalibrated",mode:teams[0].length===3?'3v3':'1v1',
+ const result={version:C.VERSION,trials:0,target:count,win:0,loss:0,draw:0,unresolved:0,collisions:0,rails:0,finishes:{},model:"uncalibrated",mode:teams[0].length===3?'3v3':'1v1',
   seed:base,settings:opts,teamLabels:teams.map(t=>t.map(b=>b.name))};
  $('simBatchRun').disabled=true;$('simBatchCancel').disabled=false;$('simBatchDownload').disabled=true;
  const stamp=++runStamp;
@@ -492,7 +493,7 @@ $('simBatchRun').addEventListener('click',async()=>{
     const seed=(base+Math.imul(result.trials+1,0x85EBCA6B))>>>0;
     const sim=C.simulateMatch(teams[0],teams[1],{...opts,seed});
     result.trials++;
-    if(sim.winner===0)result.win++;else if(sim.winner===1)result.loss++;else result.draw++;
+    if(sim.winner===0)result.win++;else if(sim.winner===1)result.loss++;else if(sim.finalized)result.draw++;else result.unresolved++;
     for(const b of sim.rounds){
      result.finishes[b.finish]=(result.finishes[b.finish]||0)+1;
      result.collisions+=b.collisions;result.rails+=b.rails;
