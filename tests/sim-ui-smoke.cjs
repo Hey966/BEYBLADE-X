@@ -45,8 +45,13 @@ assert(sceneCode.includes("rimOpen.visible=currentArena==='xtreme'"),
  'Xtreme rim must use pocket openings rather than a full circular wall');
 assert(sceneCode.includes("new T.TorusGeometry(1.37,.073,14"),
  'raised physical rim should remain visible in 3D');
-assert(sceneCode.includes("for(const [from,to] of [[-Math.PI,-1.16]"),
- '2D and 3D should draw matching pocket openings');
+assert(sceneCode.includes("const openings=zones.map("),
+ '3D pocket sectors must derive from the same engine rule table');
+assert(sceneCode.includes("new T.LatheGeometry("),'battle bowl must actually slope in 3D');
+assert(sceneCode.includes("new T.ShapeGeometry(hull"),'transparent polygonal guard must be modelled');
+assert(sceneCode.includes("new T.InstancedMesh("),'Xtreme Line should show physical gear teeth');
+assert(html.includes('sim-camera.js?v=20261118-bx10-orbit-v1'),'orbit controller must load before the renderer');
+assert(html.indexOf('sim-camera.js')<html.indexOf('sim-view.js'),'camera dependency script order');
 assert(sceneCode.includes('mesh.root.rotation.x=Math.cos(dir)*lean;'),
  '3D recoil must follow the impact-axis lean');
 assert(sceneCode.includes('mesh.root.rotation.z=Math.sin(dir)*lean;'),
@@ -67,11 +72,12 @@ for(const match of html.matchAll(/\bid="([^"]+)"/g)){
  nodes[id]={id,value,checked:id==='simSeedAuto',innerHTML:'',textContent:'',disabled:false,hidden:true,style:{},
   events:{},classList:{toggle(){}},addEventListener(type,handler){(this.events[type]??=[]).push(handler)}};
 }
-const renderEvents=[],arenaCalls=[],modelCalls=[];
+const renderEvents=[],arenaCalls=[],modelCalls=[],cameraCalls=[];
 browser.BBX_COLLECTION_API={getBeys:()=>db.beys,getBey:id=>db.beys.find(b=>b.id===id)};
 browser.BBX_PART_STATS=abilities;
 browser.BBX_SIM_VIEW={create:()=>({
  setArena:value=>arenaCalls.push(value),
+ setCameraView:value=>{cameraCalls.push(value);return true},
  setBuilds:items=>modelCalls.push(items.map(x=>x?.name)),
  getVisuals:spec=>[{name:'戰刃',value:spec.name,image:'images/reference/example.png'}],
  render:(state,options)=>renderEvents.push({finish:state?.finish,done:!!state?.done,age:options?.finalAge||0,coast:options?.coastAge||0,lean:state?.tops?.[0]?.tilt??0})
@@ -89,6 +95,11 @@ function fire(id,type='click',value){
  for(const handler of nodes[id].events[type]||[])handler({target:{closest:()=>null}});
 }
 assert(modelCalls.length>0);
+for(const [id,kind] of [['simCameraTop','top'],['simCameraFront','front'],['simCameraReset','reset']]){
+ fire(id);
+ assert.equal(cameraCalls.at(-1),kind,'camera preset should reach 3D renderer');
+}
+
 assert(nodes.simActiveParts.innerHTML.includes('戰刃'));
 assert(nodes.simSeedAuto.checked,'default new-match seed should be automatic');
 fire('simSeed','change','123456');

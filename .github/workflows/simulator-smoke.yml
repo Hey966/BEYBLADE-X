@@ -19,6 +19,8 @@ on:
       - 'tests/bit-type-labels.cjs'
       - 'sim-audio.js'
       - 'sim-view.js'
+      - 'sim-camera.js'
+      - 'tests/stadium-camera-smoke.cjs'
       - 'data/collection.json'
       - 'data/part-abilities.json'
       - 'data/part-abilities.js'
@@ -50,6 +52,7 @@ jobs:
           node --check sim-engine.js
           node --check sim-ui.js
           node --check sim-view.js
+          node --check sim-camera.js
           node --check sim-audio.js
       - uses: actions/setup-python@v5
         with:
@@ -66,6 +69,8 @@ jobs:
         run: node tests/bit-type-labels.cjs
       - name: Validate model and 3on3 restrictions
         run: node tests/sim-smoke.cjs
+      - name: Verify camera orbit, zoom, and official stadium sectors
+        run: node tests/stadium-camera-smoke.cjs
       - name: Verify arena / selected parts / scoring UI synchronization
         run: node tests/sim-ui-smoke.cjs
 

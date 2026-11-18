@@ -933,3 +933,18 @@ button.analysis-reference-hero .analysis-result-image{
 .sim-seed-setting>label:first-child{display:flex;flex-direction:column}
 .sim-seed-auto{display:flex!important;align-items:center;gap:6px;flex-direction:row!important;font-size:10px;line-height:1.4;color:#b6d8df;cursor:pointer}
 .sim-seed-auto input{width:15px;height:15px;flex:0 0 auto;margin:0;accent-color:#a8e9cb}
+
+/* Competition stadium camera controls: keep battle buttons directly below arena. */
+.sim-arena canvas.sim-three-canvas{touch-action:none;cursor:grab}
+.sim-arena canvas.sim-three-canvas:active{cursor:grabbing}
+.sim-camera-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:8px 0 4px}
+.sim-camera-controls button{min-height:34px;padding:5px 7px;border:1px solid #45667c;border-radius:7px;
+ background:#183448;color:#dcecf1;font-size:12px;cursor:pointer}
+.sim-camera-controls button:focus-visible{outline:2px solid #b1e966;outline-offset:2px}
+.sim-camera-controls button:hover{background:#24506a}
+.sim-camera-tip{margin:5px 0 9px;color:#9fb7c5;font-size:11px;line-height:1.5}
+@media(max-width:720px){
+ .sim-camera-controls{gap:5px}
+ .sim-camera-controls button{font-size:11px;min-height:37px;padding:5px 3px}
+ .sim-camera-tip{font-size:10px}
+}

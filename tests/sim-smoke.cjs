@@ -296,12 +296,18 @@ assert(Math.hypot(rimTop.tops[0].x,rimTop.tops[0].y)<=
  1.32-rimTop.tops[0].model.radius+1e-6,'full visual blade must remain inside stadium rim');
 // Raised rim: flat high-speed attack movement must rebound instead of
 // ghosting through a pocket. An airborne or recently hit top can still exit.
-assert.equal(E.RIM_LIP_HEIGHT,.065,'rim height must use the displayed 3D lip');
+assert.equal(E.RIM_LIP_HEIGHT,.065,'rim height must be a raised barrier');
+assert.equal(E.STADIUM_ZONES.length,3,'official competition stadium uses three front pockets');
+assert.equal(E.stadiumPocket(Math.PI/2,'xtreme'),'extreme');
+assert.equal(E.stadiumPocket(.61,'xtreme'),'over');
+assert.equal(E.stadiumPocket(Math.PI-.61,'xtreme'),'over');
+assert.equal(E.stadiumPocket(-.70,'xtreme'),null,'the back wall is not a scoring pocket');
+assert.equal(E.stadiumPocket(.61,'plain'),null,'practice dish has no pocket finish');
 function lipScenario(mode){
  const play=E.createBattle(owned('OWN-BXG-57-02'),owned('OWN-UX-08-01'),
   {seed:2026,arena:'xtreme',rail:false,
    launch:[{power:14000},{power:14000}],record:false});
- const [attack,other]=play.tops,theta=-.70,dist=1.13;
+ const [attack,other]=play.tops,theta=Math.PI/2,dist=1.13;
  for(const top of [attack,other]){
   top.landed=true;top.height=0;top.verticalVelocity=0;
   top.vx=0;top.vy=0;
