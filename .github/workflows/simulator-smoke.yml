@@ -5,6 +5,8 @@ on:
       - 'sim-engine.js'
       - 'sim-ui.js'
       - 'bit-types.js'
+      - 'blade-types.js'
+      - 'tests/blade-type-labels.cjs'
       - 'app.js'
       - 'analysis.js'
       - 'tests/bit-type-labels.cjs'
@@ -35,6 +37,7 @@ jobs:
       - name: Check syntax
         run: |
           node --check bit-types.js
+          node --check blade-types.js
           node --check app.js
           node --check analysis.js
           node --check sim-engine.js
@@ -46,6 +49,8 @@ jobs:
           python-version: '3.12'
       - name: Verify offline Hasbro packaging corrections and sync guards
         run: python tests/test_part_sync_overrides.py
+      - name: Verify Blade and CX subcomponent classifications
+        run: node tests/blade-type-labels.cjs
       - name: Verify Bit classifications across collection and UI
         run: node tests/bit-type-labels.cjs
       - name: Validate model and 3on3 restrictions
